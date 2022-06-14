@@ -15,7 +15,6 @@
 package routing
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/matrix-org/dendrite/clientapi/auth"
@@ -70,8 +69,6 @@ func handlePublicKeyRegistration(
 		return false, "", nil
 	}
 
-	var sid = authHandler.GetSession()
-	fmt.Println(sid)
 	if _, ok := sessions.sessions[authHandler.GetSession()]; !ok {
 		return false, "", &util.JSONResponse{
 			Code: http.StatusUnauthorized,
