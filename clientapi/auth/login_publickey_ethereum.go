@@ -17,6 +17,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
@@ -85,6 +86,10 @@ func (pk LoginPublicKeyEthereum) AccountExists(ctx context.Context) (string, *js
 	return localPart, nil
 }
 
+func (pk LoginPublicKeyEthereum) IsValidUserId(userId string) bool {
+	return true
+}
+
 func (pk LoginPublicKeyEthereum) ValidateLoginResponse() (bool, *jsonerror.MatrixError) {
 	// Parse the message to extract all the fields.
 	message, err := siwe.ParseMessage(pk.Message)
@@ -96,6 +101,12 @@ func (pk LoginPublicKeyEthereum) ValidateLoginResponse() (bool, *jsonerror.Matri
 	_, err = message.Verify(pk.Signature, (*string)(&pk.config.Matrix.ServerName), nil, nil)
 	if err != nil {
 		return false, jsonerror.InvalidSignature(err.Error())
+	}
+
+	// Error if the user ID does not match the signed message.
+	isVerifiedUserId := pk.verifyMessageUserId(message)
+	if !isVerifiedUserId {
+		return false, jsonerror.InvalidUsername(pk.UserId)
 	}
 
 	// Error if the chainId is not supported by the server.
@@ -116,6 +127,12 @@ func (pk LoginPublicKeyEthereum) CreateLogin() *Login {
 		Identifier: identifier,
 	}
 	return &login
+}
+
+func (pk LoginPublicKeyEthereum) verifyMessageUserId(message *siwe.Message) bool {
+	expectedUserId := fmt.Sprintf("eip155=3a%d=3a%s", message.GetChainID(), message.GetAddress())
+	// Case-insensitive comparison.
+	return pk.UserId == strings.ToLower(expectedUserId)
 }
 
 func contains(list []int, element int) bool {

@@ -37,6 +37,7 @@ func newPublicKeyAuthSession(request *registerRequest, sessions *sessionsDict, s
 func handlePublicKeyRegistration(
 	cfg *config.ClientAPI,
 	reqBytes []byte,
+	r *registerRequest,
 	userAPI userapi.ClientUserAPI,
 ) (bool, authtypes.LoginType, *util.JSONResponse) {
 	if !cfg.PublicKeyAuthentication.Enabled() {
@@ -63,6 +64,7 @@ func handlePublicKeyRegistration(
 				JSON: err,
 			}
 		}
+
 		authHandler = pkEthHandler
 	default:
 		// No response. Client is asking for a new registration session
@@ -73,6 +75,14 @@ func handlePublicKeyRegistration(
 		return false, "", &util.JSONResponse{
 			Code: http.StatusUnauthorized,
 			JSON: jsonerror.Unknown("the session ID is missing or unknown."),
+		}
+	}
+
+	isValidUserId := authHandler.IsValidUserId(r.Username)
+	if !isValidUserId {
+		return false, "", &util.JSONResponse{
+			Code: http.StatusUnauthorized,
+			JSON: jsonerror.InvalidUsername(r.Username),
 		}
 	}
 
