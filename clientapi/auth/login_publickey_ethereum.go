@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
@@ -86,8 +87,22 @@ func (pk LoginPublicKeyEthereum) AccountExists(ctx context.Context) (string, *js
 	return localPart, nil
 }
 
-func (pk LoginPublicKeyEthereum) IsValidUserId(userId string) bool {
-	return true
+var validChainAgnosticIdRegex = regexp.MustCompile("^eip155=3a[0-9]+=3a0x[0-9a-fA-F]+$")
+
+func (pk LoginPublicKeyEthereum) IsValidUserIdForRegistration(userId string) bool {
+	// Verify that the user ID is a valid one according to spec.
+	// https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md
+
+	// Matrix ID has additional grammar requirements for user ID.
+	// https://spec.matrix.org/v1.1/appendices/#user-identifiers
+	// Make sure disallowed characters are escaped.
+	// E.g. ":" is replaced with "=3a".
+
+	isValid := validChainAgnosticIdRegex.MatchString(userId)
+
+	// In addition, double check that the user ID for registration
+	// matches the authentication data in the request.
+	return isValid && userId == pk.UserId
 }
 
 func (pk LoginPublicKeyEthereum) ValidateLoginResponse() (bool, *jsonerror.MatrixError) {
@@ -130,8 +145,11 @@ func (pk LoginPublicKeyEthereum) CreateLogin() *Login {
 }
 
 func (pk LoginPublicKeyEthereum) verifyMessageUserId(message *siwe.Message) bool {
+	// Use info in the signed message to derive the expected user ID.
 	expectedUserId := fmt.Sprintf("eip155=3a%d=3a%s", message.GetChainID(), message.GetAddress())
-	// Case-insensitive comparison.
+
+	// Case-insensitive comparison to make sure the user ID matches the expected
+	// one derived from the signed message.
 	return pk.UserId == strings.ToLower(expectedUserId)
 }
 
