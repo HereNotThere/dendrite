@@ -64,7 +64,6 @@ func handlePublicKeyRegistration(
 				JSON: err,
 			}
 		}
-
 		authHandler = pkEthHandler
 	default:
 		// No response. Client is asking for a new registration session
