@@ -26,7 +26,7 @@ import (
 )
 
 func TestLoginPublicKeyNewSession(t *testing.T) {
-	assert := assert.New(t)
+	// Setup
 	ctx := context.Background()
 
 	test := struct {
@@ -42,28 +42,28 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 	cfg := initializeConfigClientApi()
 	userInteractive := initializeUserInteractive()
 
-	t.Run(test.Name, func(t *testing.T) {
-		var userAPI fakePublicKeyUserApi
+	var userAPI fakePublicKeyUserApi
 
-		login, cleanup, err := LoginFromJSONReader(
-			ctx,
-			strings.NewReader(test.Body),
-			&userAPI,
-			&userAPI,
-			&userAPI,
-			userInteractive,
-			cfg)
+	// Test
+	login, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
 
-		if cleanup != nil {
-			cleanup(ctx, nil)
-		}
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
 
-		// asserts
-		assert.NotEmptyf(err, "%v failed: %+v", test.Name, login)
-		assert.Truef(
-			err.Code == http.StatusUnauthorized,
-			"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
-	})
+	// Asserts
+	assert := assert.New(t)
+	assert.NotEmptyf(err, "%v failed: %+v", test.Name, login)
+	assert.Truef(
+		err.Code == http.StatusUnauthorized,
+		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
 }
 
 type fakePublicKeyUserApi struct {
