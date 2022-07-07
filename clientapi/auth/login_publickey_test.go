@@ -25,15 +25,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoginPublicKeyNewSession(t *testing.T) {
+func LoginPublicKeyNewSession(t *testing.T) {
 	// Setup
 	ctx := context.Background()
 
 	test := struct {
 		Name string
 		Body string
-
-		WantUsername string
 	}{
 		Name: "TestLoginPublicKeyNewSession",
 		Body: `{ "type": "m.login.publickey" }`,
@@ -60,7 +58,55 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.NotEmptyf(err, "%v failed: %+v", test.Name, login)
+	assert.NotNilf(err, "%v failed: %+v", test.Name, login)
+	assert.Truef(
+		err.Code == http.StatusUnauthorized,
+		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+	json := err.JSON.(Challenge)
+	assert.Emptyf(json.Completed, "Challenge.Completed array")
+	assert.Emptyf(json.Flows, "Challenge.Flows array")
+	assert.Emptyf(json.Params, "Challenge.Params array")
+	assert.NotEmptyf(json.Session, "Challenge.Session")
+}
+
+func TestLoginPublicKeyValidAuthTypeMissingSession(t *testing.T) {
+	// Setup
+	ctx := context.Background()
+
+	test := struct {
+		Name string
+		Body string
+	}{
+		Name: "TestLoginPublicKeyValidAuthTypeMissingSession",
+		Body: `{
+			"type": "m.login.publickey",
+			"auth": {
+				"type": "m.login.publickey.ethereum"
+			}
+		 }`,
+	}
+
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+
+	var userAPI fakePublicKeyUserApi
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
 		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
@@ -74,10 +120,12 @@ type fakePublicKeyUserApi struct {
 }
 
 func (ua *fakePublicKeyUserApi) QueryAccountAvailability(ctx context.Context, req *uapi.QueryAccountAvailabilityRequest, res *uapi.QueryAccountAvailabilityResponse) error {
-	if req.Localpart == "invalid" {
+	if req.Localpart == "does_not_exist" {
 		res.Available = false
 		return nil
 	}
+
+	res.Available = true
 	return nil
 }
 
