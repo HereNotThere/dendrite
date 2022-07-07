@@ -58,12 +58,8 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 			cleanup(ctx, nil)
 		}
 
-		// Expect an exception.
-		if err == nil {
-			t.Fatalf("%v failed: %+v", test.Name, login)
-		}
-
 		// asserts
+		assert.NotEmptyf(err, "%v failed: %+v", test.Name, login)
 		assert.Truef(
 			err.Code == http.StatusUnauthorized,
 			"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
