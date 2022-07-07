@@ -25,10 +25,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func LoginPublicKeyNewSession(t *testing.T) {
+func TestLoginPublicKeyNewSession(t *testing.T) {
 	// Setup
-	ctx := context.Background()
-
 	test := struct {
 		Name string
 		Body string
@@ -37,9 +35,9 @@ func LoginPublicKeyNewSession(t *testing.T) {
 		Body: `{ "type": "m.login.publickey" }`,
 	}
 
+	ctx := context.Background()
 	cfg := initializeConfigClientApi()
 	userInteractive := initializeUserInteractive()
-
 	var userAPI fakePublicKeyUserApi
 
 	// Test
@@ -69,15 +67,55 @@ func LoginPublicKeyNewSession(t *testing.T) {
 	assert.NotEmptyf(json.Session, "Challenge.Session")
 }
 
-func TestLoginPublicKeyValidAuthTypeMissingSession(t *testing.T) {
+func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 	// Setup
-	ctx := context.Background()
-
 	test := struct {
 		Name string
 		Body string
 	}{
-		Name: "TestLoginPublicKeyValidAuthTypeMissingSession",
+		Name: "TestLoginPublicKeyMissingSession",
+		Body: `{
+			"type": "m.login.publickey",
+			"auth": {
+				"type": "m.login.publickey.ethereum",
+				"session": "invalid_session_id"
+			}
+		 }`,
+	}
+
+	ctx := context.Background()
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+	var userAPI fakePublicKeyUserApi
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.Truef(
+		err.Code == http.StatusUnauthorized,
+		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+}
+
+func LoginPublicKeyAccountExists(t *testing.T) {
+	// Setup
+	test := struct {
+		Name string
+		Body string
+	}{
+		Name: "TestLoginPublicKeyAccountExists",
 		Body: `{
 			"type": "m.login.publickey",
 			"auth": {
@@ -86,9 +124,9 @@ func TestLoginPublicKeyValidAuthTypeMissingSession(t *testing.T) {
 		 }`,
 	}
 
+	ctx := context.Background()
 	cfg := initializeConfigClientApi()
 	userInteractive := initializeUserInteractive()
-
 	var userAPI fakePublicKeyUserApi
 
 	// Test
@@ -121,11 +159,11 @@ type fakePublicKeyUserApi struct {
 
 func (ua *fakePublicKeyUserApi) QueryAccountAvailability(ctx context.Context, req *uapi.QueryAccountAvailabilityRequest, res *uapi.QueryAccountAvailabilityResponse) error {
 	if req.Localpart == "does_not_exist" {
-		res.Available = false
+		res.Available = true
 		return nil
 	}
 
-	res.Available = true
+	res.Available = false
 	return nil
 }
 
