@@ -73,7 +73,7 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 		Name string
 		Body string
 	}{
-		Name: "TestLoginPublicKeyMissingSession",
+		Name: "TestLoginPublicKeyInvalidSessionId",
 		Body: `{
 			"type": "m.login.publickey",
 			"auth": {
@@ -109,17 +109,17 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
 }
 
-func LoginPublicKeyAccountExists(t *testing.T) {
+func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 	// Setup
 	test := struct {
 		Name string
 		Body string
 	}{
-		Name: "TestLoginPublicKeyAccountExists",
+		Name: "TestLoginPublicKeyInvalidAuthType",
 		Body: `{
 			"type": "m.login.publickey",
 			"auth": {
-				"type": "m.login.publickey.ethereum"
+				"type": "m.login.publickey.someAlgo"
 			}
 		 }`,
 	}
@@ -145,9 +145,15 @@ func LoginPublicKeyAccountExists(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
+	assert.NotNil(err, "Expected an err response. Actual: nil")
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
 		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+	_, ok := err.JSON.(Challenge)
+	assert.False(
+		ok,
+		"should not return a Challenge response",
+	)
 }
 
 type fakePublicKeyUserApi struct {
@@ -222,4 +228,40 @@ func initializeConfigClientApi() *config.ClientAPI {
 	}
 
 	return cfg
+}
+
+func newSession(
+	t *testing.T,
+	ctx *context.Context,
+	cfg *config.ClientAPI,
+	userInteractive *UserInteractive,
+	userAPI *fakePublicKeyUserApi,
+
+) string {
+	emptyAuth := struct {
+		Body string
+	}{
+		Body: `{
+			"type": "m.login.publickey"
+		 }`,
+	}
+
+	_, cleanup, err := LoginFromJSONReader(
+		*ctx,
+		strings.NewReader(emptyAuth.Body),
+		userAPI,
+		userAPI,
+		userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(*ctx, nil)
+	}
+
+	assert.NotEmptyf(t, err, "LoginFromJSONReader did not return expected error response")
+	json := err.JSON.(Challenge)
+	assert.NotEmptyf(t, json.Session, "LoginFromJSONReader did not return expected session ID")
+
+	return json.Session
 }
