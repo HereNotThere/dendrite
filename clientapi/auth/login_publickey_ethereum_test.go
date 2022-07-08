@@ -24,7 +24,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
+func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -42,6 +42,54 @@ func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
 		"auth": {
 			"type": "m.login.publickey.ethereum",
 			"session": "%v"
+		}
+	 }`, sessionId)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.Truef(
+		err.Code == http.StatusForbidden,
+		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+}
+
+func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+	sessionId := testPublicKeySession(
+		&ctx,
+		cfg,
+		userInteractive,
+		&userAPI,
+	)
+
+	body := fmt.Sprintf(`{
+		"type": "m.login.publickey",
+		"auth": {
+			"type": "m.login.publickey.ethereum",
+			"session": "%v",
+			"user_id": "does_not_exist"
 		}
 	 }`, sessionId)
 	test := struct {
