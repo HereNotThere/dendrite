@@ -16,13 +16,99 @@ package auth
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/stretchr/testify/assert"
 )
+
+type EthereumWallet struct {
+	Address    string
+	PrivateKey *ecdsa.PrivateKey
+}
+
+// https://goethereumbook.org/wallet-generate/
+func createAccount() *EthereumWallet {
+	// Create a new public / private key pair.
+	privateKey, err := crypto.GenerateKey()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get the public key
+	publicKey := privateKey.Public()
+
+	// Transform public key to the Ethereum address
+	publicKeyEcdsa, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("error casting public key to ECDSA")
+	}
+
+	address := crypto.PubkeyToAddress(*publicKeyEcdsa).Hex()
+
+	return &EthereumWallet{
+		Address:    address,
+		PrivateKey: privateKey,
+	}
+}
+
+func This(t *testing.T) {
+
+}
+
+func TestLoginPublicKeyEthereumInvalidUserId(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+	wallet := createAccount()
+	sessionId := testPublicKeySession(
+		&ctx,
+		cfg,
+		userInteractive,
+		&userAPI,
+	)
+
+	body := fmt.Sprintf(`{
+		"type": "m.login.publickey",
+		"auth": {
+			"type": "m.login.publickey.ethereum",
+			"session": "%v",
+			"user_id": "%v"
+		}
+	 }`, sessionId, wallet.Address)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.Truef(
+		err.Code == http.StatusForbidden,
+		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+}
 
 func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	// Setup
@@ -71,7 +157,7 @@ func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
 }
 
-func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
+func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()

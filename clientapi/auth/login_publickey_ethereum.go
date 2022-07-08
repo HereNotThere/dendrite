@@ -73,6 +73,10 @@ func (pk LoginPublicKeyEthereum) AccountExists(ctx context.Context) (string, *js
 		return "", jsonerror.Forbidden("the address is incorrect, or the account does not exist.")
 	}
 
+	if !pk.IsValidUserId(localPart) {
+		return "", jsonerror.InvalidUsername("the username is not valid.")
+	}
+
 	res := userapi.QueryAccountAvailabilityResponse{}
 	if err := pk.userAPI.QueryAccountAvailability(ctx, &userapi.QueryAccountAvailabilityRequest{
 		Localpart: localPart,
@@ -89,7 +93,7 @@ func (pk LoginPublicKeyEthereum) AccountExists(ctx context.Context) (string, *js
 
 var validChainAgnosticIdRegex = regexp.MustCompile("^eip155=3a[0-9]+=3a0x[0-9a-fA-F]+$")
 
-func (pk LoginPublicKeyEthereum) IsValidUserIdForRegistration(userId string) bool {
+func (pk LoginPublicKeyEthereum) IsValidUserId(userId string) bool {
 	// Verify that the user ID is a valid one according to spec.
 	// https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md
 
@@ -100,7 +104,7 @@ func (pk LoginPublicKeyEthereum) IsValidUserIdForRegistration(userId string) boo
 
 	isValid := validChainAgnosticIdRegex.MatchString(userId)
 
-	// In addition, double check that the user ID for registration
+	// In addition, double check that the user ID
 	// matches the authentication data in the request.
 	return isValid && userId == pk.UserId
 }
