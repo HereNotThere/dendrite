@@ -80,7 +80,7 @@ func (pk LoginPublicKeyEthereum) AccountExists(ctx context.Context) (string, *js
 		return "", jsonerror.Unknown("failed to check availability: " + err.Error())
 	}
 
-	if res.Available {
+	if localPart == "" || res.Available {
 		return "", jsonerror.Forbidden("the address is incorrect, account does not exist")
 	}
 

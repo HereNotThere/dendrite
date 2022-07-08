@@ -1,4 +1,4 @@
-// Copyright 2021 The Matrix.org Foundation C.I.C.
+// Copyright 2022 The Matrix.org Foundation C.I.C.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,18 +27,16 @@ import (
 
 func TestLoginPublicKeyNewSession(t *testing.T) {
 	// Setup
-	test := struct {
-		Name string
-		Body string
-	}{
-		Name: "TestLoginPublicKeyNewSession",
-		Body: `{ "type": "m.login.publickey" }`,
-	}
-
+	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
 	cfg := initializeConfigClientApi()
 	userInteractive := initializeUserInteractive()
-	var userAPI fakePublicKeyUserApi
+
+	test := struct {
+		Body string
+	}{
+		Body: `{ "type": "m.login.publickey" }`,
+	}
 
 	// Test
 	login, cleanup, err := LoginFromJSONReader(
@@ -56,7 +54,7 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.NotNilf(err, "%v failed: %+v", test.Name, login)
+	assert.NotNilf(err, "Failed: %+v", login)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
 		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
@@ -69,11 +67,14 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 
 func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+
 	test := struct {
-		Name string
 		Body string
 	}{
-		Name: "TestLoginPublicKeyInvalidSessionId",
 		Body: `{
 			"type": "m.login.publickey",
 			"auth": {
@@ -82,11 +83,6 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 			}
 		 }`,
 	}
-
-	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
-	var userAPI fakePublicKeyUserApi
 
 	// Test
 	_, cleanup, err := LoginFromJSONReader(
@@ -111,11 +107,14 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 
 func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeConfigClientApi()
+	userInteractive := initializeUserInteractive()
+
 	test := struct {
-		Name string
 		Body string
 	}{
-		Name: "TestLoginPublicKeyInvalidAuthType",
 		Body: `{
 			"type": "m.login.publickey",
 			"auth": {
@@ -123,11 +122,6 @@ func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 			}
 		 }`,
 	}
-
-	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
-	var userAPI fakePublicKeyUserApi
 
 	// Test
 	_, cleanup, err := LoginFromJSONReader(
@@ -230,8 +224,7 @@ func initializeConfigClientApi() *config.ClientAPI {
 	return cfg
 }
 
-func newSession(
-	t *testing.T,
+func testPublicKeySession(
 	ctx *context.Context,
 	cfg *config.ClientAPI,
 	userInteractive *UserInteractive,
@@ -259,9 +252,6 @@ func newSession(
 		cleanup(*ctx, nil)
 	}
 
-	assert.NotEmptyf(t, err, "LoginFromJSONReader did not return expected error response")
 	json := err.JSON.(Challenge)
-	assert.NotEmptyf(t, json.Session, "LoginFromJSONReader did not return expected session ID")
-
 	return json.Session
 }
