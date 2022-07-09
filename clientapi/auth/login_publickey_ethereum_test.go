@@ -24,6 +24,7 @@ import (
 	"testing"
 
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/matrix-org/dendrite/clientapi/jsonerror"
 	"github.com/spruceid/siwe-go"
 	"github.com/stretchr/testify/assert"
 )
@@ -91,7 +92,7 @@ func createEip4361TestMessage(
 	return str
 }
 
-func TestLoginPublicKeyEthereum(t *testing.T) {
+func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -142,11 +143,17 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	// Asserts
 	assert := assert.New(t)
 	assert.Truef(
-		err.Code == http.StatusForbidden,
-		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+		err.Code == http.StatusUnauthorized,
+		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+	json := err.JSON.(*jsonerror.MatrixError)
+	expectedErr := jsonerror.InvalidSignature("")
+	assert.Truef(
+		json.ErrCode == expectedErr.ErrCode,
+		"err.JSON.ErrCode: actual %v, expected %v", json.ErrCode, expectedErr.ErrCode,
+	)
 }
 
-func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
+func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -191,8 +198,14 @@ func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	// Asserts
 	assert := assert.New(t)
 	assert.Truef(
-		err.Code == http.StatusForbidden,
-		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+		err.Code == http.StatusUnauthorized,
+		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+	json := err.JSON.(*jsonerror.MatrixError)
+	expectedErr := jsonerror.InvalidParam("")
+	assert.Truef(
+		json.ErrCode == expectedErr.ErrCode,
+		"err.JSON.ErrCode: actual %v, expected %v", json.ErrCode, expectedErr.ErrCode,
+	)
 }
 
 func LoginPublicKeyEthereumWrongUserId(t *testing.T) {
@@ -241,7 +254,7 @@ func LoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
 }
 
 func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
@@ -288,7 +301,7 @@ func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
 }
 
 func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
@@ -336,5 +349,5 @@ func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
 }

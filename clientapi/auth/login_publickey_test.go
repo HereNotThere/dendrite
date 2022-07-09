@@ -208,7 +208,7 @@ func TLoginPublicKeyInvalidSessionId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
 }
 
 func TLoginPublicKeyInvalidAuthType(t *testing.T) {
@@ -248,7 +248,7 @@ func TLoginPublicKeyInvalidAuthType(t *testing.T) {
 	assert.NotNil(err, "Expected an err response. Actual: nil")
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
 	_, ok := err.JSON.(Challenge)
 	assert.False(
 		ok,
