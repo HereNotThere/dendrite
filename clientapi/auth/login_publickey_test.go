@@ -70,7 +70,7 @@ func (*fakePublicKeyUserApi) QueryLoginToken(ctx context.Context, req *uapi.Quer
 	return nil
 }
 
-func initializeUserInteractive() *UserInteractive {
+func initializeTestUserInteractive() *UserInteractive {
 	userInteractive := UserInteractive{
 		Flows:    []userInteractiveFlow{},
 		Types:    make(map[string]Type),
@@ -81,7 +81,7 @@ func initializeUserInteractive() *UserInteractive {
 	return &userInteractive
 }
 
-func initializeConfigClientApi() *config.ClientAPI {
+func initializeTestConfig() *config.ClientAPI {
 	chainIds := []int{4}
 	cfg := &config.ClientAPI{
 		Matrix: &config.Global{
@@ -131,12 +131,12 @@ func testPublicKeySession(
 	return json.Session
 }
 
-func TestLoginPublicKeyNewSession(t *testing.T) {
+func TLoginPublicKeyNewSession(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
 
 	test := struct {
 		Body string
@@ -171,12 +171,12 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 	assert.NotEmptyf(json.Session, "Challenge.Session")
 }
 
-func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
+func TLoginPublicKeyInvalidSessionId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
 
 	test := struct {
 		Body string
@@ -211,12 +211,12 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
 }
 
-func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
+func TLoginPublicKeyInvalidAuthType(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
 
 	test := struct {
 		Body string

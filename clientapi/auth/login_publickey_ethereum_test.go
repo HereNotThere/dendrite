@@ -24,20 +24,25 @@ import (
 	"testing"
 
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/spruceid/siwe-go"
 	"github.com/stretchr/testify/assert"
 )
 
-type EthereumWallet struct {
-	Address    string
-	PrivateKey *ecdsa.PrivateKey
+const testNetworkId = 4 // Rinkeby test network ID
+
+type ethereumTestWallet struct {
+	Eip155UserId  string
+	PublicAddress string
+	PrivateKey    *ecdsa.PrivateKey
 }
 
 // https://goethereumbook.org/wallet-generate/
-func createAccount() *EthereumWallet {
+func createTestAccount() *ethereumTestWallet {
 	// Create a new public / private key pair.
 	privateKey, err := crypto.GenerateKey()
 	if err != nil {
 		log.Fatal(err)
+		return nil
 	}
 
 	// Get the public key
@@ -47,27 +52,107 @@ func createAccount() *EthereumWallet {
 	publicKeyEcdsa, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
 		log.Fatal("error casting public key to ECDSA")
+		return nil
 	}
 
 	address := crypto.PubkeyToAddress(*publicKeyEcdsa).Hex()
+	eip155UserId := fmt.Sprintf("eip155=3a%d=3a%s", testNetworkId, address)
 
-	return &EthereumWallet{
-		Address:    address,
-		PrivateKey: privateKey,
+	return &ethereumTestWallet{
+		PublicAddress: address,
+		PrivateKey:    privateKey,
+		Eip155UserId:  eip155UserId,
 	}
 }
 
-func This(t *testing.T) {
+func createEip4361TestMessage(
+	publicAddress string,
+) string {
+	options := make(map[string]interface{})
+	options["chainId"] = 4 // Rinkeby test network
+	options["statement"] = "This is a test statement"
+	message, err := siwe.InitMessage(
+		"example.com",
+		publicAddress,
+		"https://localhost/login",
+		siwe.GenerateNonce(),
+		options,
+	)
 
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
+
+	// Escape the formatting characters to
+	// prevent unmarshall exceptions.
+	str := strings.ReplaceAll(message.String(), "\n", "\\n")
+	str = strings.ReplaceAll(str, "\t", "\\t")
+	return str
 }
 
-func TestLoginPublicKeyEthereumInvalidUserId(t *testing.T) {
+func TestLoginPublicKeyEthereum(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
-	wallet := createAccount()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
+	wallet := createTestAccount()
+	message := createEip4361TestMessage(wallet.PublicAddress)
+	sessionId := testPublicKeySession(
+		&ctx,
+		cfg,
+		userInteractive,
+		&userAPI,
+	)
+
+	body := fmt.Sprintf(`{
+		"type": "m.login.publickey",
+		"auth": {
+			"type": "m.login.publickey.ethereum",
+			"session": "%v",
+			"user_id": "%v",
+			"message": "%v"
+		}
+	 }`,
+		sessionId,
+		wallet.Eip155UserId,
+		message,
+	)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.Truef(
+		err.Code == http.StatusForbidden,
+		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+}
+
+func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
+	wallet := createTestAccount()
 	sessionId := testPublicKeySession(
 		&ctx,
 		cfg,
@@ -82,7 +167,56 @@ func TestLoginPublicKeyEthereumInvalidUserId(t *testing.T) {
 			"session": "%v",
 			"user_id": "%v"
 		}
-	 }`, sessionId, wallet.Address)
+	 }`, sessionId, wallet.Eip155UserId)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	// Test
+	_, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.Truef(
+		err.Code == http.StatusForbidden,
+		"err.Code: got %v, want %v", err.Code, http.StatusForbidden)
+}
+
+func LoginPublicKeyEthereumWrongUserId(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
+	wallet := createTestAccount()
+	sessionId := testPublicKeySession(
+		&ctx,
+		cfg,
+		userInteractive,
+		&userAPI,
+	)
+
+	body := fmt.Sprintf(`{
+		"type": "m.login.publickey",
+		"auth": {
+			"type": "m.login.publickey.ethereum",
+			"session": "%v",
+			"user_id": "%v"
+		}
+	 }`, sessionId, wallet.PublicAddress)
 	test := struct {
 		Body string
 	}{
@@ -114,8 +248,8 @@ func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
 	sessionId := testPublicKeySession(
 		&ctx,
 		cfg,
@@ -161,8 +295,8 @@ func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeConfigClientApi()
-	userInteractive := initializeUserInteractive()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
 	sessionId := testPublicKeySession(
 		&ctx,
 		cfg,
