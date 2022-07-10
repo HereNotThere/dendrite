@@ -18,6 +18,7 @@ require (
 	github.com/docker/docker v20.10.16+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/docker/go-units v0.4.0 // indirect
+	github.com/ethereum/go-ethereum v1.10.15
 	github.com/frankban/quicktest v1.14.3 // indirect
 	github.com/getsentry/sentry-go v0.13.0
 	github.com/gogo/protobuf v1.3.2 // indirect

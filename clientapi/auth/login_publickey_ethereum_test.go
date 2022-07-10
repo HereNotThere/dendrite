@@ -23,6 +23,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
 	"github.com/spruceid/siwe-go"
@@ -68,7 +69,7 @@ func createTestAccount() *ethereumTestWallet {
 
 func createEip4361TestMessage(
 	publicAddress string,
-) string {
+) *siwe.Message {
 	options := make(map[string]interface{})
 	options["chainId"] = 4 // Rinkeby test network
 	options["statement"] = "This is a test statement"
@@ -82,9 +83,13 @@ func createEip4361TestMessage(
 
 	if err != nil {
 		log.Fatal(err)
-		return ""
+		return nil
 	}
 
+	return message
+}
+
+func fromMessageToString(message *siwe.Message) string {
 	// Escape the formatting characters to
 	// prevent unmarshall exceptions.
 	str := strings.ReplaceAll(message.String(), "\n", "\\n")
@@ -92,7 +97,87 @@ func createEip4361TestMessage(
 	return str
 }
 
-func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
+// https://goethereumbook.org/signature-generate/
+func signMessage(message string, privateKey *ecdsa.PrivateKey) string {
+	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(message), message)
+	data := []byte(msg)
+	hash := crypto.Keccak256Hash(data)
+
+	signature, err := crypto.Sign(hash.Bytes(), privateKey)
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
+
+	// https://github.com/ethereum/go-ethereum/blob/55599ee95d4151a2502465e0afc7c47bd1acba77/internal/ethapi/api.go#L442
+	signature[64] += 27 // Transform V from 0/1 to 27/28 according to the yellow paper
+	return hexutil.Encode(signature)
+}
+
+func TestLoginPublicKeyEthereum(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+	ctx := context.Background()
+	cfg := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
+	wallet := createTestAccount()
+	message := createEip4361TestMessage(wallet.PublicAddress)
+	signature := signMessage(message.String(), wallet.PrivateKey)
+	sessionId := testPublicKeySession(
+		&ctx,
+		cfg,
+		userInteractive,
+		&userAPI,
+	)
+
+	// Escape \t and \n. Work around for marshalling and unmarshalling message.
+	msgStr := fromMessageToString(message)
+	body := fmt.Sprintf(`{
+		"type": "m.login.publickey",
+		"auth": {
+			"type": "m.login.publickey.ethereum",
+			"session": "%v",
+			"user_id": "%v",
+			"message": "%v",
+			"signature": "%v"
+		}
+	 }`,
+		sessionId,
+		wallet.Eip155UserId,
+		msgStr,
+		signature,
+	)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	// Test
+	login, cleanup, err := LoginFromJSONReader(
+		ctx,
+		strings.NewReader(test.Body),
+		&userAPI,
+		&userAPI,
+		&userAPI,
+		userInteractive,
+		cfg)
+
+	if cleanup != nil {
+		cleanup(ctx, nil)
+	}
+
+	// Asserts
+	assert := assert.New(t)
+	assert.NotNil(login, "login: actual nil, expected not nil nil")
+	assert.Truef(
+		login.Identifier.Type == "m.id.decentralizedid",
+		"login.LoginIdentifier.Type: actual %v, expected %v", login.Identifier.Type, "m.id.decentralizedid",
+	)
+	assert.Nilf(err, "err: actual %v, expected nil", err)
+}
+
+func LoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -153,7 +238,7 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	)
 }
 
-func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
+func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
