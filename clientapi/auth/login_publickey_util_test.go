@@ -14,6 +14,11 @@
 
 package auth
 
+/**
+Test utilities for publickey login and registration.
+No tests in this file.
+*/
+
 import (
 	"context"
 	"crypto/ecdsa"
