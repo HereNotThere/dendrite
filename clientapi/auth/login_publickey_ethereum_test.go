@@ -169,15 +169,18 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.NotNil(login, "login: actual nil, expected not nil nil")
+	assert.Nilf(err, "err: actual: %v, expected: nil", err)
+	assert.NotNil(login, "login: actual: nil, expected: not nil nil")
 	assert.Truef(
 		login.Identifier.Type == "m.id.decentralizedid",
-		"login.LoginIdentifier.Type: actual %v, expected %v", login.Identifier.Type, "m.id.decentralizedid",
-	)
-	assert.Nilf(err, "err: actual %v, expected nil", err)
+		"login.Identifier.Type actual:  %v, expected:  %v", login.Identifier.Type, "m.id.decentralizedid")
+	walletAddress := strings.ToLower(wallet.Eip155UserId)
+	assert.Truef(
+		login.Identifier.User == walletAddress,
+		"login.Identifier.User actual:  %v, expected:  %v", login.Identifier.User, walletAddress)
 }
 
-func LoginPublicKeyEthereumMissingSignature(t *testing.T) {
+func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -192,6 +195,8 @@ func LoginPublicKeyEthereumMissingSignature(t *testing.T) {
 		&userAPI,
 	)
 
+	// Escape \t and \n. Work around for marshalling and unmarshalling message.
+	msgStr := fromMessageToString(message)
 	body := fmt.Sprintf(`{
 		"type": "m.login.publickey",
 		"auth": {
@@ -203,7 +208,7 @@ func LoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	 }`,
 		sessionId,
 		wallet.Eip155UserId,
-		message,
+		msgStr,
 	)
 	test := struct {
 		Body string
@@ -229,16 +234,15 @@ func LoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+		"err.Code actual: %v, expected:  %v", err.Code, http.StatusUnauthorized)
 	json := err.JSON.(*jsonerror.MatrixError)
 	expectedErr := jsonerror.InvalidSignature("")
 	assert.Truef(
 		json.ErrCode == expectedErr.ErrCode,
-		"err.JSON.ErrCode: actual %v, expected %v", json.ErrCode, expectedErr.ErrCode,
-	)
+		"err.JSON.ErrCode actual: %v, expected: %v", json.ErrCode, expectedErr.ErrCode)
 }
 
-func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
+func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -284,16 +288,15 @@ func LoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+		"err.Code actual: %v, expected: %v", err.Code, http.StatusUnauthorized)
 	json := err.JSON.(*jsonerror.MatrixError)
 	expectedErr := jsonerror.InvalidParam("")
 	assert.Truef(
 		json.ErrCode == expectedErr.ErrCode,
-		"err.JSON.ErrCode: actual %v, expected %v", json.ErrCode, expectedErr.ErrCode,
-	)
+		"err.JSON.ErrCode actual: %v, expected: %v", json.ErrCode, expectedErr.ErrCode)
 }
 
-func LoginPublicKeyEthereumWrongUserId(t *testing.T) {
+func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -339,10 +342,10 @@ func LoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
+		"err.Code actual: %v, expected: %v", err.Code, http.StatusForbidden)
 }
 
-func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
+func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -386,10 +389,10 @@ func LoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
+		"err.Code actual: %v, expected: %v", err.Code, http.StatusForbidden)
 }
 
-func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
+func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -434,5 +437,5 @@ func LoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusForbidden,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusForbidden)
+		"err.Code actual: %v, expected: %v", err.Code, http.StatusForbidden)
 }

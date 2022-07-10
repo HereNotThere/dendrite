@@ -131,7 +131,7 @@ func testPublicKeySession(
 	return json.Session
 }
 
-func TLoginPublicKeyNewSession(t *testing.T) {
+func TestLoginPublicKeyNewSession(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -160,10 +160,12 @@ func TLoginPublicKeyNewSession(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.NotNilf(err, "Failed: %+v", login)
+	assert.NotNilf(
+		err,
+		"err actual: not nil returned %+v, expected: nil", login)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: got %v, want %v", err.Code, http.StatusUnauthorized)
+		"err.Code actual: %v, expected: %v", err.Code, http.StatusUnauthorized)
 	json := err.JSON.(Challenge)
 	assert.Emptyf(json.Completed, "Challenge.Completed array")
 	assert.Emptyf(json.Flows, "Challenge.Flows array")
@@ -171,7 +173,7 @@ func TLoginPublicKeyNewSession(t *testing.T) {
 	assert.NotEmptyf(json.Session, "Challenge.Session")
 }
 
-func TLoginPublicKeyInvalidSessionId(t *testing.T) {
+func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -208,10 +210,10 @@ func TLoginPublicKeyInvalidSessionId(t *testing.T) {
 	assert := assert.New(t)
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+		"err.Code actual %v, expected %v", err.Code, http.StatusUnauthorized)
 }
 
-func TLoginPublicKeyInvalidAuthType(t *testing.T) {
+func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
@@ -245,13 +247,12 @@ func TLoginPublicKeyInvalidAuthType(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.NotNil(err, "Expected an err response. Actual: nil")
+	assert.NotNil(err, "Expected an err response.actual: nil")
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
-		"err.Code: actual %v, expected %v", err.Code, http.StatusUnauthorized)
+		"err.Code actual %v, expected %v", err.Code, http.StatusUnauthorized)
 	_, ok := err.JSON.(Challenge)
 	assert.False(
 		ok,
-		"should not return a Challenge response",
-	)
+		"should not return a Challenge response")
 }
