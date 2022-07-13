@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
+	"github.com/matrix-org/dendrite/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,10 +32,10 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	wallet := createTestAccount()
-	message := createEip4361TestMessage(wallet.PublicAddress)
-	signature := signMessage(message.String(), wallet.PrivateKey)
-	sessionId := testPublicKeySession(
+	wallet := test.CreateTestAccount(t)
+	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
+	signature := test.SignMessage(t, message.String(), wallet.PrivateKey)
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
@@ -42,7 +43,7 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	)
 
 	// Escape \t and \n. Work around for marshalling and unmarshalling message.
-	msgStr := fromMessageToString(message)
+	msgStr := test.FromEip4361MessageToString(t, message)
 	body := fmt.Sprintf(`{
 		"type": "m.login.publickey",
 		"auth": {
@@ -97,9 +98,9 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	wallet := createTestAccount()
-	message := createEip4361TestMessage(wallet.PublicAddress)
-	sessionId := testPublicKeySession(
+	wallet := test.CreateTestAccount(t)
+	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
@@ -107,7 +108,7 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	)
 
 	// Escape \t and \n. Work around for marshalling and unmarshalling message.
-	msgStr := fromMessageToString(message)
+	msgStr := test.FromEip4361MessageToString(t, message)
 	body := fmt.Sprintf(`{
 		"type": "m.login.publickey",
 		"auth": {
@@ -159,8 +160,8 @@ func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	wallet := createTestAccount()
-	sessionId := testPublicKeySession(
+	wallet := test.CreateTestAccount(t)
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
@@ -213,8 +214,8 @@ func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	wallet := createTestAccount()
-	sessionId := testPublicKeySession(
+	wallet := test.CreateTestAccount(t)
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
@@ -262,7 +263,7 @@ func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	sessionId := testPublicKeySession(
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
@@ -309,7 +310,7 @@ func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	ctx := context.Background()
 	cfg := initializeTestConfig()
 	userInteractive := initializeTestUserInteractive()
-	sessionId := testPublicKeySession(
+	sessionId := publicKeyTestSession(
 		&ctx,
 		cfg,
 		userInteractive,
