@@ -30,7 +30,6 @@ import (
 	"github.com/matrix-org/dendrite/clientapi/auth"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/test"
-	"github.com/matrix-org/dendrite/userapi/api"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
 )
 
@@ -58,7 +57,7 @@ func createRegisterContext(t *testing.T) *registerContext {
 		},
 	}
 
-	var loginApi api.UserLoginAPI
+	var loginApi uapi.UserLoginAPI
 
 	userInteractive := auth.NewUserInteractive(
 		loginApi,
@@ -134,22 +133,4 @@ func (*fakePublicKeyUserApi) QueryLoginToken(ctx context.Context, req *uapi.Quer
 
 	res.Data = &uapi.LoginTokenData{UserID: "@auser:example.com"}
 	return nil
-}
-
-func initializeTestConfig() *config.ClientAPI {
-	chainIds := []int{4}
-	cfg := &config.ClientAPI{
-		Matrix: &config.Global{
-			ServerName: "localhost",
-		},
-		PublicKeyAuthentication: config.PublicKeyAuthentication{
-			Ethereum: config.EthereumAuthConfig{
-				Enabled:  true,
-				Version:  1,
-				ChainIDs: chainIds,
-			},
-		},
-	}
-
-	return cfg
 }

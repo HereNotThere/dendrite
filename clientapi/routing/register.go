@@ -247,7 +247,7 @@ type authDict struct {
 }
 
 // http://matrix.org/speculator/spec/HEAD/client_server/unstable.html#user-interactive-authentication-api
-type userInteractiveResponse struct {
+type UserInteractiveResponse struct {
 	Flows     []authtypes.Flow       `json:"flows"`
 	Completed []authtypes.LoginType  `json:"completed"`
 	Params    map[string]interface{} `json:"params"`
@@ -260,8 +260,8 @@ func newUserInteractiveResponse(
 	sessionID string,
 	fs []authtypes.Flow,
 	params map[string]interface{},
-) userInteractiveResponse {
-	return userInteractiveResponse{
+) UserInteractiveResponse {
+	return UserInteractiveResponse{
 		fs, sessions.getCompletedStages(sessionID), params, sessionID,
 	}
 }

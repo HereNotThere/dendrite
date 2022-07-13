@@ -18,11 +18,59 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
 	"github.com/matrix-org/util"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRegistrationUnimplementedAlgo(t *testing.T) {
+func TestNewRegistration(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+
+	test := struct {
+		Body string
+	}{
+		Body: `{
+			"type": "m.login.publickey",
+			"auth": {
+				"type": "m.login.publickey"
+			}
+		 }`,
+	}
+
+	fakeReq := createFakeHttpRequest(test.Body)
+	sessionID := util.RandomString(sessionIDLength)
+	registerContext := createRegisterContext(t)
+
+	// Test
+	response := handleRegistrationFlow(
+		fakeReq.request,
+		fakeReq.body,
+		fakeReq.registerRequest,
+		sessionID,
+		registerContext.config,
+		&userAPI,
+		"",
+		nil,
+	)
+
+	// Asserts
+	assert := assert.New(t)
+	assert.NotNilf(response, "response not nil")
+	assert.Truef(
+		response.Code == http.StatusUnauthorized,
+		"response.Code actual %v, expected %v", response.Code, http.StatusUnauthorized)
+	json := response.JSON.(UserInteractiveResponse)
+	assert.NotEmptyf(json.Session, "response.Session")
+	assert.NotEmptyf(json.Completed, "response.Completed array")
+	assert.Truef(
+		json.Completed[0] == authtypes.LoginStagePublicKeyNewRegistration,
+		"response.Completed[0] actual %v, expected %v", json.Completed[0], authtypes.LoginStagePublicKeyNewRegistration)
+	assert.Emptyf(json.Flows, "response.Flows array")
+	assert.Emptyf(json.Params, "response.Params array")
+}
+
+func RegistrationUnimplementedAlgo(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 
