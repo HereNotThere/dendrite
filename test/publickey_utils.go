@@ -26,6 +26,7 @@ import (
 )
 
 const EthereumTestNetworkId = 4 // Rinkeby test network ID
+const TestServerName = "example.com"
 
 type EthereumTestWallet struct {
 	Eip155UserId  string
@@ -68,7 +69,7 @@ func CreateEip4361TestMessage(
 	options["chainId"] = 4 // Rinkeby test network
 	options["statement"] = "This is a test statement"
 	message, err := siwe.InitMessage(
-		"example.com",
+		TestServerName,
 		publicAddress,
 		"https://localhost/login",
 		siwe.GenerateNonce(),

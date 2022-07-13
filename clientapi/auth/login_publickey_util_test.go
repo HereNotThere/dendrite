@@ -26,6 +26,7 @@ import (
 	"testing"
 
 	"github.com/matrix-org/dendrite/setup/config"
+	"github.com/matrix-org/dendrite/test"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
 )
 
@@ -35,12 +36,32 @@ type loginContext struct {
 }
 
 func createLoginContext(t *testing.T) *loginContext {
-	config := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	chainIds := []int{4}
+
+	cfg := &config.ClientAPI{
+		Matrix: &config.Global{
+			ServerName: test.TestServerName,
+		},
+		PasswordAuthenticationDisabled: true,
+		PublicKeyAuthentication: config.PublicKeyAuthentication{
+			Ethereum: config.EthereumAuthConfig{
+				Enabled:  true,
+				Version:  1,
+				ChainIDs: chainIds,
+			},
+		},
+	}
+
+	userInteractive := UserInteractive{
+		Flows:    []userInteractiveFlow{},
+		Types:    make(map[string]Type),
+		Sessions: make(map[string][]string),
+		Params:   make(map[string]interface{}),
+	}
 
 	return &loginContext{
-		config:          config,
-		userInteractive: userInteractive,
+		config:          cfg,
+		userInteractive: &userInteractive,
 	}
 
 }
@@ -88,35 +109,6 @@ func (*fakePublicKeyUserApi) QueryLoginToken(ctx context.Context, req *uapi.Quer
 
 	res.Data = &uapi.LoginTokenData{UserID: "@auser:example.com"}
 	return nil
-}
-
-func initializeTestUserInteractive() *UserInteractive {
-	userInteractive := UserInteractive{
-		Flows:    []userInteractiveFlow{},
-		Types:    make(map[string]Type),
-		Sessions: make(map[string][]string),
-		Params:   make(map[string]interface{}),
-	}
-
-	return &userInteractive
-}
-
-func initializeTestConfig() *config.ClientAPI {
-	chainIds := []int{4}
-	cfg := &config.ClientAPI{
-		Matrix: &config.Global{
-			ServerName: serverName,
-		},
-		PublicKeyAuthentication: config.PublicKeyAuthentication{
-			Ethereum: config.EthereumAuthConfig{
-				Enabled:  true,
-				Version:  1,
-				ChainIDs: chainIds,
-			},
-		},
-	}
-
-	return cfg
 }
 
 func publicKeyTestSession(

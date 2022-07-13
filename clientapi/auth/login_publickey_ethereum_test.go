@@ -80,8 +80,8 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 
 	// Asserts
 	assert := assert.New(t)
-	assert.Nilf(err, "err: actual: %v, expected: nil", err)
-	assert.NotNil(login, "login: actual: nil, expected: not nil nil")
+	assert.Nilf(err, "err actual: %v, expected: nil", err)
+	assert.NotNil(login, "login: actual: nil, expected: not nil")
 	assert.Truef(
 		login.Identifier.Type == "m.id.decentralizedid",
 		"login.Identifier.Type actual:  %v, expected:  %v", login.Identifier.Type, "m.id.decentralizedid")

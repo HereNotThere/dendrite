@@ -27,8 +27,7 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 
 	test := struct {
 		Body string
@@ -43,8 +42,8 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -69,8 +68,7 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 
 	test := struct {
 		Body string
@@ -91,8 +89,8 @@ func TestLoginPublicKeyInvalidSessionId(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -109,8 +107,7 @@ func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 
 	test := struct {
 		Body string
@@ -130,8 +127,8 @@ func TestLoginPublicKeyInvalidAuthType(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
