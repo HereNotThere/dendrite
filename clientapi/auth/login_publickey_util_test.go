@@ -15,8 +15,9 @@
 package auth
 
 /**
-Test utilities for publickey login.
 No tests in this file.
+Test utilities for publickey login. Created with _test.go filename
+to exclude it from production builds.
 */
 
 import (

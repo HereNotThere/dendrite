@@ -31,9 +31,9 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
 	loginContext := createLoginContext(t)
-	wallet := test.CreateTestAccount(t)
-	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
-	signature := test.SignMessage(t, message.String(), wallet.PrivateKey)
+	wallet, _ := test.CreateTestAccount()
+	message, _ := test.CreateEip4361TestMessage(wallet.PublicAddress)
+	signature, _ := test.SignMessage(message.String(), wallet.PrivateKey)
 	sessionId := publicKeyTestSession(
 		&ctx,
 		loginContext.config,
@@ -42,7 +42,7 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	)
 
 	// Escape \t and \n. Work around for marshalling and unmarshalling message.
-	msgStr := test.FromEip4361MessageToString(t, message)
+	msgStr := test.FromEip4361MessageToString(message)
 	body := fmt.Sprintf(`{
 		"type": "m.login.publickey",
 		"auth": {
@@ -96,8 +96,8 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
 	loginContext := createLoginContext(t)
-	wallet := test.CreateTestAccount(t)
-	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
+	wallet, _ := test.CreateTestAccount()
+	message, _ := test.CreateEip4361TestMessage(wallet.PublicAddress)
 	sessionId := publicKeyTestSession(
 		&ctx,
 		loginContext.config,
@@ -106,7 +106,7 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	)
 
 	// Escape \t and \n. Work around for marshalling and unmarshalling message.
-	msgStr := test.FromEip4361MessageToString(t, message)
+	msgStr := test.FromEip4361MessageToString(message)
 	body := fmt.Sprintf(`{
 		"type": "m.login.publickey",
 		"auth": {
@@ -157,7 +157,7 @@ func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
 	loginContext := createLoginContext(t)
-	wallet := test.CreateTestAccount(t)
+	wallet, _ := test.CreateTestAccount()
 	sessionId := publicKeyTestSession(
 		&ctx,
 		loginContext.config,
@@ -210,7 +210,7 @@ func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
 	loginContext := createLoginContext(t)
-	wallet := test.CreateTestAccount(t)
+	wallet, _ := test.CreateTestAccount()
 	sessionId := publicKeyTestSession(
 		&ctx,
 		loginContext.config,

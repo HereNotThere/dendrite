@@ -16,10 +16,9 @@ package test
 
 import (
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
-	"log"
 	"strings"
-	"testing"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -35,13 +34,11 @@ type EthereumTestWallet struct {
 }
 
 // https://goethereumbook.org/wallet-generate/
-func CreateTestAccount(t *testing.T) *EthereumTestWallet {
+func CreateTestAccount() (*EthereumTestWallet, error) {
 	// Create a new public / private key pair.
 	privateKey, err := crypto.GenerateKey()
 	if err != nil {
-		log.Fatal(err)
-		t.Fail()
-		return nil
+		return nil, err
 	}
 
 	// Get the public key
@@ -50,25 +47,23 @@ func CreateTestAccount(t *testing.T) *EthereumTestWallet {
 	// Transform public key to the Ethereum address
 	publicKeyEcdsa, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Fatal("error casting public key to ECDSA")
-		t.Fail()
-		return nil
+		return nil, errors.New("error casting public key to ECDSA")
 	}
 
 	address := crypto.PubkeyToAddress(*publicKeyEcdsa).Hex()
 	eip155UserId := fmt.Sprintf("eip155=3a%d=3a%s", EthereumTestNetworkId, address)
 
 	return &EthereumTestWallet{
-		PublicAddress: address,
-		PrivateKey:    privateKey,
-		Eip155UserId:  eip155UserId,
-	}
+			PublicAddress: address,
+			PrivateKey:    privateKey,
+			Eip155UserId:  eip155UserId,
+		},
+		nil
 }
 
 func CreateEip4361TestMessage(
-	t *testing.T,
 	publicAddress string,
-) *siwe.Message {
+) (*siwe.Message, error) {
 	options := make(map[string]interface{})
 	options["chainId"] = 4 // Rinkeby test network
 	options["statement"] = "This is a test statement"
@@ -81,15 +76,13 @@ func CreateEip4361TestMessage(
 	)
 
 	if err != nil {
-		log.Fatal(err)
-		t.Fail()
-		return nil
+		return nil, err
 	}
 
-	return message
+	return message, nil
 }
 
-func FromEip4361MessageToString(t *testing.T, message *siwe.Message) string {
+func FromEip4361MessageToString(message *siwe.Message) string {
 	// Escape the formatting characters to
 	// prevent unmarshal exceptions.
 	str := strings.ReplaceAll(message.String(), "\n", "\\n")
@@ -98,19 +91,17 @@ func FromEip4361MessageToString(t *testing.T, message *siwe.Message) string {
 }
 
 // https://goethereumbook.org/signature-generate/
-func SignMessage(t *testing.T, message string, privateKey *ecdsa.PrivateKey) string {
+func SignMessage(message string, privateKey *ecdsa.PrivateKey) (string, error) {
 	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(message), message)
 	data := []byte(msg)
 	hash := crypto.Keccak256Hash(data)
 
 	signature, err := crypto.Sign(hash.Bytes(), privateKey)
 	if err != nil {
-		log.Fatal(err)
-		t.Fail()
-		return ""
+		return "", err
 	}
 
 	// https://github.com/ethereum/go-ethereum/blob/55599ee95d4151a2502465e0afc7c47bd1acba77/internal/ethapi/api.go#L442
 	signature[64] += 27 // Transform V from 0/1 to 27/28 according to the yellow paper
-	return hexutil.Encode(signature)
+	return hexutil.Encode(signature), nil
 }
