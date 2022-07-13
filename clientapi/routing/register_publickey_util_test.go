@@ -16,12 +16,15 @@ package routing
 
 /**
 No tests in this file.
-Test utilities for publickey login. Created with _test.go filename
+Test utilities for publickey registration. Created with _test.go filename
 to exclude it from production builds.
 */
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/matrix-org/dendrite/clientapi/auth"
@@ -44,6 +47,8 @@ func createRegisterContext(t *testing.T) *registerContext {
 		Matrix: &config.Global{
 			ServerName: test.TestServerName,
 		},
+		Derived:                        &config.Derived{},
+		PasswordAuthenticationDisabled: true,
 		PublicKeyAuthentication: config.PublicKeyAuthentication{
 			Ethereum: config.EthereumAuthConfig{
 				Enabled:  true,
@@ -65,6 +70,25 @@ func createRegisterContext(t *testing.T) *registerContext {
 		userInteractive: userInteractive,
 	}
 
+}
+
+type fakeHttpRequest struct {
+	request         *http.Request
+	body            []byte
+	registerRequest registerRequest
+}
+
+func createFakeHttpRequest(body string) *fakeHttpRequest {
+	var r registerRequest
+	json.Unmarshal([]byte(body), &r)
+	req, _ := http.NewRequest(http.MethodPost, "", strings.NewReader(body))
+	reqBody := []byte(body)
+
+	return &fakeHttpRequest{
+		request:         req,
+		body:            reqBody,
+		registerRequest: r,
+	}
 }
 
 type fakePublicKeyUserApi struct {

@@ -26,7 +26,7 @@ import (
 )
 
 const EthereumTestNetworkId = 4 // Rinkeby test network ID
-const TestServerName = "example.com"
+const TestServerName = "localhost"
 
 type EthereumTestWallet struct {
 	Eip155UserId  string
