@@ -30,15 +30,14 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	wallet := test.CreateTestAccount(t)
 	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
 	signature := test.SignMessage(t, message.String(), wallet.PrivateKey)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -72,8 +71,8 @@ func TestLoginPublicKeyEthereum(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -96,14 +95,13 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	wallet := test.CreateTestAccount(t)
 	message := test.CreateEip4361TestMessage(t, wallet.PublicAddress)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -135,8 +133,8 @@ func TestLoginPublicKeyEthereumMissingSignature(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -158,13 +156,12 @@ func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	wallet := test.CreateTestAccount(t)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -189,8 +186,8 @@ func TestLoginPublicKeyEthereumEmptyMessage(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -212,13 +209,12 @@ func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	wallet := test.CreateTestAccount(t)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -229,7 +225,9 @@ func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 			"session": "%v",
 			"user_id": "%v"
 		}
-	 }`, sessionId, wallet.PublicAddress)
+	 }`,
+		sessionId,
+		wallet.PublicAddress)
 	test := struct {
 		Body string
 	}{
@@ -243,8 +241,8 @@ func TestLoginPublicKeyEthereumWrongUserId(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -261,12 +259,11 @@ func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -290,8 +287,8 @@ func TestLoginPublicKeyEthereumMissingUserId(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)
@@ -308,12 +305,11 @@ func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	ctx := context.Background()
-	cfg := initializeTestConfig()
-	userInteractive := initializeTestUserInteractive()
+	loginContext := createLoginContext(t)
 	sessionId := publicKeyTestSession(
 		&ctx,
-		cfg,
-		userInteractive,
+		loginContext.config,
+		loginContext.userInteractive,
 		&userAPI,
 	)
 
@@ -338,8 +334,8 @@ func TestLoginPublicKeyEthereumAccountNotAvailable(t *testing.T) {
 		&userAPI,
 		&userAPI,
 		&userAPI,
-		userInteractive,
-		cfg)
+		loginContext.userInteractive,
+		loginContext.config)
 
 	if cleanup != nil {
 		cleanup(ctx, nil)

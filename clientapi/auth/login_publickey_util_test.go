@@ -15,17 +15,34 @@
 package auth
 
 /**
-Test utilities for publickey login and registration.
+Test utilities for publickey login.
 No tests in this file.
 */
 
 import (
 	"context"
 	"strings"
+	"testing"
 
 	"github.com/matrix-org/dendrite/setup/config"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
 )
+
+type loginContext struct {
+	config          *config.ClientAPI
+	userInteractive *UserInteractive
+}
+
+func createLoginContext(t *testing.T) *loginContext {
+	config := initializeTestConfig()
+	userInteractive := initializeTestUserInteractive()
+
+	return &loginContext{
+		config:          config,
+		userInteractive: userInteractive,
+	}
+
+}
 
 type fakePublicKeyUserApi struct {
 	UserInternalAPIForLogin
