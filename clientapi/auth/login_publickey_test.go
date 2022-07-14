@@ -20,6 +20,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
+	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,11 +59,28 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 	assert.Truef(
 		err.Code == http.StatusUnauthorized,
 		"err.Code actual: %v, expected: %v", err.Code, http.StatusUnauthorized)
-	json := err.JSON.(Challenge)
-	assert.Emptyf(json.Completed, "Challenge.Completed array")
-	assert.Emptyf(json.Flows, "Challenge.Flows array")
-	assert.Emptyf(json.Params, "Challenge.Params array")
-	assert.NotEmptyf(json.Session, "Challenge.Session")
+	challenge := err.JSON.(Challenge)
+	assert.NotEmptyf(challenge.Session, "challenge.Session")
+	assert.NotEmptyf(challenge.Completed, "challenge.Completed")
+	/*
+		assert.Truef(
+			challenge.Completed[0] == authtypes.LoginStagePublicKeyNewRegistration,
+			"challenge.Completed[0] actual %v, expected %v", challenge.Completed[0], authtypes.LoginStagePublicKeyNewRegistration)
+	*/
+	assert.Truef(
+		authtypes.LoginTypePublicKeyEthereum == challenge.Flows[0].Stages[0],
+		"challenge.Flows[0].Stages[0] actual: %v, expected: %v", challenge.Flows[0].Stages[0], authtypes.LoginTypePublicKeyEthereum)
+	params := challenge.Params[authtypes.LoginTypePublicKeyEthereum]
+	assert.NotEmptyf(
+		params,
+		"challenge.Params[\"%v\"] actual %v, expected %v",
+		authtypes.LoginTypePublicKeyEthereum,
+		params,
+		"[object]")
+	ethParams := params.(config.EthereumAuthParams)
+	assert.NotEmptyf(ethParams.ChainIDs, "ChainIDs actual: empty, expected not empty")
+	assert.NotEmptyf(ethParams.Nonce, "Nonce actual: \"\", expected: not empty")
+	assert.NotEmptyf(ethParams.Version, "Version actual: \"\", expected: not empty")
 }
 
 func TestLoginPublicKeyInvalidSessionId(t *testing.T) {

@@ -67,7 +67,10 @@ func TestNewRegistrationSession(t *testing.T) {
 	assert.Truef(
 		json.Completed[0] == authtypes.LoginStagePublicKeyNewRegistration,
 		"response.Completed[0] actual %v, expected %v", json.Completed[0], authtypes.LoginStagePublicKeyNewRegistration)
-	assert.Equal(authtypes.LoginType(authtypes.LoginTypePublicKeyEthereum), json.Flows[0].Stages[0])
+	assert.Truef(
+		authtypes.LoginTypePublicKeyEthereum == json.Flows[0].Stages[0],
+		"response.Flows[0].Stages[0] actual: %v, expected: %v", json.Flows[0].Stages[0], authtypes.LoginTypePublicKeyEthereum)
+
 	params := json.Params[authtypes.LoginTypePublicKeyEthereum]
 	assert.NotEmptyf(
 		params,

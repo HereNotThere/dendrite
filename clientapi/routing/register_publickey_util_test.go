@@ -40,7 +40,6 @@ type registerContext struct {
 }
 
 func createRegisterContext(t *testing.T) *registerContext {
-	var userAPI fakePublicKeyUserApi
 	chainIds := []int{4}
 
 	cfg := &config.ClientAPI{
@@ -63,6 +62,7 @@ func createRegisterContext(t *testing.T) *registerContext {
 	pkParams := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationParams()
 	cfg.Derived.Registration.Params = mapsutil.MapsUnion(cfg.Derived.Registration.Params, pkParams)
 
+	var userAPI fakePublicKeyUserApi
 	var loginApi uapi.UserLoginAPI
 
 	userInteractive := auth.NewUserInteractive(

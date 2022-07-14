@@ -25,6 +25,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/matrix-org/dendrite/internal/mapsutil"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/test"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
@@ -42,6 +43,7 @@ func createLoginContext(t *testing.T) *loginContext {
 		Matrix: &config.Global{
 			ServerName: test.TestServerName,
 		},
+		Derived:                        &config.Derived{},
 		PasswordAuthenticationDisabled: true,
 		PublicKeyAuthentication: config.PublicKeyAuthentication{
 			Ethereum: config.EthereumAuthConfig{
@@ -52,16 +54,22 @@ func createLoginContext(t *testing.T) *loginContext {
 		},
 	}
 
-	userInteractive := UserInteractive{
-		Flows:    []userInteractiveFlow{},
-		Types:    make(map[string]Type),
-		Sessions: make(map[string][]string),
-		Params:   make(map[string]interface{}),
-	}
+	pkFlows := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationFlows()
+	cfg.Derived.Registration.Flows = append(cfg.Derived.Registration.Flows, pkFlows...)
+	pkParams := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationParams()
+	cfg.Derived.Registration.Params = mapsutil.MapsUnion(cfg.Derived.Registration.Params, pkParams)
+
+	var userAPI fakePublicKeyUserApi
+	var loginApi uapi.UserLoginAPI
+
+	userInteractive := NewUserInteractive(
+		loginApi,
+		&userAPI,
+		cfg)
 
 	return &loginContext{
 		config:          cfg,
-		userInteractive: &userInteractive,
+		userInteractive: userInteractive,
 	}
 
 }
