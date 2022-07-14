@@ -128,6 +128,19 @@ func (ua *fakePublicKeyUserApi) QueryAccountByPassword(ctx context.Context, req 
 	return nil
 }
 
+func (ua *fakePublicKeyUserApi) PerformDeviceCreation(
+	ctx context.Context,
+	req *uapi.PerformDeviceCreationRequest,
+	res *uapi.PerformDeviceCreationResponse) error {
+	res.DeviceCreated = true
+	res.Device = &api.Device{
+		ID:          "device_id",
+		UserID:      req.Localpart,
+		AccessToken: req.AccessToken,
+	}
+	return nil
+}
+
 func (ua *fakePublicKeyUserApi) PerformAccountCreation(
 	ctx context.Context,
 	req *uapi.PerformAccountCreationRequest,

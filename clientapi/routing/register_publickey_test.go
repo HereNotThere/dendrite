@@ -87,15 +87,13 @@ func TestRegisterEthereum(t *testing.T) {
 	// Asserts
 	assert := assert.New(t)
 	assert.NotNil(response, "response actual: nil, expected: not nil")
-	/*
-		assert.Truef(
-			response.Identifier.Type == "m.id.decentralizedid",
-			"login.Identifier.Type actual:  %v, expected:  %v", login.Identifier.Type, "m.id.decentralizedid")
-		walletAddress := strings.ToLower(wallet.Eip155UserId)
-		assert.Truef(
-			response.Identifier.User == walletAddress,
-			"login.Identifier.User actual:  %v, expected:  %v", login.Identifier.User, walletAddress)
-	*/
+	registerRes := response.JSON.(registerResponse)
+	assert.Truef(
+		registerRes.UserID == wallet.Eip155UserId,
+		"registerRes.UserID actual: %v, expected: %v", registerRes.UserID, wallet.Eip155UserId)
+	assert.NotEmptyf(
+		registerRes.AccessToken,
+		"registerRes.AccessToken actual: empty, expected: not empty")
 }
 
 func NewRegistrationSession(t *testing.T) {
