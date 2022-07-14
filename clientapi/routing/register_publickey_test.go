@@ -96,7 +96,7 @@ func TestRegisterEthereum(t *testing.T) {
 		"registerRes.AccessToken actual: empty, expected: not empty")
 }
 
-func NewRegistrationSession(t *testing.T) {
+func TestNewRegistrationSession(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 
@@ -159,7 +159,7 @@ func NewRegistrationSession(t *testing.T) {
 	assert.NotEmptyf(ethParams.Version, "Version actual: \"\", expected: not empty")
 }
 
-func RegistrationUnimplementedAlgo(t *testing.T) {
+func TestRegistrationUnimplementedAlgo(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 	body := fmt.Sprintf(`{
