@@ -19,11 +19,12 @@ import (
 	"testing"
 
 	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
+	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/util"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewRegistration(t *testing.T) {
+func TestNewRegistrationSession(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
 
@@ -62,12 +63,22 @@ func TestNewRegistration(t *testing.T) {
 		"response.Code actual %v, expected %v", response.Code, http.StatusUnauthorized)
 	json := response.JSON.(UserInteractiveResponse)
 	assert.NotEmptyf(json.Session, "response.Session")
-	assert.NotEmptyf(json.Completed, "response.Completed array")
+	assert.NotEmptyf(json.Completed, "response.Completed")
 	assert.Truef(
 		json.Completed[0] == authtypes.LoginStagePublicKeyNewRegistration,
 		"response.Completed[0] actual %v, expected %v", json.Completed[0], authtypes.LoginStagePublicKeyNewRegistration)
-	assert.Emptyf(json.Flows, "response.Flows array")
-	assert.Emptyf(json.Params, "response.Params array")
+	assert.Equal(authtypes.LoginType(authtypes.LoginTypePublicKeyEthereum), json.Flows[0].Stages[0])
+	params := json.Params[authtypes.LoginTypePublicKeyEthereum]
+	assert.NotEmptyf(
+		params,
+		"response.Params[\"%v\"] actual %v, expected %v",
+		authtypes.LoginTypePublicKeyEthereum,
+		params,
+		"[object]")
+	ethParams := params.(config.EthereumAuthParams)
+	assert.NotEmptyf(ethParams.ChainIDs, "ChainIDs actual: empty, expected not empty")
+	assert.NotEmptyf(ethParams.Nonce, "Nonce actual: \"\", expected: not empty")
+	assert.NotEmptyf(ethParams.Version, "Version actual: \"\", expected: not empty")
 }
 
 func RegistrationUnimplementedAlgo(t *testing.T) {

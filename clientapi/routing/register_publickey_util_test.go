@@ -28,6 +28,7 @@ import (
 	"testing"
 
 	"github.com/matrix-org/dendrite/clientapi/auth"
+	"github.com/matrix-org/dendrite/internal/mapsutil"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/test"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
@@ -56,6 +57,11 @@ func createRegisterContext(t *testing.T) *registerContext {
 			},
 		},
 	}
+
+	pkFlows := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationFlows()
+	cfg.Derived.Registration.Flows = append(cfg.Derived.Registration.Flows, pkFlows...)
+	pkParams := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationParams()
+	cfg.Derived.Registration.Params = mapsutil.MapsUnion(cfg.Derived.Registration.Params, pkParams)
 
 	var loginApi uapi.UserLoginAPI
 

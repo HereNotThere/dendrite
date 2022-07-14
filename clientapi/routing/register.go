@@ -32,6 +32,7 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/matrix-org/dendrite/internal/eventutil"
+	"github.com/matrix-org/dendrite/internal/mapsutil"
 	"github.com/matrix-org/dendrite/setup/config"
 
 	"github.com/matrix-org/gomatrixserverlib"
@@ -261,8 +262,17 @@ func newUserInteractiveResponse(
 	fs []authtypes.Flow,
 	params map[string]interface{},
 ) UserInteractiveResponse {
+	paramsCopy := mapsutil.MapCopy(params)
+	for key, element := range paramsCopy {
+		p := auth.GetAuthParams(element)
+		if p != nil {
+			// If an auth flow has params, make a new copy
+			// and send it as part of the response.
+			paramsCopy[key] = p
+		}
+	}
 	return UserInteractiveResponse{
-		fs, sessions.getCompletedStages(sessionID), params, sessionID,
+		fs, sessions.getCompletedStages(sessionID), paramsCopy, sessionID,
 	}
 }
 
