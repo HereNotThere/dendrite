@@ -179,7 +179,7 @@ func (u *UserInteractive) Challenge(sessionID string) *util.JSONResponse {
 			// send it as part of the challenge.
 			paramsCopy[key] = p
 
-			// If an auth flow generated a nonce, track it as well.
+			// If an auth flow generated a nonce, add it to the session.
 			nonce := getAuthParamNonce(p)
 			if nonce != "" {
 				u.Sessions[sessionID] = append(u.Sessions[sessionID], nonce)

@@ -62,11 +62,6 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 	challenge := err.JSON.(Challenge)
 	assert.NotEmptyf(challenge.Session, "challenge.Session")
 	assert.NotEmptyf(challenge.Completed, "challenge.Completed")
-	/*
-		assert.Truef(
-			challenge.Completed[0] == authtypes.LoginStagePublicKeyNewRegistration,
-			"challenge.Completed[0] actual %v, expected %v", challenge.Completed[0], authtypes.LoginStagePublicKeyNewRegistration)
-	*/
 	assert.Truef(
 		authtypes.LoginTypePublicKeyEthereum == challenge.Flows[0].Stages[0],
 		"challenge.Flows[0].Stages[0] actual: %v, expected: %v", challenge.Flows[0].Stages[0], authtypes.LoginTypePublicKeyEthereum)
