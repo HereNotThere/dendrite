@@ -15,28 +15,105 @@
 package routing
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
 	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
 	"github.com/matrix-org/dendrite/setup/config"
+	"github.com/matrix-org/dendrite/test"
 	"github.com/matrix-org/util"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewRegistrationSession(t *testing.T) {
+func TestRegisterEthereum(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
+	wallet, _ := test.CreateTestAccount()
+	message, _ := test.CreateEip4361TestMessage(wallet.PublicAddress)
+	signature, _ := test.SignMessage(message.String(), wallet.PrivateKey)
+	registerContext := createRegisterContext(t)
+	sessionId := newRegistrationSession(
+		t,
+		wallet.Eip155UserId,
+		registerContext.config,
+		registerContext.userInteractive,
+		&userAPI,
+	)
+
+	// Escape \t and \n. Work around for marshalling and unmarshalling message.
+	msgStr := test.FromEip4361MessageToString(message)
+	body := fmt.Sprintf(`{
+		"username": "%v",
+		"auth": {
+			"type": "m.login.publickey",
+			"session": "%v",
+			"public_key_response": {
+				"type": "m.login.publickey.ethereum",
+				"session": "%v",
+				"user_id": "%v",
+				"message": "%v",
+				"signature": "%v"
+			}
+		}
+	 }`,
+		wallet.Eip155UserId,
+		sessionId,
+		sessionId,
+		wallet.Eip155UserId,
+		msgStr,
+		signature,
+	)
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	fakeReq := createFakeHttpRequest(test.Body)
+
+	// Test
+	response := handleRegistrationFlow(
+		fakeReq.request,
+		fakeReq.body,
+		fakeReq.registerRequest,
+		sessionId,
+		registerContext.config,
+		&userAPI,
+		"",
+		nil,
+	)
+
+	// Asserts
+	assert := assert.New(t)
+	assert.NotNil(response, "response actual: nil, expected: not nil")
+	/*
+		assert.Truef(
+			response.Identifier.Type == "m.id.decentralizedid",
+			"login.Identifier.Type actual:  %v, expected:  %v", login.Identifier.Type, "m.id.decentralizedid")
+		walletAddress := strings.ToLower(wallet.Eip155UserId)
+		assert.Truef(
+			response.Identifier.User == walletAddress,
+			"login.Identifier.User actual:  %v, expected:  %v", login.Identifier.User, walletAddress)
+	*/
+}
+
+func NewRegistrationSession(t *testing.T) {
+	// Setup
+	var userAPI fakePublicKeyUserApi
+
+	body := fmt.Sprintf(`{
+		"auth": {
+			"type": "m.login.publickey",
+			"username": "%v"
+		}
+	 }`,
+		testCaip10UserId)
 
 	test := struct {
 		Body string
 	}{
-		Body: `{
-			"type": "m.login.publickey",
-			"auth": {
-				"type": "m.login.publickey"
-			}
-		 }`,
+		Body: body,
 	}
 
 	fakeReq := createFakeHttpRequest(test.Body)
@@ -87,16 +164,18 @@ func TestNewRegistrationSession(t *testing.T) {
 func RegistrationUnimplementedAlgo(t *testing.T) {
 	// Setup
 	var userAPI fakePublicKeyUserApi
+	body := fmt.Sprintf(`{
+		"auth": {
+			"type": "m.login.publickey.someAlgo",
+			"username": "%v"
+		}
+	 }`,
+		testCaip10UserId)
 
 	test := struct {
 		Body string
 	}{
-		Body: `{
-			"type": "m.login.publickey",
-			"auth": {
-				"type": "m.login.publickey.someAlgo"
-			}
-		 }`,
+		Body: body,
 	}
 
 	fakeReq := createFakeHttpRequest(test.Body)

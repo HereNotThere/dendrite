@@ -106,7 +106,7 @@ func (pk LoginPublicKeyEthereum) IsValidUserId(userId string) bool {
 
 	// In addition, double check that the user ID
 	// matches the authentication data in the request.
-	return isValid && userId == pk.UserId
+	return isValid && strings.ToLower(userId) == pk.UserId
 }
 
 func (pk LoginPublicKeyEthereum) ValidateLoginResponse() (bool, *jsonerror.MatrixError) {

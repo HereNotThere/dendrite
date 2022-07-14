@@ -23,6 +23,7 @@ to exclude it from production builds.
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -31,8 +32,12 @@ import (
 	"github.com/matrix-org/dendrite/internal/mapsutil"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/test"
+	"github.com/matrix-org/dendrite/userapi/api"
 	uapi "github.com/matrix-org/dendrite/userapi/api"
+	"github.com/matrix-org/util"
 )
+
+const testCaip10UserId = "eip155=3a1=3a0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb"
 
 type registerContext struct {
 	config          *config.ClientAPI
@@ -85,9 +90,9 @@ type fakeHttpRequest struct {
 
 func createFakeHttpRequest(body string) *fakeHttpRequest {
 	var r registerRequest
-	json.Unmarshal([]byte(body), &r)
 	req, _ := http.NewRequest(http.MethodPost, "", strings.NewReader(body))
 	reqBody := []byte(body)
+	json.Unmarshal([]byte(body), &r)
 
 	return &fakeHttpRequest{
 		request:         req,
@@ -123,6 +128,21 @@ func (ua *fakePublicKeyUserApi) QueryAccountByPassword(ctx context.Context, req 
 	return nil
 }
 
+func (ua *fakePublicKeyUserApi) PerformAccountCreation(
+	ctx context.Context,
+	req *uapi.PerformAccountCreationRequest,
+	res *uapi.PerformAccountCreationResponse) error {
+	res.AccountCreated = true
+	res.Account = &api.Account{
+		AppServiceID: req.AppServiceID,
+		Localpart:    req.Localpart,
+		ServerName:   test.TestServerName,
+		UserID:       fmt.Sprintf("@%s:%s", req.Localpart, test.TestServerName),
+		AccountType:  req.AccountType,
+	}
+	return nil
+}
+
 func (ua *fakePublicKeyUserApi) PerformLoginTokenDeletion(ctx context.Context, req *uapi.PerformLoginTokenDeletionRequest, res *uapi.PerformLoginTokenDeletionResponse) error {
 	ua.DeletedTokens = append(ua.DeletedTokens, req.Token)
 	return nil
@@ -139,4 +159,45 @@ func (*fakePublicKeyUserApi) QueryLoginToken(ctx context.Context, req *uapi.Quer
 
 	res.Data = &uapi.LoginTokenData{UserID: "@auser:example.com"}
 	return nil
+}
+
+func newRegistrationSession(
+	t *testing.T,
+	userId string,
+	cfg *config.ClientAPI,
+	userInteractive *auth.UserInteractive,
+	userAPI *fakePublicKeyUserApi,
+) string {
+	body := fmt.Sprintf(`{
+		"auth": {
+			"type": "m.login.publickey",
+			"username": "%v"
+		}
+	 }`,
+		userId)
+
+	test := struct {
+		Body string
+	}{
+		Body: body,
+	}
+
+	fakeReq := createFakeHttpRequest(test.Body)
+	sessionID := util.RandomString(sessionIDLength)
+	registerContext := createRegisterContext(t)
+
+	// Test
+	response := handleRegistrationFlow(
+		fakeReq.request,
+		fakeReq.body,
+		fakeReq.registerRequest,
+		sessionID,
+		registerContext.config,
+		userAPI,
+		"",
+		nil,
+	)
+
+	json := response.JSON.(UserInteractiveResponse)
+	return json.Session
 }
