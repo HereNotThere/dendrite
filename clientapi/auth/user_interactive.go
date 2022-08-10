@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"sync"
 
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
 	"github.com/matrix-org/dendrite/internal/mapsutil"
@@ -103,6 +104,7 @@ type userInteractiveFlow struct {
 // the user already has a valid access token, but we want to double-check
 // that it isn't stolen by re-authenticating them.
 type UserInteractive struct {
+	sync.RWMutex
 	Flows []userInteractiveFlow
 	// Map of login type to implementation
 	Types map[string]Type
@@ -144,6 +146,8 @@ func NewUserInteractive(
 }
 
 func (u *UserInteractive) IsSingleStageFlow(authType string) bool {
+	u.RLock()
+	defer u.RUnlock()
 	for _, f := range u.Flows {
 		if len(f.Stages) == 1 && f.Stages[0] == authType {
 			return true
@@ -153,12 +157,16 @@ func (u *UserInteractive) IsSingleStageFlow(authType string) bool {
 }
 
 func (u *UserInteractive) AddCompletedStage(sessionID, authType string) {
+	u.Lock()
 	// TODO: Handle multi-stage flows
 	delete(u.Sessions, sessionID)
+	u.Unlock()
 }
 
 func (u *UserInteractive) DeleteSession(sessionID string) {
+	u.Lock()
 	delete(u.Sessions, sessionID)
+	u.Unlock()
 }
 
 type Challenge struct {
@@ -169,9 +177,11 @@ type Challenge struct {
 	Params map[string]interface{} `json:"params"`
 }
 
-// Challenge returns an HTTP 401 with the supported flows for authenticating
-func (u *UserInteractive) Challenge(sessionID string) *util.JSONResponse {
+// challenge returns an HTTP 401 with the supported flows for authenticating
+func (u *UserInteractive) challenge(sessionID string) *util.JSONResponse {
+	u.RLock()
 	paramsCopy := mapsutil.MapCopy(u.Params)
+	u.RUnlock()
 	for key, element := range paramsCopy {
 		p := GetAuthParams(element)
 		if p != nil {
@@ -200,8 +210,10 @@ func (u *UserInteractive) NewSession() *util.JSONResponse {
 		res := jsonerror.InternalServerError()
 		return &res
 	}
+	u.Lock()
 	u.Sessions[sessionID] = []string{}
-	return u.Challenge(sessionID)
+	u.Unlock()
+	return u.challenge(sessionID)
 }
 
 // ResponseWithChallenge mixes together a JSON body (e.g an error with errcode/message) with the
@@ -214,7 +226,7 @@ func (u *UserInteractive) ResponseWithChallenge(sessionID string, response inter
 		return &ise
 	}
 	_ = json.Unmarshal(b, &mixedObjects)
-	challenge := u.Challenge(sessionID)
+	challenge := u.challenge(sessionID)
 	b, err = json.Marshal(challenge.JSON)
 	if err != nil {
 		ise := jsonerror.InternalServerError()
