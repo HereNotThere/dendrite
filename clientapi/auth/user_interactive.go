@@ -177,11 +177,14 @@ type Challenge struct {
 	Params map[string]interface{} `json:"params"`
 }
 
-// challenge returns an HTTP 401 with the supported flows for authenticating
+// Challenge returns an HTTP 401 with the supported flows for authenticating
 func (u *UserInteractive) challenge(sessionID string) *util.JSONResponse {
 	u.RLock()
 	paramsCopy := mapsutil.MapCopy(u.Params)
+	completed := u.Sessions[sessionID]
+	flows := u.Flows
 	u.RUnlock()
+
 	for key, element := range paramsCopy {
 		p := GetAuthParams(element)
 		if p != nil {
@@ -194,8 +197,8 @@ func (u *UserInteractive) challenge(sessionID string) *util.JSONResponse {
 	return &util.JSONResponse{
 		Code: 401,
 		JSON: Challenge{
-			Completed: u.Sessions[sessionID],
-			Flows:     u.Flows,
+			Completed: completed,
+			Flows:     flows,
 			Session:   sessionID,
 			Params:    paramsCopy,
 		},
@@ -255,7 +258,11 @@ func (u *UserInteractive) Verify(ctx context.Context, bodyBytes []byte, device *
 
 	// extract the type so we know which login type to use
 	authType := gjson.GetBytes(bodyBytes, "auth.type").Str
+
+	u.RLock()
 	loginType, ok := u.Types[authType]
+	u.RUnlock()
+
 	if !ok {
 		return nil, &util.JSONResponse{
 			Code: http.StatusBadRequest,
@@ -265,7 +272,12 @@ func (u *UserInteractive) Verify(ctx context.Context, bodyBytes []byte, device *
 
 	// retrieve the session
 	sessionID := gjson.GetBytes(bodyBytes, "auth.session").Str
-	if _, ok = u.Sessions[sessionID]; !ok {
+
+	u.RLock()
+	_, ok = u.Sessions[sessionID]
+	u.RUnlock()
+
+	if !ok {
 		// if the login type is part of a single stage flow then allow them to omit the session ID
 		if !u.IsSingleStageFlow(authType) {
 			return nil, &util.JSONResponse{
