@@ -79,6 +79,12 @@ func LoginFromJSONReader(
 			UserInteractive: userInteractiveAuth,
 			Config:          cfg,
 		}
+	case header.Type == authtypes.LoginTypePublicKey && cfg.PublicKeyAuthentication.Enabled():
+		typ = &LoginTypePublicKey{
+			UserAPI:         clientUserAPI,
+			UserInteractive: userInteractiveAuth,
+			Config:          cfg,
+		}
 	default:
 		err := util.JSONResponse{
 			Code: http.StatusBadRequest,

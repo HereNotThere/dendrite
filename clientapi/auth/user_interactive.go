@@ -148,6 +148,8 @@ func NewUserInteractive(
 func (u *UserInteractive) IsSingleStageFlow(authType string) bool {
 	u.RLock()
 	defer u.RUnlock()
+	u.RLock()
+	defer u.RUnlock()
 	for _, f := range u.Flows {
 		if len(f.Stages) == 1 && f.Stages[0] == authType {
 			return true
@@ -217,6 +219,7 @@ func (u *UserInteractive) NewSession() *util.JSONResponse {
 		return &res
 	}
 	u.Lock()
+	u.Lock()
 	u.Sessions[sessionID] = []string{}
 	u.Unlock()
 	return u.challenge(sessionID)
@@ -263,7 +266,11 @@ func (u *UserInteractive) Verify(ctx context.Context, bodyBytes []byte, device *
 	authType := gjson.GetBytes(bodyBytes, "auth.type").Str
 
 	u.RLock()
+
+	u.RLock()
 	loginType, ok := u.Types[authType]
+	u.RUnlock()
+
 	u.RUnlock()
 
 	if !ok {

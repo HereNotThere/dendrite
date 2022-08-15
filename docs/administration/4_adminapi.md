@@ -38,7 +38,7 @@ This endpoint will instruct Dendrite to part all local users from the given `roo
 in the URL. It may take some time to complete. A JSON body will be returned containing
 the user IDs of all affected users.
 
-## GET `/_dendrite/admin/evacuateUser/{userID}`
+## GET GET `/_dendrite/admin/evacuateUser/{userID}`
 
 This endpoint will instruct Dendrite to part the given local `userID` in the URL from
 all rooms which they are currently joined. A JSON body will be returned containing
@@ -60,6 +60,7 @@ the full user ID is `@alice:domain.com` then the local part is `alice`.
 ## POST `/_synapse/admin/v1/send_server_notice`
 
 Request body format:
+
 ```
 {
     "user_id": "@target_user:server_name",
@@ -86,5 +87,5 @@ guidance on configuring and using this endpoint.
 
 ## GET `/_matrix/client/v3/admin/whois/{userId}`
 
-From the [Matrix Spec](https://spec.matrix.org/v1.3/client-server-api/#get_matrixclientv3adminwhoisuserid). 
+From the [Matrix Spec](https://spec.matrix.org/v1.3/client-server-api/#get_matrixclientv3adminwhoisuserid).
 Gets information about a particular user. `userId` is the full user ID (e.g. `@alice:domain.com`)

@@ -518,7 +518,19 @@ func (w *walker) authorisedServer(roomID string) bool {
 	joinRuleEv := queryRoomRes.StateEvents[joinRuleTuple]
 
 	if joinRuleEv != nil {
-		allowJoinedToRoomIDs = append(allowJoinedToRoomIDs, w.restrictedJoinRuleAllowedRooms(joinRuleEv, "m.room_membership")...)
+		rule, ruleErr := joinRuleEv.JoinRule()
+		if ruleErr != nil {
+			util.GetLogger(w.ctx).WithError(ruleErr).WithField("parent_room_id", roomID).Warn("failed to get join rule")
+			return false
+		}
+
+		if rule == gomatrixserverlib.Public || rule == gomatrixserverlib.Knock {
+			return true
+		}
+
+		if rule == gomatrixserverlib.Restricted {
+			allowJoinedToRoomIDs = append(allowJoinedToRoomIDs, w.restrictedJoinRuleAllowedRooms(joinRuleEv, "m.room_membership")...)
+		}
 	}
 
 	// check if server is joined to any allowed room
@@ -584,13 +596,20 @@ func (w *walker) authorisedUser(roomID, parentRoomID string) (authed bool, isJoi
 	}
 	joinRuleEv := queryRes.StateEvents[joinRuleTuple]
 	if parentRoomID != "" && joinRuleEv != nil {
-		allowedRoomIDs := w.restrictedJoinRuleAllowedRooms(joinRuleEv, "m.room_membership")
-		// check parent is in the allowed set
 		var allowed bool
-		for _, a := range allowedRoomIDs {
-			if parentRoomID == a {
-				allowed = true
-				break
+		rule, ruleErr := joinRuleEv.JoinRule()
+		if ruleErr != nil {
+			util.GetLogger(w.ctx).WithError(ruleErr).WithField("parent_room_id", parentRoomID).Warn("failed to get join rule")
+		} else if rule == gomatrixserverlib.Public || rule == gomatrixserverlib.Knock {
+			allowed = true
+		} else if rule == gomatrixserverlib.Restricted {
+			allowedRoomIDs := w.restrictedJoinRuleAllowedRooms(joinRuleEv, "m.room_membership")
+			// check parent is in the allowed set
+			for _, a := range allowedRoomIDs {
+				if parentRoomID == a {
+					allowed = true
+					break
+				}
 			}
 		}
 		if allowed {
@@ -620,7 +639,7 @@ func (w *walker) authorisedUser(roomID, parentRoomID string) (authed bool, isJoi
 
 func (w *walker) restrictedJoinRuleAllowedRooms(joinRuleEv *gomatrixserverlib.HeaderedEvent, allowType string) (allows []string) {
 	rule, _ := joinRuleEv.JoinRule()
-	if rule != "restricted" {
+	if rule != gomatrixserverlib.Restricted {
 		return nil
 	}
 	var jrContent gomatrixserverlib.JoinRuleContent

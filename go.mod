@@ -34,7 +34,9 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
+	github.com/spruceid/siwe-go v0.2.0
+	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.1
 	github.com/tidwall/gjson v1.14.1
 	github.com/tidwall/sjson v1.2.4
@@ -52,10 +54,7 @@ require (
 	nhooyr.io/websocket v1.8.7
 )
 
-require (
-	github.com/ethereum/go-ethereum v1.10.15
-	github.com/spruceid/siwe-go v0.2.0
-)
+require github.com/ethereum/go-ethereum v1.10.15
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
