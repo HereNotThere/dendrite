@@ -61,7 +61,9 @@ func TestLoginPublicKeyNewSession(t *testing.T) {
 		"err.Code actual: %v, expected: %v", err.Code, http.StatusUnauthorized)
 	challenge := err.JSON.(Challenge)
 	assert.NotEmptyf(challenge.Session, "challenge.Session")
-	assert.NotEmptyf(challenge.Completed, "challenge.Completed")
+	if len(challenge.Completed) > 0 {
+		t.Fatalf("expected 0 completed stages, got %d", len(challenge.Completed))
+	}
 	assert.Truef(
 		authtypes.LoginTypePublicKeyEthereum == challenge.Flows[0].Stages[0],
 		"challenge.Flows[0].Stages[0] actual: %v, expected: %v", challenge.Flows[0].Stages[0], authtypes.LoginTypePublicKeyEthereum)
