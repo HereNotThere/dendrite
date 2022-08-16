@@ -38,7 +38,7 @@ This endpoint will instruct Dendrite to part all local users from the given `roo
 in the URL. It may take some time to complete. A JSON body will be returned containing
 the user IDs of all affected users.
 
-## GET GET `/_dendrite/admin/evacuateUser/{userID}`
+## GET `/_dendrite/admin/evacuateUser/{userID}`
 
 This endpoint will instruct Dendrite to part the given local `userID` in the URL from
 all rooms which they are currently joined. A JSON body will be returned containing
