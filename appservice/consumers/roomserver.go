@@ -173,7 +173,9 @@ func (s *OutputRoomEventConsumer) sendEvents(
 		return err
 	}
 
-	// Temporary fix for https://github.com/matrix-org/dendrite/issues/2718
+	// If the number of items in the array is different,
+	// then this should be treated as a different transaction. Incorporate the length
+	// of events into the transaction ID.
 	txnID := fmt.Sprintf("%d_%d", events[0].Event.OriginServerTS(), len(transaction))
 
 	// Send the transaction to the appservice.
