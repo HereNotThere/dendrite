@@ -53,7 +53,7 @@ _testmain.go
 
 # Default configuration file
 dendrite.yaml
-zion-registration.yaml
+zion-appservice.yaml
 
 # Database files
 *.db
