@@ -46,6 +46,11 @@ func AddPublicRoutes(
 	mscCfg := &base.Cfg.MSCs
 	js, natsClient := base.NATS.Prepare(base.ProcessContext, &cfg.Matrix.JetStream)
 
+	// Load authorization manager for Zion
+	if cfg.PublicKeyAuthentication.Ethereum.EnableAuth {
+
+	}
+
 	syncProducer := &producers.SyncAPIProducer{
 		JetStream:              js,
 		TopicReceiptEvent:      cfg.Matrix.JetStream.Prefixed(jetstream.OutputReceiptEvent),
