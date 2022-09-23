@@ -21,9 +21,10 @@ func (p EthereumAuthParams) GetParams() interface{} {
 }
 
 type EthereumAuthConfig struct {
-	Enabled  bool  `yaml:"enabled"`
-	Version  uint  `yaml:"version"`
-	ChainIDs []int `yaml:"chain_ids"`
+	Enabled    bool  `yaml:"enabled"`
+	Version    uint  `yaml:"version"`
+	ChainIDs   []int `yaml:"chain_ids"`
+	EnableAuth bool  `yaml:"enable_auth"`
 }
 
 type PublicKeyAuthentication struct {
