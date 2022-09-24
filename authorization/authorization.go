@@ -26,10 +26,10 @@ type Authorization interface {
 	IsAllowed(args AuthorizationArgs) (bool, error)
 }
 
-func NewAuthorizationManager(cfg *config.ClientAPI) Authorization {
+func NewClientApiAuthorization(cfg *config.ClientAPI) Authorization {
 	// Load authorization manager for Zion
 	//if cfg.PublicKeyAuthentication.Ethereum.EnableAuthz {
 	//}
 
-	return &DefaultAuthorizationManager{}
+	return &DefaultAuthorization{}
 }

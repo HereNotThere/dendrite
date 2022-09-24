@@ -14,10 +14,10 @@
 
 package authorization
 
-type DefaultAuthorizationManager struct {
+type DefaultAuthorization struct {
 }
 
-func (azm *DefaultAuthorizationManager) IsAllowed(args AuthorizationArgs) (bool, error) {
+func (azm *DefaultAuthorization) IsAllowed(args AuthorizationArgs) (bool, error) {
 	// Default. No authorization logic.
 	return true, nil
 }
