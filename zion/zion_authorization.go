@@ -10,6 +10,22 @@ import (
 	"github.com/matrix-org/dendrite/web3"
 )
 
+type contractLocalhost struct {
+	address      *common.Address
+	spaceManager *ZionSpaceManagerLocalhost
+	client       *ethclient.Client
+}
+
+type contractGoerli struct {
+	address      *common.Address
+	spaceManager *ZionSpaceManagerGoerli
+	client       *ethclient.Client
+}
+
+type contractProviders struct {
+	localhost contractLocalhost
+}
+
 type NewZioneAuthorizationArgs struct {
 	SpaceManagerContractAddress string
 	Web3ProviderUrl             string
@@ -57,7 +73,14 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 
 	fmt.Printf("{ roomId: %s, spaceId: %d }\n", args.RoomId, spaceId)
 
-	isEntitled, err := za.SpaceManager.IsEntitled(nil, spaceId, big.NewInt(0), address, args.Permission)
+	isEntitled, err := za.SpaceManager.IsEntitled(
+		nil,
+		spaceId,
+		big.NewInt(0),
+		address,
+		DataTypesPermission{
+			Name: args.Permission,
+		})
 	if err != nil {
 		return false, err
 	}

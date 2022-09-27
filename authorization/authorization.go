@@ -19,7 +19,7 @@ import "github.com/matrix-org/dendrite/setup/config"
 type AuthorizationArgs struct {
 	RoomId     string
 	UserId     string
-	Permission uint8
+	Permission string
 }
 
 type Authorization interface {
