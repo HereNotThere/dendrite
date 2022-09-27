@@ -24,11 +24,7 @@ type contractGoerli struct {
 
 type contractProviders struct {
 	localhost contractLocalhost
-}
-
-type NewZioneAuthorizationArgs struct {
-	SpaceManagerContractAddress string
-	Web3ProviderUrl             string
+	goerli    contractGoerli
 }
 
 type ZionAuthorization struct {
@@ -37,7 +33,7 @@ type ZionAuthorization struct {
 	spaceManagerContractAddress common.Address
 }
 
-func NewZioneAuthorization(args NewZioneAuthorizationArgs) (*ZionAuthorization, error) {
+func NewZionAuthorization() (authorization.Authorization, error) {
 	client, err := web3.GetEthClient(args.Web3ProviderUrl)
 
 	if err != nil {

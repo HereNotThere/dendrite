@@ -21,9 +21,9 @@ import (
 
 	"github.com/gorilla/mux"
 	appserviceAPI "github.com/matrix-org/dendrite/appservice/api"
-	"github.com/matrix-org/dendrite/authorization"
 	"github.com/matrix-org/dendrite/clientapi/api"
 	"github.com/matrix-org/dendrite/clientapi/auth"
+	clientApiAuthz "github.com/matrix-org/dendrite/clientapi/authorization"
 	clientutil "github.com/matrix-org/dendrite/clientapi/httputil"
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
 	"github.com/matrix-org/dendrite/clientapi/producers"
@@ -74,7 +74,7 @@ func Setup(
 
 	rateLimits := httputil.NewRateLimits(&cfg.RateLimiting)
 	userInteractiveAuth := auth.NewUserInteractive(userAPI, userAPI, cfg)
-	authorization := authorization.NewClientApiAuthorization(cfg)
+	authorization := clientApiAuthz.NewAuthorization(cfg)
 	_ = authorization // todo: use this in httputil.MakeAuthAPI
 
 	unstableFeatures := map[string]bool{
