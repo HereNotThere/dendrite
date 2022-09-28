@@ -2,7 +2,6 @@ package zion
 
 import (
 	_ "embed"
-	"fmt"
 	"math/big"
 	"os"
 
@@ -23,14 +22,9 @@ var localhostJson []byte
 //go:embed contracts/goerli/addresses/space-manager.json
 var goerliJson []byte
 
-type contractInterface struct {
-	spaceManager ZionSpaceManagerInterface
-	// todo: NFT interface
-}
-
 type ZionAuthorization struct {
-	localhost *contractInterface
-	goerli    *contractInterface
+	spaceManagerLocalhost *ZionSpaceManagerLocalhost
+	spaceManagerGoerli    *ZionSpaceManagerGoerli
 }
 
 func NewZionAuthorization() (authorization.Authorization, error) {
@@ -45,72 +39,75 @@ func NewZionAuthorization() (authorization.Authorization, error) {
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerLocalhost", err)
 	}
-	auth.localhost = localhost
+	auth.spaceManagerLocalhost = localhost
 
 	goerli, err := newZionSpaceManagerGoerli(os.Getenv(goerliEndpointUrl))
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerGoerli", err)
 	}
-	auth.goerli = goerli
+	auth.spaceManagerGoerli = goerli
 
 	return &auth, nil
 }
 
 func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bool, error) {
+	var spaceId = ""
+	isEntitled := false
 	userIdentifier := CreateUserIdentifier(args.UserId)
-	spaceManager, err := za.getSpaceManager(userIdentifier.chainId)
-	if err != nil {
-		return false, err
+	permission := DataTypesPermission{
+		Name: args.Permission,
 	}
 
-	spaceId, err := spaceManager.GetSpaceIdByNetworkId(nil, args.RoomId)
-	if err != nil {
-		return false, err
-	}
-
-	log.Printf("{ roomId: %s, spaceId: %d }\n", args.RoomId, spaceId)
-
-	isEntitled, err := spaceManager.IsEntitled(
-		nil,
-		spaceId,
-		big.NewInt(0),
-		userIdentifier.accountAddress,
-		DataTypesPermission{
-			Name: args.Permission,
-		})
-
-	if err != nil {
-		return false, err
-	}
-
-	return isEntitled, nil
-}
-
-func (za *ZionAuthorization) getContractInterface(chainId int) (*contractInterface, error) {
-	switch chainId {
+	switch userIdentifier.chainId {
 	case 1337, 31337:
-		if za.localhost != nil {
-			return za.localhost, nil
+		if za.spaceManagerLocalhost != nil {
+			spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, args.RoomId)
+			if err != nil {
+				return false, err
+			}
+
+			isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
+				nil,
+				spaceId,
+				big.NewInt(0),
+				userIdentifier.accountAddress,
+				permission,
+			)
+
+			if err != nil {
+				return false, err
+			}
+
+			return isEntitled, nil
 		}
 	case 5:
-		if za.goerli != nil {
-			return za.goerli, nil
+		if za.spaceManagerGoerli != nil {
+			spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, args.RoomId)
+			if err != nil {
+				return false, err
+			}
+
+			isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
+				nil,
+				spaceId,
+				big.NewInt(0),
+				userIdentifier.accountAddress,
+				permission,
+			)
+
+			if err != nil {
+				return false, err
+			}
+
+			return isEntitled, nil
 		}
 	}
 
-	return nil, fmt.Errorf("failed to get contract interface for chainId %d", chainId)
+	log.Printf("{ roomId: %s, spaceId: %d, userId: %s, isEntitled: %t }\n", args.RoomId, spaceId, args.UserId, isEntitled)
+	return false, nil
 }
 
-func (za *ZionAuthorization) getSpaceManager(chainId int) (ZionSpaceManagerInterface, error) {
-	contractInterface, err := za.getContractInterface(chainId)
-	if err != nil {
-		return nil, err
-	}
-
-	return contractInterface.spaceManager, nil
-}
-
-func newZionSpaceManagerLocalhost(endpointUrl string) (*contractInterface, error) {
+func newZionSpaceManagerLocalhost(endpointUrl string) (*ZionSpaceManagerLocalhost, error) {
 	addresses, err := loadSpaceManagerAddresses(localhostJson)
 	if err != nil {
 		return nil, err
@@ -128,14 +125,10 @@ func newZionSpaceManagerLocalhost(endpointUrl string) (*contractInterface, error
 		return nil, err
 	}
 
-	instance := contractInterface{
-		spaceManager: spaceManager,
-	}
-
-	return &instance, nil
+	return spaceManager, nil
 }
 
-func newZionSpaceManagerGoerli(endpointUrl string) (*contractInterface, error) {
+func newZionSpaceManagerGoerli(endpointUrl string) (*ZionSpaceManagerGoerli, error) {
 	addresses, err := loadSpaceManagerAddresses(goerliJson)
 	if err != nil {
 		return nil, err
@@ -153,9 +146,5 @@ func newZionSpaceManagerGoerli(endpointUrl string) (*contractInterface, error) {
 		return nil, err
 	}
 
-	instance := contractInterface{
-		spaceManager: spaceManager,
-	}
-
-	return &instance, nil
+	return spaceManager, nil
 }
