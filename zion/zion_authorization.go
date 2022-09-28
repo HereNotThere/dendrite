@@ -51,8 +51,6 @@ func NewZionAuthorization() (authorization.Authorization, error) {
 }
 
 func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bool, error) {
-	var spaceId = ""
-	isEntitled := false
 	userIdentifier := CreateUserIdentifier(args.UserId)
 	permission := DataTypesPermission{
 		Name: args.Permission,
@@ -60,50 +58,63 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 
 	switch userIdentifier.chainId {
 	case 1337, 31337:
-		if za.spaceManagerLocalhost != nil {
-			spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, args.RoomId)
-			if err != nil {
-				return false, err
-			}
-
-			isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
-				nil,
-				spaceId,
-				big.NewInt(0),
-				userIdentifier.accountAddress,
-				permission,
-			)
-
-			if err != nil {
-				return false, err
-			}
-
-			return isEntitled, nil
-		}
+		return za.IsAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
 	case 5:
-		if za.spaceManagerGoerli != nil {
-			spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, args.RoomId)
-			if err != nil {
-				return false, err
-			}
-
-			isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
-				nil,
-				spaceId,
-				big.NewInt(0),
-				userIdentifier.accountAddress,
-				permission,
-			)
-
-			if err != nil {
-				return false, err
-			}
-
-			return isEntitled, nil
-		}
+		return za.IsAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
+	default:
+		log.Errorf("Unsupported chain id: %d\n", userIdentifier.chainId)
 	}
 
-	log.Printf("{ roomId: %s, spaceId: %d, userId: %s, isEntitled: %t }\n", args.RoomId, spaceId, args.UserId, isEntitled)
+	return false, nil
+}
+
+func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+	if za.spaceManagerLocalhost != nil {
+		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, roomId)
+		if err != nil {
+			return false, err
+		}
+
+		isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
+			nil,
+			spaceId,
+			big.NewInt(0),
+			user,
+			permission,
+		)
+
+		if err != nil {
+			return false, err
+		}
+
+		return isEntitled, nil
+	}
+
+	return false, nil
+}
+
+func (za *ZionAuthorization) IsAllowedGoerli(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+	if za.spaceManagerGoerli != nil {
+		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, roomId)
+		if err != nil {
+			return false, err
+		}
+
+		isEntitled, err := za.spaceManagerGoerli.IsEntitled(
+			nil,
+			spaceId,
+			big.NewInt(0),
+			user,
+			permission,
+		)
+
+		if err != nil {
+			return false, err
+		}
+
+		return isEntitled, nil
+	}
+
 	return false, nil
 }
 
