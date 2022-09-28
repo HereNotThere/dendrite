@@ -1,18 +1,20 @@
 package authorization
 
 import (
-	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/authorization"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/zion"
+	log "github.com/sirupsen/logrus"
 )
 
 func NewAuthorization(cfg *config.ClientAPI) authorization.Authorization {
 	// Load authorization manager for Zion
 	if cfg.PublicKeyAuthentication.Ethereum.EnableAuthz {
-		godotenv.Load(".env")
 		auth, err := zion.NewZionAuthorization()
-		if auth != nil && err == nil {
+
+		if err != nil {
+			log.Errorln("Failed to initialize Zion authorization manager. Using default.", err)
+		} else {
 			return auth
 		}
 	}
