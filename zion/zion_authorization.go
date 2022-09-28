@@ -1,6 +1,7 @@
 package zion
 
 import (
+	_ "embed"
 	"fmt"
 	"math/big"
 	"os"
@@ -12,11 +13,15 @@ import (
 )
 
 const (
-	localhostAddressesJson = "./zion/contracts/localhost/addresses/space-manager.json"
-	localhostEndpointUrl   = "LOCALHOST_ENDPOINT" // .env
-	goerliAddressesJson    = "./zion/contracts/goerli/addresses/space-manager.json"
-	goerliEndpointUrl      = "GOERLI_ENDPOINT" // .env
+	localhostEndpointUrl = "LOCALHOST_ENDPOINT" // .env
+	goerliEndpointUrl    = "GOERLI_ENDPOINT"    // .env
 )
+
+//go:embed contracts/localhost/addresses/space-manager.json
+var localhostJson []byte
+
+//go:embed contracts/goerli/addresses/space-manager.json
+var goerliJson []byte
 
 type contractInterface struct {
 	spaceManager ZionSpaceManagerInterface
@@ -36,13 +41,13 @@ func NewZionAuthorization() (authorization.Authorization, error) {
 
 	var auth ZionAuthorization
 
-	localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl), localhostAddressesJson)
+	localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl))
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerLocalhost", err)
 	}
 	auth.localhost = localhost
 
-	goerli, err := newZionSpaceManagerGoerli(os.Getenv(goerliEndpointUrl), goerliAddressesJson)
+	goerli, err := newZionSpaceManagerGoerli(os.Getenv(goerliEndpointUrl))
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerGoerli", err)
 	}
@@ -105,8 +110,8 @@ func (za *ZionAuthorization) getSpaceManager(chainId int) (ZionSpaceManagerInter
 	return contractInterface.spaceManager, nil
 }
 
-func newZionSpaceManagerLocalhost(endpointUrl string, addressJson string) (*contractInterface, error) {
-	addresses, err := loadSpaceManagerAddressesJson(addressJson)
+func newZionSpaceManagerLocalhost(endpointUrl string) (*contractInterface, error) {
+	addresses, err := loadSpaceManagerAddresses(localhostJson)
 	if err != nil {
 		return nil, err
 	}
@@ -130,8 +135,8 @@ func newZionSpaceManagerLocalhost(endpointUrl string, addressJson string) (*cont
 	return &instance, nil
 }
 
-func newZionSpaceManagerGoerli(endpointUrl string, addressJson string) (*contractInterface, error) {
-	addresses, err := loadSpaceManagerAddressesJson(addressJson)
+func newZionSpaceManagerGoerli(endpointUrl string) (*contractInterface, error) {
+	addresses, err := loadSpaceManagerAddresses(goerliJson)
 	if err != nil {
 		return nil, err
 	}
