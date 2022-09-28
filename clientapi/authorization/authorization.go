@@ -13,7 +13,7 @@ func NewAuthorization(cfg *config.ClientAPI) authorization.Authorization {
 		auth, err := zion.NewZionAuthorization()
 
 		if err != nil {
-			log.Errorln("Failed to initialize Zion authorization manager. Using default.", err)
+			log.Errorln("Failed to initialise Zion authorization manager. Using default.", err)
 		} else {
 			return auth
 		}
