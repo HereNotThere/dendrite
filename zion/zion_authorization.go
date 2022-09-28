@@ -1,14 +1,21 @@
 package zion
 
 import (
-	"errors"
 	"fmt"
 	"math/big"
+	"os"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/authorization"
 	log "github.com/sirupsen/logrus"
+)
+
+const (
+	localhostAddressesJson = "./zion/contracts/localhost/addresses/space-manager.json"
+	localhostEndpointUrl   = "LOCALHOST_ENDPOINT" // .env
+	goerliAddressesJson    = "./zion/contracts/goerli/addresses/space-manager.json"
+	goerliEndpointUrl      = "GOERLI_ENDPOINT" // .env
 )
 
 type contractInterface struct {
@@ -29,13 +36,13 @@ func NewZionAuthorization() (authorization.Authorization, error) {
 
 	var auth ZionAuthorization
 
-	localhost, err := newZionSpaceManagerLocalhost("", "")
+	localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl), localhostAddressesJson)
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerLocalhost", err)
 	}
 	auth.localhost = localhost
 
-	goerli, err := newZionSpaceManagerGoerli("", "")
+	goerli, err := newZionSpaceManagerGoerli(os.Getenv(goerliEndpointUrl), goerliAddressesJson)
 	if err != nil {
 		log.Errorln("error instantiating ZionSpaceManagerGoerli", err)
 	}
@@ -46,12 +53,12 @@ func NewZionAuthorization() (authorization.Authorization, error) {
 
 func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bool, error) {
 	userIdentifier := CreateUserIdentifier(args.UserId)
-	contract, err := za.getContractInterface(userIdentifier.chainId)
+	spaceManager, err := za.getSpaceManager(userIdentifier.chainId)
 	if err != nil {
 		return false, err
 	}
 
-	spaceId, err := contract.spaceManager.GetSpaceIdByNetworkId(nil, args.RoomId)
+	spaceId, err := spaceManager.GetSpaceIdByNetworkId(nil, args.RoomId)
 	if err != nil {
 		return false, err
 	}
@@ -86,21 +93,30 @@ func (za *ZionAuthorization) getContractInterface(chainId int) (*contractInterfa
 		}
 	}
 
-	return nil, errors.New(fmt.Sprintf("failed to get contract interface for chainId %d", chainId))
+	return nil, fmt.Errorf("failed to get contract interface for chainId %d", chainId)
 }
 
-func (za *ZionAuthorization) getSpaceManager(chainId int) (*ZionSpaceManagerInterface, error) {
+func (za *ZionAuthorization) getSpaceManager(chainId int) (ZionSpaceManagerInterface, error) {
 	contractInterface, err := za.getContractInterface(chainId)
 	if err != nil {
 		return nil, err
 	}
 
-	return &contractInterface.spaceManager, nil
+	return contractInterface.spaceManager, nil
 }
 
-func newZionSpaceManagerLocalhost(endpointUrl string, contractAddress string) (*contractInterface, error) {
-	address := common.HexToAddress((contractAddress))
+func newZionSpaceManagerLocalhost(endpointUrl string, addressJson string) (*contractInterface, error) {
+	addresses, err := loadSpaceManagerAddressesJson(addressJson)
+	if err != nil {
+		return nil, err
+	}
+
+	address := common.HexToAddress(addresses.Spacemanager)
+
 	client, err := GetEthClient(endpointUrl)
+	if err != nil {
+		return nil, err
+	}
 
 	spaceManager, err := NewZionSpaceManagerLocalhost(address, client)
 	if err != nil {
@@ -114,9 +130,18 @@ func newZionSpaceManagerLocalhost(endpointUrl string, contractAddress string) (*
 	return &instance, nil
 }
 
-func newZionSpaceManagerGoerli(endpointUrl string, contractAddress string) (*contractInterface, error) {
-	address := common.HexToAddress((contractAddress))
+func newZionSpaceManagerGoerli(endpointUrl string, addressJson string) (*contractInterface, error) {
+	addresses, err := loadSpaceManagerAddressesJson(addressJson)
+	if err != nil {
+		return nil, err
+	}
+
+	address := common.HexToAddress((addresses.Spacemanager))
+
 	client, err := GetEthClient(endpointUrl)
+	if err != nil {
+		return nil, err
+	}
 
 	spaceManager, err := NewZionSpaceManagerGoerli(address, client)
 	if err != nil {
