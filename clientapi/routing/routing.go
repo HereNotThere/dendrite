@@ -21,6 +21,7 @@ import (
 
 	"github.com/gorilla/mux"
 	appserviceAPI "github.com/matrix-org/dendrite/appservice/api"
+	authz "github.com/matrix-org/dendrite/authorization"
 	"github.com/matrix-org/dendrite/clientapi/api"
 	"github.com/matrix-org/dendrite/clientapi/auth"
 	clientApiAuthz "github.com/matrix-org/dendrite/clientapi/authorization"
@@ -240,6 +241,15 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
+
+			isAllowed, _ := authorization.IsAllowed(authz.AuthorizationArgs{
+				RoomId:     vars["roomIDOrAlias"],
+				UserId:     device.UserID,
+				Permission: "Zion-Join",
+			})
+
+			logrus.Debugf("/join/%s isAllowed = %t", vars["roomIDOrAlias"], isAllowed)
+
 			return JoinRoomByIDOrAlias(
 				req, device, rsAPI, userAPI, vars["roomIDOrAlias"],
 			)
