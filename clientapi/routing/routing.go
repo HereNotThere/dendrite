@@ -76,7 +76,7 @@ func Setup(
 
 	rateLimits := httputil.NewRateLimits(&cfg.RateLimiting)
 	userInteractiveAuth := auth.NewUserInteractive(userAPI, userAPI, cfg)
-	authorization := clientApiAuthz.NewAuthorization(cfg)
+	authorization := clientApiAuthz.NewAuthorization(cfg, rsAPI)
 	_ = authorization // todo: use this in httputil.MakeAuthAPI
 
 	unstableFeatures := map[string]bool{

@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/authorization"
+	roomserver "github.com/matrix-org/dendrite/roomserver/api"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,15 +26,18 @@ var goerliJson []byte
 type ZionAuthorization struct {
 	spaceManagerLocalhost *ZionSpaceManagerLocalhost
 	spaceManagerGoerli    *ZionSpaceManagerGoerli
+	rsAPI                 roomserver.ClientRoomserverAPI
 }
 
-func NewZionAuthorization() (authorization.Authorization, error) {
+func NewZionAuthorization(rsAPI roomserver.ClientRoomserverAPI) (authorization.Authorization, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Errorln("error loading .env file", err)
 	}
 
 	var auth ZionAuthorization
+
+	auth.rsAPI = rsAPI
 
 	localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl))
 	if err != nil {
@@ -56,11 +60,13 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 		Name: args.Permission,
 	}
 
+	// Find out if roomId is a space or a channel.
+
 	switch userIdentifier.chainId {
 	case 1337, 31337:
-		return za.IsAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.isAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
 	case 5:
-		return za.IsAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.isAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
 	default:
 		log.Errorf("Unsupported chain id: %d\n", userIdentifier.chainId)
 	}
@@ -68,9 +74,9 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	return false, nil
 }
 
-func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedLocalhost(spaceId string, channelId string, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerLocalhost != nil {
-		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, roomId)
+		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, spaceId)
 		if err != nil {
 			return false, err
 		}
@@ -93,9 +99,9 @@ func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Addre
 	return false, nil
 }
 
-func (za *ZionAuthorization) IsAllowedGoerli(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedGoerli(spaceId string, channelId string, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerGoerli != nil {
-		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, roomId)
+		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, spaceId)
 		if err != nil {
 			return false, err
 		}
