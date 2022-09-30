@@ -61,12 +61,13 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	}
 
 	// Find out if roomId is a space or a channel.
+	storeInfo := GetStoreSpaceInfo(args.RoomId, args.UserId, za.rsAPI)
 
 	switch userIdentifier.chainId {
 	case 1337, 31337:
-		return za.isAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.isAllowedLocalhost(storeInfo, userIdentifier.accountAddress, permission)
 	case 5:
-		return za.isAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.isAllowedGoerli(storeInfo, userIdentifier.accountAddress, permission)
 	default:
 		log.Errorf("Unsupported chain id: %d\n", userIdentifier.chainId)
 	}
@@ -74,9 +75,9 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedLocalhost(spaceId string, channelId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedLocalhost(storeInfo StoreSpaceInfo, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerLocalhost != nil {
-		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, spaceId)
+		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
 		if err != nil {
 			return false, err
 		}
@@ -99,9 +100,9 @@ func (za *ZionAuthorization) isAllowedLocalhost(spaceId string, channelId string
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedGoerli(spaceId string, channelId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedGoerli(storeInfo StoreSpaceInfo, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerGoerli != nil {
-		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, spaceId)
+		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
 		if err != nil {
 			return false, err
 		}
