@@ -56,13 +56,11 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 		Name: args.Permission,
 	}
 
-	// Figure out whether this roomId is a "space" or a "channel"
-
 	switch userIdentifier.chainId {
 	case 1337, 31337:
-		return za.isAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.IsAllowedLocalhost(args.RoomId, userIdentifier.accountAddress, permission)
 	case 5:
-		return za.isAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
+		return za.IsAllowedGoerli(args.RoomId, userIdentifier.accountAddress, permission)
 	default:
 		log.Errorf("Unsupported chain id: %d\n", userIdentifier.chainId)
 	}
@@ -70,7 +68,7 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedLocalhost(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerLocalhost != nil {
 		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, roomId)
 		if err != nil {
@@ -95,7 +93,7 @@ func (za *ZionAuthorization) isAllowedLocalhost(roomId string, user common.Addre
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedGoerli(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) IsAllowedGoerli(roomId string, user common.Address, permission DataTypesPermission) (bool, error) {
 	if za.spaceManagerGoerli != nil {
 		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, roomId)
 		if err != nil {
