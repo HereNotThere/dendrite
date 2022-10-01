@@ -341,6 +341,15 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
+
+			isAllowed, _ := authorization.IsAllowed(authz.AuthorizationArgs{
+				RoomId:     vars["roomID"],
+				UserId:     device.UserID,
+				Permission: "Invite",
+			})
+
+			logrus.Debugf("/invite/%s isAllowed = %t", vars["roomID"], isAllowed)
+
 			return SendInvite(req, userAPI, device, vars["roomID"], cfg, rsAPI, asAPI)
 		}),
 	).Methods(http.MethodPost, http.MethodOptions)

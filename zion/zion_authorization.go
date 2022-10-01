@@ -26,7 +26,7 @@ var goerliJson []byte
 type ZionAuthorization struct {
 	spaceManagerLocalhost *ZionSpaceManagerLocalhost
 	spaceManagerGoerli    *ZionSpaceManagerGoerli
-	rsAPI                 roomserver.ClientRoomserverAPI
+	store                 Store
 }
 
 func NewZionAuthorization(rsAPI roomserver.ClientRoomserverAPI) (authorization.Authorization, error) {
@@ -37,7 +37,7 @@ func NewZionAuthorization(rsAPI roomserver.ClientRoomserverAPI) (authorization.A
 
 	var auth ZionAuthorization
 
-	auth.rsAPI = rsAPI
+	auth.store = NewStore(rsAPI)
 
 	localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl))
 	if err != nil {
@@ -61,21 +61,29 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	}
 
 	// Find out if roomId is a space or a channel.
-	storeInfo := GetStoreSpaceInfo(args.RoomId, args.UserId, za.rsAPI)
+	storeInfo := za.store.GetStoreSpaceInfo(args.RoomId, userIdentifier)
 
-	switch userIdentifier.chainId {
+	switch userIdentifier.ChainId {
 	case 1337, 31337:
-		return za.isAllowedLocalhost(storeInfo, userIdentifier.accountAddress, permission)
+		return za.isAllowedLocalhost(storeInfo, userIdentifier.AccountAddress, permission)
 	case 5:
-		return za.isAllowedGoerli(storeInfo, userIdentifier.accountAddress, permission)
+		return za.isAllowedGoerli(storeInfo, userIdentifier.AccountAddress, permission)
 	default:
-		log.Errorf("Unsupported chain id: %d\n", userIdentifier.chainId)
+		log.Errorf("Unsupported chain id: %d\n", userIdentifier.ChainId)
 	}
 
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedLocalhost(storeInfo StoreSpaceInfo, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedLocalhost(
+	storeInfo StoreSpaceInfo,
+	user common.Address,
+	permission DataTypesPermission,
+) (bool, error) {
+	if storeInfo.IsOwner {
+		return true, nil
+	}
+
 	if za.spaceManagerLocalhost != nil {
 		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
 		if err != nil {
@@ -100,7 +108,15 @@ func (za *ZionAuthorization) isAllowedLocalhost(storeInfo StoreSpaceInfo, user c
 	return false, nil
 }
 
-func (za *ZionAuthorization) isAllowedGoerli(storeInfo StoreSpaceInfo, user common.Address, permission DataTypesPermission) (bool, error) {
+func (za *ZionAuthorization) isAllowedGoerli(
+	storeInfo StoreSpaceInfo,
+	user common.Address,
+	permission DataTypesPermission,
+) (bool, error) {
+	if storeInfo.IsOwner {
+		return true, nil
+	}
+
 	if za.spaceManagerGoerli != nil {
 		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
 		if err != nil {
