@@ -27,7 +27,7 @@ func (r RoomType) String() string {
 	return "unknown"
 }
 
-type StoreSpaceInfo struct {
+type RoomInfo struct {
 	QueryUserId      string // Matrix User ID
 	SpaceNetworkId   string
 	ChannelNetworkId string

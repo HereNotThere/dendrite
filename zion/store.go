@@ -22,8 +22,8 @@ func NewStore(rsAPI roomserver.ClientRoomserverAPI) Store {
 	}
 }
 
-func (s *Store) GetStoreSpaceInfo(roomId string, userId UserIdentifier) StoreSpaceInfo {
-	result := StoreSpaceInfo{
+func (s *Store) GetRoomInfo(roomId string, userId UserIdentifier) RoomInfo {
+	result := RoomInfo{
 		QueryUserId:      userId.MatrixUserId,
 		SpaceNetworkId:   "",
 		ChannelNetworkId: "",
