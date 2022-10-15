@@ -2,13 +2,14 @@ package zion
 
 import (
 	_ "embed"
-	"math/big"
 	"os"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/authorization"
 	roomserver "github.com/matrix-org/dendrite/roomserver/api"
+	zion_goerli "github.com/matrix-org/dendrite/zion/contracts/goerli/zion_goerli"
+	zion_localhost "github.com/matrix-org/dendrite/zion/contracts/localhost/zion_localhost"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,9 +25,9 @@ var localhostJson []byte
 var goerliJson []byte
 
 type ZionAuthorization struct {
-	spaceManagerLocalhost *ZionSpaceManagerLocalhost
-	spaceManagerGoerli    *ZionSpaceManagerGoerli
 	store                 Store
+	spaceManagerLocalhost *zion_localhost.ZionSpaceManagerLocalhost
+	spaceManagerGoerli    *zion_goerli.ZionSpaceManagerGoerli
 }
 
 func NewZionAuthorization(rsAPI roomserver.ClientRoomserverAPI) (authorization.Authorization, error) {
@@ -56,9 +57,6 @@ func NewZionAuthorization(rsAPI roomserver.ClientRoomserverAPI) (authorization.A
 
 func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bool, error) {
 	userIdentifier := CreateUserIdentifier(args.UserId)
-	permission := DataTypesPermission{
-		Name: args.Permission,
-	}
 
 	// Find out if roomId is a space or a channel.
 	roomInfo := za.store.GetRoomInfo(args.RoomId, userIdentifier)
@@ -70,9 +68,9 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 
 	switch userIdentifier.ChainId {
 	case 1337, 31337:
-		return za.isAllowedLocalhost(roomInfo, userIdentifier.AccountAddress, permission)
+		return za.isAllowedLocalhost(roomInfo, userIdentifier.AccountAddress, args.Permission)
 	case 5:
-		return za.isAllowedGoerli(roomInfo, userIdentifier.AccountAddress, permission)
+		return za.isAllowedGoerli(roomInfo, userIdentifier.AccountAddress, args.Permission)
 	default:
 		log.Errorf("Unsupported chain id: %d\n", userIdentifier.ChainId)
 	}
@@ -81,20 +79,19 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 }
 
 func (za *ZionAuthorization) isAllowedLocalhost(
-	storeInfo RoomInfo,
+	roomInfo RoomInfo,
 	user common.Address,
-	permission DataTypesPermission,
+	permission authorization.Permission,
 ) (bool, error) {
 	if za.spaceManagerLocalhost != nil {
-		spaceId, err := za.spaceManagerLocalhost.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
-		if err != nil {
-			return false, err
+		permission := zion_localhost.DataTypesPermission{
+			Name: permission.String(),
 		}
 
 		isEntitled, err := za.spaceManagerLocalhost.IsEntitled(
 			nil,
-			spaceId,
-			big.NewInt(0),
+			roomInfo.SpaceNetworkId,
+			roomInfo.ChannelNetworkId,
 			user,
 			permission,
 		)
@@ -110,20 +107,19 @@ func (za *ZionAuthorization) isAllowedLocalhost(
 }
 
 func (za *ZionAuthorization) isAllowedGoerli(
-	storeInfo RoomInfo,
+	roomInfo RoomInfo,
 	user common.Address,
-	permission DataTypesPermission,
+	permission authorization.Permission,
 ) (bool, error) {
 	if za.spaceManagerGoerli != nil {
-		spaceId, err := za.spaceManagerGoerli.GetSpaceIdByNetworkId(nil, storeInfo.SpaceNetworkId)
-		if err != nil {
-			return false, err
+		permission := zion_goerli.DataTypesPermission{
+			Name: permission.String(),
 		}
 
 		isEntitled, err := za.spaceManagerGoerli.IsEntitled(
 			nil,
-			spaceId,
-			big.NewInt(0),
+			roomInfo.SpaceNetworkId,
+			roomInfo.ChannelNetworkId,
 			user,
 			permission,
 		)
@@ -138,7 +134,7 @@ func (za *ZionAuthorization) isAllowedGoerli(
 	return false, nil
 }
 
-func newZionSpaceManagerLocalhost(endpointUrl string) (*ZionSpaceManagerLocalhost, error) {
+func newZionSpaceManagerLocalhost(endpointUrl string) (*zion_localhost.ZionSpaceManagerLocalhost, error) {
 	addresses, err := loadSpaceManagerAddresses(localhostJson)
 	if err != nil {
 		return nil, err
@@ -151,7 +147,7 @@ func newZionSpaceManagerLocalhost(endpointUrl string) (*ZionSpaceManagerLocalhos
 		return nil, err
 	}
 
-	spaceManager, err := NewZionSpaceManagerLocalhost(address, client)
+	spaceManager, err := zion_localhost.NewZionSpaceManagerLocalhost(address, client)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +155,7 @@ func newZionSpaceManagerLocalhost(endpointUrl string) (*ZionSpaceManagerLocalhos
 	return spaceManager, nil
 }
 
-func newZionSpaceManagerGoerli(endpointUrl string) (*ZionSpaceManagerGoerli, error) {
+func newZionSpaceManagerGoerli(endpointUrl string) (*zion_goerli.ZionSpaceManagerGoerli, error) {
 	addresses, err := loadSpaceManagerAddresses(goerliJson)
 	if err != nil {
 		return nil, err
@@ -172,7 +168,7 @@ func newZionSpaceManagerGoerli(endpointUrl string) (*ZionSpaceManagerGoerli, err
 		return nil, err
 	}
 
-	spaceManager, err := NewZionSpaceManagerGoerli(address, client)
+	spaceManager, err := zion_goerli.NewZionSpaceManagerGoerli(address, client)
 	if err != nil {
 		return nil, err
 	}
