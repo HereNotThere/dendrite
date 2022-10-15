@@ -66,10 +66,10 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	return false, nil
 }
 
-func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Address, permission string) (bool, error) {
+func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Address, permission authorization.Permission) (bool, error) {
 	if za.spaceManagerLocalhost != nil {
 		permission := zion_localhost.DataTypesPermission{
-			Name: permission,
+			Name: permission.String(),
 		}
 
 		addr := user.Hex()
@@ -93,10 +93,10 @@ func (za *ZionAuthorization) IsAllowedLocalhost(roomId string, user common.Addre
 	return false, nil
 }
 
-func (za *ZionAuthorization) IsAllowedGoerli(roomId string, user common.Address, permission string) (bool, error) {
+func (za *ZionAuthorization) IsAllowedGoerli(roomId string, user common.Address, permission authorization.Permission) (bool, error) {
 	if za.spaceManagerGoerli != nil {
 		permission := zion_goerli.DataTypesPermission{
-			Name: permission,
+			Name: permission.String(),
 		}
 
 		isEntitled, err := za.spaceManagerGoerli.IsEntitled(
