@@ -258,7 +258,7 @@ func Setup(
 			isAllowed, _ := authorization.IsAllowed(authz.AuthorizationArgs{
 				RoomId:     vars["roomIDOrAlias"],
 				UserId:     device.UserID,
-				Permission: "Zion-Join",
+				Permission: authz.PermissionRead,
 			})
 
 			logrus.Debugf("/join/%s isAllowed = %t", vars["roomIDOrAlias"], isAllowed)
