@@ -341,10 +341,10 @@ type DeviceLists struct {
 }
 
 type RoomsResponse struct {
-	Join   map[string]*JoinResponse   `json:"join,omitempty"`
-	Peek   map[string]*JoinResponse   `json:"peek,omitempty"`
-	Invite map[string]*InviteResponse `json:"invite,omitempty"`
-	Leave  map[string]*LeaveResponse  `json:"leave,omitempty"`
+	Join                map[string]*JoinResponse               `json:"join,omitempty"`
+	Peek                map[string]*JoinResponse               `json:"peek,omitempty"`
+	Invite              map[string]*InviteResponse             `json:"invite,omitempty"`
+	Leave               map[string]*LeaveResponse              `json:"leave,omitempty"`
 	UnreadNotifications map[string]UnreadNotificationsResponse `json:"unread_notifications,omitempty"`
 }
 
@@ -409,10 +409,10 @@ func NewResponse() *Response {
 	// Pre-initialise the maps. Synapse will return {} even if there are no rooms under a specific section,
 	// so let's do the same thing. Bonus: this means we can't get dreaded 'assignment to entry in nil map' errors.
 	res.Rooms = &RoomsResponse{
-		Join:   map[string]*JoinResponse{},
-		Peek:   map[string]*JoinResponse{},
-		Invite: map[string]*InviteResponse{},
-		Leave:  map[string]*LeaveResponse{},
+		Join:                map[string]*JoinResponse{},
+		Peek:                map[string]*JoinResponse{},
+		Invite:              map[string]*InviteResponse{},
+		Leave:               map[string]*LeaveResponse{},
 		UnreadNotifications: map[string]UnreadNotificationsResponse{},
 	}
 
