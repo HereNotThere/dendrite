@@ -175,10 +175,16 @@ func Setup(
 	).Methods(http.MethodPost, http.MethodOptions)
 
 	dendriteAdminRouter.Handle("/admin/fulltext/reindex",
-		httputil.MakeAuthAPI("admin_fultext_reindex", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
+		httputil.MakeAdminAPI("admin_fultext_reindex", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
 			return AdminReindex(req, cfg, device, natsClient)
 		}),
 	).Methods(http.MethodGet, http.MethodOptions)
+
+	dendriteAdminRouter.Handle("/admin/refreshDevices/{userID}",
+		httputil.MakeAdminAPI("admin_refresh_devices", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
+			return AdminMarkAsStale(req, cfg, keyAPI)
+		}),
+	).Methods(http.MethodPost, http.MethodOptions)
 
 	// server notifications
 	if cfg.Matrix.ServerNotices.Enabled {
@@ -382,15 +388,6 @@ func Setup(
 				nil, cfg, rsAPI, transactionsCache)
 		}),
 	).Methods(http.MethodPut, http.MethodOptions)
-	v3mux.Handle("/rooms/{roomID}/event/{eventID}",
-		httputil.MakeAuthAPI("rooms_get_event", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			vars, err := httputil.URLDecodeMapValues(mux.Vars(req))
-			if err != nil {
-				return util.ErrorResponse(err)
-			}
-			return GetEvent(req, device, vars["roomID"], vars["eventID"], cfg, rsAPI)
-		}),
-	).Methods(http.MethodGet, http.MethodOptions)
 
 	v3mux.Handle("/rooms/{roomID}/state", httputil.MakeAuthAPI("room_state", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
 		vars, err := httputil.URLDecodeMapValues(mux.Vars(req))
@@ -1367,7 +1364,7 @@ func Setup(
 				return util.ErrorResponse(err)
 			}
 
-			return SetReceipt(req, syncProducer, device, vars["roomId"], vars["receiptType"], vars["eventId"])
+			return SetReceipt(req, userAPI, syncProducer, device, vars["roomId"], vars["receiptType"], vars["eventId"])
 		}),
 	).Methods(http.MethodPost, http.MethodOptions)
 	v3mux.Handle("/presence/{userId}/status",
