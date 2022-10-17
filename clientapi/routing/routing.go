@@ -76,8 +76,7 @@ func Setup(
 
 	rateLimits := httputil.NewRateLimits(&cfg.RateLimiting)
 	userInteractiveAuth := auth.NewUserInteractive(userAPI, userAPI, cfg)
-	authorization := clientApiAuthz.NewAuthorization(cfg)
-	_ = authorization // todo: use this in httputil.MakeAuthAPI
+	authorization := clientApiAuthz.NewAuthorization(cfg, rsAPI)
 
 	unstableFeatures := map[string]bool{
 		"org.matrix.e2e_cross_signing": true,
@@ -261,7 +260,12 @@ func Setup(
 				Permission: authz.PermissionRead,
 			})
 
-			logrus.Debugf("/join/%s isAllowed = %t", vars["roomIDOrAlias"], isAllowed)
+			if !isAllowed {
+				return util.JSONResponse{
+					Code: http.StatusUnauthorized,
+					JSON: jsonerror.Forbidden(""),
+				}
+			}
 
 			return JoinRoomByIDOrAlias(
 				req, device, rsAPI, userAPI, vars["roomIDOrAlias"],
@@ -347,6 +351,7 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
+
 			return SendInvite(req, userAPI, device, vars["roomID"], cfg, rsAPI, asAPI)
 		}),
 	).Methods(http.MethodPost, http.MethodOptions)
