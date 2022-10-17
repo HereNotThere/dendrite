@@ -261,7 +261,12 @@ func Setup(
 				Permission: authz.PermissionRead,
 			})
 
-			logrus.Debugf("/join/%s isAllowed = %t", vars["roomIDOrAlias"], isAllowed)
+			if !isAllowed {
+				return util.JSONResponse{
+					Code: http.StatusUnauthorized,
+					JSON: jsonerror.Forbidden(""),
+				}
+			}
 
 			return JoinRoomByIDOrAlias(
 				req, device, rsAPI, userAPI, vars["roomIDOrAlias"],
@@ -347,14 +352,6 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
-
-			isAllowed, _ := authorization.IsAllowed(authz.AuthorizationArgs{
-				RoomId:     vars["roomID"],
-				UserId:     device.UserID,
-				Permission: "Invite",
-			})
-
-			logrus.Debugf("/invite/%s isAllowed = %t", vars["roomID"], isAllowed)
 
 			return SendInvite(req, userAPI, device, vars["roomID"], cfg, rsAPI, asAPI)
 		}),
