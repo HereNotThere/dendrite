@@ -47,7 +47,7 @@ func (s *Store) GetRoomInfo(roomId string, userId UserIdentifier) RoomInfo {
 	}
 
 	var roomEvents roomserver.QueryCurrentStateResponse
-	s.rsAPI.QueryCurrentState(context.Background(), &roomserver.QueryCurrentStateRequest{
+	err := s.rsAPI.QueryCurrentState(context.Background(), &roomserver.QueryCurrentStateRequest{
 		RoomID:         roomId,
 		AllowWildcards: true,
 		StateTuples: []gomatrixserverlib.StateKeyTuple{
@@ -57,17 +57,23 @@ func (s *Store) GetRoomInfo(roomId string, userId UserIdentifier) RoomInfo {
 		},
 	}, &roomEvents)
 
+	if err != nil {
+		return result
+	}
+
 	for _, state := range roomEvents.StateEvents {
 		switch state.Type() {
 		case gomatrixserverlib.MRoomCreate:
 			var creatorEvent CreatorEvent
-			json.Unmarshal(roomEvents.StateEvents[createTuple].Content(), &creatorEvent)
+			err := json.Unmarshal(roomEvents.StateEvents[createTuple].Content(), &creatorEvent)
 			result.IsOwner = strings.HasPrefix(
 				creatorEvent.Creator,
 				userId.LocalPart,
 			)
-			result.RoomType = Space
-			result.SpaceNetworkId = roomId
+			if err == nil {
+				result.RoomType = Space
+				result.SpaceNetworkId = roomId
+			}
 		case ConstSpaceChildEventType:
 			result.RoomType = Space
 			result.SpaceNetworkId = roomId
