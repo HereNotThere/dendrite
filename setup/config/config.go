@@ -602,19 +602,14 @@ func (config *Dendrite) replaceWithEnvVariables() {
 	// If env variable is set, convert the deployment chain IDs from the env
 	// variable into []int and replace the ChainIDs field.
 	if config.ClientAPI.PublicKeyAuthentication.Ethereum.Enabled {
-		deploymentChainIDs := replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.DeploymentChainIDs)
-		chainIds := strings.Split(deploymentChainIDs, ",")
-		if len(chainIds) > 0 && chainIds[0] != "" {
-			var ids []int
-			for _, id := range chainIds {
-				id, err := strconv.Atoi(strings.TrimSpace(id))
-				if err == nil {
-					ids = append(ids, id)
-				}
+		strChainId := replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.DeploymentChainID)
+		if strChainId != "" {
+			id, err := strconv.Atoi(strings.TrimSpace(strChainId))
+			if err == nil {
+				config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID = id
 			}
-			config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainIDs = ids
 		}
-		logrus.Infof("Supported Ethereum chain IDs=%d\n", config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainIDs)
+		logrus.Infof("Supported Ethereum chain IDs=%d\n", config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID)
 	}
 }
 
