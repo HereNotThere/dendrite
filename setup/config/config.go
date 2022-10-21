@@ -26,6 +26,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/clientapi/auth/authtypes"
 	"github.com/matrix-org/dendrite/internal/mapsutil"
 	"github.com/matrix-org/gomatrixserverlib"
@@ -587,6 +588,10 @@ Replace selected config with environment variables
 
 func (config *Dendrite) replaceWithEnvVariables() {
 	// Replace selected fields with env variables
+	err := godotenv.Load(".env")
+	if err != nil {
+		logrus.Errorln("error loading .env file", err)
+	}
 
 	config.Global.ServerName = gomatrixserverlib.ServerName(
 		replaceWithEnvVariables(string(config.Global.ServerName)),
@@ -609,7 +614,14 @@ func (config *Dendrite) replaceWithEnvVariables() {
 				config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID = id
 			}
 		}
-		logrus.Infof("Supported Ethereum chain IDs=%d\n", config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID)
+
+		config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl = replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl)
+
+		logrus.Infof(
+			"Supported Ethereum chain ID=%d, network URL=%s",
+			config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID,
+			config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl,
+		)
 	}
 }
 
