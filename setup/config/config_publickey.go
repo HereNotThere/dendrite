@@ -22,6 +22,7 @@ type EthereumAuthConfig struct {
 	Version           uint   `yaml:"version"`
 	ChainID           int    `yaml:"chain_id"`
 	DeploymentChainID string `yaml:"deployment_chain_id"` // For deployment: use env variable string to override the chain ID.
+	NetworkUrl        string `yaml:"networkUrl"`          // Blockchain network provider URL
 	EnableAuthz       bool   `yaml:"enable_authz"`        // Flag to enable / disable authorization during development
 }
 
