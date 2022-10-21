@@ -2,21 +2,14 @@ package zion
 
 import (
 	_ "embed"
-	"os"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/joho/godotenv"
 	"github.com/matrix-org/dendrite/authorization"
 	roomserver "github.com/matrix-org/dendrite/roomserver/api"
 	"github.com/matrix-org/dendrite/setup/config"
 	zion_goerli "github.com/matrix-org/dendrite/zion/contracts/goerli/zion_goerli"
 	zion_localhost "github.com/matrix-org/dendrite/zion/contracts/localhost/zion_localhost"
 	log "github.com/sirupsen/logrus"
-)
-
-const (
-	localhostEndpointUrl = "LOCALHOST_ENDPOINT" // .env
-	goerliEndpointUrl    = "GOERLI_ENDPOINT"    // .env
 )
 
 //go:embed contracts/localhost/addresses/space-manager.json
@@ -36,9 +29,9 @@ func NewZionAuthorization(
 	cfg *config.ClientAPI,
 	rsAPI roomserver.ClientRoomserverAPI,
 ) (authorization.Authorization, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Errorln("error loading .env file", err)
+	if cfg.PublicKeyAuthentication.Ethereum.NetworkUrl == "" {
+		log.Errorf("No blockchain network url specified in config\n")
+		return nil, nil
 	}
 
 	var auth ZionAuthorization
@@ -48,14 +41,14 @@ func NewZionAuthorization(
 
 	switch auth.chainId {
 	case 1337:
-		localhost, err := newZionSpaceManagerLocalhost(os.Getenv(localhostEndpointUrl))
+		localhost, err := newZionSpaceManagerLocalhost(cfg.PublicKeyAuthentication.Ethereum.NetworkUrl)
 		if err != nil {
 			log.Errorln("error instantiating ZionSpaceManagerLocalhost", err)
 		}
 		auth.spaceManagerLocalhost = localhost
 
 	case 5:
-		goerli, err := newZionSpaceManagerGoerli(os.Getenv(goerliEndpointUrl))
+		goerli, err := newZionSpaceManagerGoerli(cfg.PublicKeyAuthentication.Ethereum.NetworkUrl)
 		if err != nil {
 			log.Errorln("error instantiating ZionSpaceManagerGoerli", err)
 		}
