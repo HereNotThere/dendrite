@@ -40,7 +40,7 @@ func NewZionAuthorization(
 	auth.store = NewStore(rsAPI)
 
 	switch auth.chainId {
-	case 1337:
+	case 1337, 31337:
 		localhost, err := newZionSpaceManagerLocalhost(cfg.PublicKeyAuthentication.Ethereum.NetworkUrl)
 		if err != nil {
 			log.Errorln("error instantiating ZionSpaceManagerLocalhost", err)
@@ -73,12 +73,12 @@ func (za *ZionAuthorization) IsAllowed(args authorization.AuthorizationArgs) (bo
 	}
 
 	switch za.chainId {
-	case 1337:
+	case 1337, 31337:
 		return za.isAllowedLocalhost(roomInfo, userIdentifier.AccountAddress, args.Permission)
 	case 5:
 		return za.isAllowedGoerli(roomInfo, userIdentifier.AccountAddress, args.Permission)
 	default:
-		log.Errorf("Unsupported chain id: %d\n", userIdentifier.ChainId)
+		log.Errorf("Unsupported chain id: %d", userIdentifier.ChainId)
 	}
 
 	return false, nil

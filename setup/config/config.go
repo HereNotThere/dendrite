@@ -596,7 +596,7 @@ func (config *Dendrite) replaceWithEnvVariables() {
 	config.Global.ServerName = gomatrixserverlib.ServerName(
 		replaceWithEnvVariables(string(config.Global.ServerName)),
 	)
-	logrus.Infof("Matrix ServerName=%s\n", config.Global.ServerName)
+	logrus.Infof("Matrix ServerName=%s", config.Global.ServerName)
 
 	config.Global.DatabaseOptions.ConnectionString = DataSource(
 		replaceWithEnvVariables(
