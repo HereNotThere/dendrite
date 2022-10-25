@@ -586,7 +586,9 @@ Replace selected config with environment variables
 */
 
 func (config *Dendrite) replaceWithEnvVariables() {
-	// Replace selected fields with env variables
+	// If env variable is set, get the value from the env
+	// variable and replace it in each supported field.
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		logrus.Errorln("error loading .env file", err)
@@ -603,17 +605,15 @@ func (config *Dendrite) replaceWithEnvVariables() {
 		),
 	)
 
-	// If env variable is set, convert the chain ID from the env
-	// variable into int and replace the ChainID field.
 	if config.ClientAPI.PublicKeyAuthentication.Ethereum.Enabled {
 		config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigChainID =
 			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigChainID)
 
-		config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz =
-			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz)
-
 		config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl =
 			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl)
+
+		config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz =
+			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz)
 
 		logrus.Infof(
 			"Supported Ethereum chain ID=%d, network URL=%s",
