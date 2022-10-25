@@ -23,7 +23,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -604,22 +603,21 @@ func (config *Dendrite) replaceWithEnvVariables() {
 		),
 	)
 
-	// If env variable is set, convert the deployment chain IDs from the env
-	// variable into []int and replace the ChainIDs field.
+	// If env variable is set, convert the chain ID from the env
+	// variable into int and replace the ChainID field.
 	if config.ClientAPI.PublicKeyAuthentication.Ethereum.Enabled {
-		strChainId := replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.DeploymentChainID)
-		if strChainId != "" {
-			id, err := strconv.Atoi(strings.TrimSpace(strChainId))
-			if err == nil {
-				config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID = id
-			}
-		}
+		config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigChainID =
+			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigChainID)
 
-		config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl = replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl)
+		config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz =
+			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigEnableAuthz)
+
+		config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl =
+			replaceWithEnvVariables(config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl)
 
 		logrus.Infof(
 			"Supported Ethereum chain ID=%d, network URL=%s",
-			config.ClientAPI.PublicKeyAuthentication.Ethereum.ChainID,
+			config.ClientAPI.PublicKeyAuthentication.Ethereum.ConfigChainID,
 			config.ClientAPI.PublicKeyAuthentication.Ethereum.NetworkUrl,
 		)
 	}
