@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -45,7 +46,7 @@ func createLoginContext(_ *testing.T) *loginContext {
 			Ethereum: config.EthereumAuthConfig{
 				Enabled:       true,
 				Version:       1,
-				ConfigChainID: testutil.EthereumTestNetworkId,
+				ConfigChainID: strconv.Itoa(testutil.EthereumTestNetworkId),
 			},
 		},
 	}
