@@ -49,4 +49,5 @@ Leaves are present in non-gapped incremental syncs
 
 # Fails due to fix / workaround for this issue https://github.com/matrix-org/dendrite/issues/2842
 
-Newly joined room has correct timeline in incremental sync
+Newly joined room is included in an incremental sync
+Newly joined room is included in an incremental sync after invite
