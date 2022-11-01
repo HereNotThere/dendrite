@@ -80,12 +80,12 @@ func (p *InviteStreamProvider) IncrementalSync(
 			continue
 		}
 
-		joinedUsers, err := snapshot.AllJoinedUsersInRoom(ctx, []string{roomID})
+		isMember, err := snapshot.IsMemberOfRoom(ctx, roomID, req.Device.UserID)
 		if err != nil {
 			continue
 		}
 
-		if !contains(joinedUsers[roomID], req.Device.UserID) {
+		if !isMember {
 			lr := types.NewLeaveResponse()
 			h := sha256.Sum256(append([]byte(roomID), []byte(strconv.FormatInt(int64(to), 10))...))
 			lr.Timeline.Events = append(lr.Timeline.Events, gomatrixserverlib.ClientEvent{
@@ -103,13 +103,4 @@ func (p *InviteStreamProvider) IncrementalSync(
 	}
 
 	return maxID
-}
-
-func contains(values []string, findVal string) bool {
-	for _, v := range values {
-		if v == findVal {
-			return true
-		}
-	}
-	return false
 }
