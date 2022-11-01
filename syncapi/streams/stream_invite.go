@@ -74,13 +74,6 @@ func (p *InviteStreamProvider) IncrementalSync(
 		return to
 	}
 	for roomID := range retiredInvites {
-		if req.Response.Rooms.Invite[roomID] != nil {
-			continue
-		}
-		if req.Response.Rooms.Join[roomID] != nil {
-			continue
-		}
-
 		membership, _, err := snapshot.SelectMembershipForUser(ctx, roomID, req.Device.UserID, math.MaxInt64)
 		if membership == gomatrixserverlib.Join ||
 			membership == gomatrixserverlib.Invite ||
