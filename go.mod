@@ -7,7 +7,7 @@ require (
 	github.com/MFAshby/stdemuxerhook v1.0.0
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/blevesearch/bleve/v2 v2.3.6
-	github.com/btcsuite/btcd v0.20.1-beta
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1
 	github.com/codeclysm/extract v2.2.0+incompatible
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/docker/docker v20.10.19+incompatible
