@@ -526,8 +526,11 @@ func cleanup(dockerClient *client.Client) {
 	})
 	for _, c := range containers {
 		log.Printf("Removing container: %v %v\n", c.ID, c.Names)
-		s := time.Second
-		_ = dockerClient.ContainerStop(context.Background(), c.ID, &s)
+		timeout := (int)(time.Second)
+		s := container.StopOptions{
+			Timeout: &timeout,
+		}
+		_ = dockerClient.ContainerStop(context.Background(), c.ID, s)
 		_ = dockerClient.ContainerRemove(context.Background(), c.ID, types.ContainerRemoveOptions{
 			Force: true,
 		})
