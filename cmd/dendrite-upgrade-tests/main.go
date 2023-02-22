@@ -521,7 +521,7 @@ func testCreateAccount(dockerClient *client.Client, version *semver.Version, con
 }
 
 func versionToBranchAndBinary(version *semver.Version) (branchName, binary string) {
-	binary = "dendrite-monolith-server"
+	binary = "dendrite"
 	branchName = version.Original()
 	if version.GreaterThan(binaryChangeVersion) {
 		binary = "dendrite"
