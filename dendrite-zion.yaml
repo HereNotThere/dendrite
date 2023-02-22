@@ -50,6 +50,11 @@ global:
     max_idle_conns: 5
     conn_max_lifetime: -1
 
+  sentry:
+    enabled: true
+    dsn: https://21c6aa87be2d4b6f8e691982392fb4d9@o327188.ingest.sentry.io/4504720094986240
+    environment: ${SERVER_NAME}-chainId:${CHAIN_ID}
+
   # The paths and expiry timestamps (as a UNIX timestamp in millisecond precision)
   # to old signing private keys that were formerly in use on this domain. These
   # keys will not be used for federation request or event signing, but will be
