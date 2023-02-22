@@ -308,10 +308,6 @@ jobs:
           - label: SQLite Cgo
             cgo: 1
 
-          - label: SQLite Cgo, full HTTP APIs
-            api: full-http
-            cgo: 1
-
           - label: PostgreSQL
             postgres: postgres
 
