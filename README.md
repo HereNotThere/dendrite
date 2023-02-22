@@ -74,7 +74,7 @@ $ ./bin/generate-keys --tls-cert server.crt --tls-key server.key
 $ cp dendrite-sample.monolith.yaml dendrite.yaml
 
 # Build and run the server:
-$ ./bin/dendrite-monolith-server --tls-cert server.crt --tls-key server.key --config dendrite.yaml
+$ ./bin/dendrite --tls-cert server.crt --tls-key server.key --config dendrite.yaml
 
 # Create an user account (add -admin for an admin user).
 # Specify the localpart only, e.g. 'alice' for '@alice:domain.com'
