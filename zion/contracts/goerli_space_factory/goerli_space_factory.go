@@ -46,7 +46,7 @@ type DataTypesExternalToken struct {
 
 // GoerliSpaceFactoryMetaData contains all meta data concerning the GoerliSpaceFactory contract.
 var GoerliSpaceFactoryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"InvalidParameters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameContainsInvalidCharacters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameLengthInvalid\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PermissionAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SpaceAlreadyRegistered\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"SPACE_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SPACE_TOKEN_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"TOKEN_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"USER_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"addOwnerPermissions\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"spaceMetadata\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"_everyonePermissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"roleName\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"permissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"quantity\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isSingleToken\",\"type\":\"bool\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structDataTypes.ExternalToken[]\",\"name\":\"tokens\",\"type\":\"tuple[]\"},{\"internalType\":\"address[]\",\"name\":\"users\",\"type\":\"address[]\"}],\"internalType\":\"structDataTypes.CreateSpaceExtraEntitlements\",\"name\":\"_extraEntitlements\",\"type\":\"tuple\"}],\"name\":\"createSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_spaceAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getOwnerPermissions\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"}],\"name\":\"getSpaceAddressByNetworkId\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"}],\"name\":\"getTokenIdByNetworkId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_space\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_userEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_spaceToken\",\"type\":\"address\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"ownerPermissions\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"spaceByHash\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"tokenByHash\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_space\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_userEntitlement\",\"type\":\"address\"}],\"name\":\"updateImplementations\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidParameters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameContainsInvalidCharacters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameLengthInvalid\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotAllowed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PermissionAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SpaceAlreadyRegistered\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"GATE_TOKEN_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SPACE_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SPACE_TOKEN_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"TOKEN_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"USER_IMPLEMENTATION_ADDRESS\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"addOwnerPermissions\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"spaceMetadata\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"_everyonePermissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"string\",\"name\":\"roleName\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"permissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"contractAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"quantity\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"isSingleToken\",\"type\":\"bool\"},{\"internalType\":\"uint256[]\",\"name\":\"tokenIds\",\"type\":\"uint256[]\"}],\"internalType\":\"structDataTypes.ExternalToken[]\",\"name\":\"tokens\",\"type\":\"tuple[]\"},{\"internalType\":\"address[]\",\"name\":\"users\",\"type\":\"address[]\"}],\"internalType\":\"structDataTypes.CreateSpaceExtraEntitlements\",\"name\":\"_extraEntitlements\",\"type\":\"tuple\"}],\"name\":\"createSpace\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"_spaceAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gatingEnabled\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getOwnerPermissions\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"}],\"name\":\"getSpaceAddressByNetworkId\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"spaceNetworkId\",\"type\":\"string\"}],\"name\":\"getTokenIdByNetworkId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_space\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_userEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_spaceToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_gateToken\",\"type\":\"address\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"ownerPermissions\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_gatingEnabled\",\"type\":\"bool\"}],\"name\":\"setGatingEnabled\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_paused\",\"type\":\"bool\"}],\"name\":\"setPaused\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"spaceByHash\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"tokenByHash\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_space\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_userEntitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_gateToken\",\"type\":\"address\"}],\"name\":\"updateImplementations\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
 }
 
 // GoerliSpaceFactoryABI is the input ABI used to generate the binding from.
@@ -195,6 +195,37 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorRaw) Transact(opts *bind.
 	return _GoerliSpaceFactory.Contract.contract.Transact(opts, method, params...)
 }
 
+// GATETOKENADDRESS is a free data retrieval call binding the contract method 0xed267116.
+//
+// Solidity: function GATE_TOKEN_ADDRESS() view returns(address)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCaller) GATETOKENADDRESS(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _GoerliSpaceFactory.contract.Call(opts, &out, "GATE_TOKEN_ADDRESS")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GATETOKENADDRESS is a free data retrieval call binding the contract method 0xed267116.
+//
+// Solidity: function GATE_TOKEN_ADDRESS() view returns(address)
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) GATETOKENADDRESS() (common.Address, error) {
+	return _GoerliSpaceFactory.Contract.GATETOKENADDRESS(&_GoerliSpaceFactory.CallOpts)
+}
+
+// GATETOKENADDRESS is a free data retrieval call binding the contract method 0xed267116.
+//
+// Solidity: function GATE_TOKEN_ADDRESS() view returns(address)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCallerSession) GATETOKENADDRESS() (common.Address, error) {
+	return _GoerliSpaceFactory.Contract.GATETOKENADDRESS(&_GoerliSpaceFactory.CallOpts)
+}
+
 // SPACEIMPLEMENTATIONADDRESS is a free data retrieval call binding the contract method 0xf21cd401.
 //
 // Solidity: function SPACE_IMPLEMENTATION_ADDRESS() view returns(address)
@@ -317,6 +348,37 @@ func (_GoerliSpaceFactory *GoerliSpaceFactorySession) USERIMPLEMENTATIONADDRESS(
 // Solidity: function USER_IMPLEMENTATION_ADDRESS() view returns(address)
 func (_GoerliSpaceFactory *GoerliSpaceFactoryCallerSession) USERIMPLEMENTATIONADDRESS() (common.Address, error) {
 	return _GoerliSpaceFactory.Contract.USERIMPLEMENTATIONADDRESS(&_GoerliSpaceFactory.CallOpts)
+}
+
+// GatingEnabled is a free data retrieval call binding the contract method 0xc45f396b.
+//
+// Solidity: function gatingEnabled() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCaller) GatingEnabled(opts *bind.CallOpts) (bool, error) {
+	var out []interface{}
+	err := _GoerliSpaceFactory.contract.Call(opts, &out, "gatingEnabled")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// GatingEnabled is a free data retrieval call binding the contract method 0xc45f396b.
+//
+// Solidity: function gatingEnabled() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) GatingEnabled() (bool, error) {
+	return _GoerliSpaceFactory.Contract.GatingEnabled(&_GoerliSpaceFactory.CallOpts)
+}
+
+// GatingEnabled is a free data retrieval call binding the contract method 0xc45f396b.
+//
+// Solidity: function gatingEnabled() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCallerSession) GatingEnabled() (bool, error) {
+	return _GoerliSpaceFactory.Contract.GatingEnabled(&_GoerliSpaceFactory.CallOpts)
 }
 
 // GetOwnerPermissions is a free data retrieval call binding the contract method 0xdf2cd9fe.
@@ -474,6 +536,37 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryCallerSession) OwnerPermissions(arg
 	return _GoerliSpaceFactory.Contract.OwnerPermissions(&_GoerliSpaceFactory.CallOpts, arg0)
 }
 
+// Paused is a free data retrieval call binding the contract method 0x5c975abb.
+//
+// Solidity: function paused() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCaller) Paused(opts *bind.CallOpts) (bool, error) {
+	var out []interface{}
+	err := _GoerliSpaceFactory.contract.Call(opts, &out, "paused")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// Paused is a free data retrieval call binding the contract method 0x5c975abb.
+//
+// Solidity: function paused() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) Paused() (bool, error) {
+	return _GoerliSpaceFactory.Contract.Paused(&_GoerliSpaceFactory.CallOpts)
+}
+
+// Paused is a free data retrieval call binding the contract method 0x5c975abb.
+//
+// Solidity: function paused() view returns(bool)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryCallerSession) Paused() (bool, error) {
+	return _GoerliSpaceFactory.Contract.Paused(&_GoerliSpaceFactory.CallOpts)
+}
+
 // ProxiableUUID is a free data retrieval call binding the contract method 0x52d1902d.
 //
 // Solidity: function proxiableUUID() view returns(bytes32)
@@ -609,25 +702,46 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) CreateSpace(spac
 	return _GoerliSpaceFactory.Contract.CreateSpace(&_GoerliSpaceFactory.TransactOpts, spaceName, spaceNetworkId, spaceMetadata, _everyonePermissions, _extraEntitlements)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x45bfa5b1.
+// Initialize is a paid mutator transaction binding the contract method 0x6e9ea7ca.
 //
-// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, string[] _permissions) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) Initialize(opts *bind.TransactOpts, _space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _permissions []string) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.contract.Transact(opts, "initialize", _space, _tokenEntitlement, _userEntitlement, _spaceToken, _permissions)
+// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, address _gateToken, string[] _permissions) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) Initialize(opts *bind.TransactOpts, _space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _gateToken common.Address, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.contract.Transact(opts, "initialize", _space, _tokenEntitlement, _userEntitlement, _spaceToken, _gateToken, _permissions)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x45bfa5b1.
+// Initialize is a paid mutator transaction binding the contract method 0x6e9ea7ca.
 //
-// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, string[] _permissions) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactorySession) Initialize(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _permissions []string) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.Contract.Initialize(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _spaceToken, _permissions)
+// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, address _gateToken, string[] _permissions) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) Initialize(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _gateToken common.Address, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.Initialize(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _spaceToken, _gateToken, _permissions)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0x45bfa5b1.
+// Initialize is a paid mutator transaction binding the contract method 0x6e9ea7ca.
 //
-// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, string[] _permissions) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) Initialize(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _permissions []string) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.Contract.Initialize(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _spaceToken, _permissions)
+// Solidity: function initialize(address _space, address _tokenEntitlement, address _userEntitlement, address _spaceToken, address _gateToken, string[] _permissions) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) Initialize(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _spaceToken common.Address, _gateToken common.Address, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.Initialize(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _spaceToken, _gateToken, _permissions)
+}
+
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) OnERC721Received(opts *bind.TransactOpts, arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.contract.Transact(opts, "onERC721Received", arg0, arg1, arg2, arg3)
+}
+
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) OnERC721Received(arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.OnERC721Received(&_GoerliSpaceFactory.TransactOpts, arg0, arg1, arg2, arg3)
+}
+
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) OnERC721Received(arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.OnERC721Received(&_GoerliSpaceFactory.TransactOpts, arg0, arg1, arg2, arg3)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
@@ -651,6 +765,48 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) RenounceOwnershi
 	return _GoerliSpaceFactory.Contract.RenounceOwnership(&_GoerliSpaceFactory.TransactOpts)
 }
 
+// SetGatingEnabled is a paid mutator transaction binding the contract method 0x4689cd04.
+//
+// Solidity: function setGatingEnabled(bool _gatingEnabled) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) SetGatingEnabled(opts *bind.TransactOpts, _gatingEnabled bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.contract.Transact(opts, "setGatingEnabled", _gatingEnabled)
+}
+
+// SetGatingEnabled is a paid mutator transaction binding the contract method 0x4689cd04.
+//
+// Solidity: function setGatingEnabled(bool _gatingEnabled) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) SetGatingEnabled(_gatingEnabled bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.SetGatingEnabled(&_GoerliSpaceFactory.TransactOpts, _gatingEnabled)
+}
+
+// SetGatingEnabled is a paid mutator transaction binding the contract method 0x4689cd04.
+//
+// Solidity: function setGatingEnabled(bool _gatingEnabled) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) SetGatingEnabled(_gatingEnabled bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.SetGatingEnabled(&_GoerliSpaceFactory.TransactOpts, _gatingEnabled)
+}
+
+// SetPaused is a paid mutator transaction binding the contract method 0x16c38b3c.
+//
+// Solidity: function setPaused(bool _paused) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) SetPaused(opts *bind.TransactOpts, _paused bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.contract.Transact(opts, "setPaused", _paused)
+}
+
+// SetPaused is a paid mutator transaction binding the contract method 0x16c38b3c.
+//
+// Solidity: function setPaused(bool _paused) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) SetPaused(_paused bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.SetPaused(&_GoerliSpaceFactory.TransactOpts, _paused)
+}
+
+// SetPaused is a paid mutator transaction binding the contract method 0x16c38b3c.
+//
+// Solidity: function setPaused(bool _paused) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) SetPaused(_paused bool) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.SetPaused(&_GoerliSpaceFactory.TransactOpts, _paused)
+}
+
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
@@ -672,25 +828,25 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) TransferOwnershi
 	return _GoerliSpaceFactory.Contract.TransferOwnership(&_GoerliSpaceFactory.TransactOpts, newOwner)
 }
 
-// UpdateImplementations is a paid mutator transaction binding the contract method 0xdfc666ff.
+// UpdateImplementations is a paid mutator transaction binding the contract method 0x9ad622b7.
 //
-// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) UpdateImplementations(opts *bind.TransactOpts, _space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.contract.Transact(opts, "updateImplementations", _space, _tokenEntitlement, _userEntitlement)
+// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement, address _gateToken) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactor) UpdateImplementations(opts *bind.TransactOpts, _space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _gateToken common.Address) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.contract.Transact(opts, "updateImplementations", _space, _tokenEntitlement, _userEntitlement, _gateToken)
 }
 
-// UpdateImplementations is a paid mutator transaction binding the contract method 0xdfc666ff.
+// UpdateImplementations is a paid mutator transaction binding the contract method 0x9ad622b7.
 //
-// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactorySession) UpdateImplementations(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.Contract.UpdateImplementations(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement)
+// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement, address _gateToken) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactorySession) UpdateImplementations(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _gateToken common.Address) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.UpdateImplementations(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _gateToken)
 }
 
-// UpdateImplementations is a paid mutator transaction binding the contract method 0xdfc666ff.
+// UpdateImplementations is a paid mutator transaction binding the contract method 0x9ad622b7.
 //
-// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement) returns()
-func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) UpdateImplementations(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address) (*types.Transaction, error) {
-	return _GoerliSpaceFactory.Contract.UpdateImplementations(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement)
+// Solidity: function updateImplementations(address _space, address _tokenEntitlement, address _userEntitlement, address _gateToken) returns()
+func (_GoerliSpaceFactory *GoerliSpaceFactoryTransactorSession) UpdateImplementations(_space common.Address, _tokenEntitlement common.Address, _userEntitlement common.Address, _gateToken common.Address) (*types.Transaction, error) {
+	return _GoerliSpaceFactory.Contract.UpdateImplementations(&_GoerliSpaceFactory.TransactOpts, _space, _tokenEntitlement, _userEntitlement, _gateToken)
 }
 
 // UpgradeTo is a paid mutator transaction binding the contract method 0x3659cfe6.
@@ -1295,6 +1451,274 @@ func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) WatchOwnershipTransferred
 func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) ParseOwnershipTransferred(log types.Log) (*GoerliSpaceFactoryOwnershipTransferred, error) {
 	event := new(GoerliSpaceFactoryOwnershipTransferred)
 	if err := _GoerliSpaceFactory.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// GoerliSpaceFactoryPausedIterator is returned from FilterPaused and is used to iterate over the raw logs and unpacked data for Paused events raised by the GoerliSpaceFactory contract.
+type GoerliSpaceFactoryPausedIterator struct {
+	Event *GoerliSpaceFactoryPaused // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *GoerliSpaceFactoryPausedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(GoerliSpaceFactoryPaused)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(GoerliSpaceFactoryPaused)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *GoerliSpaceFactoryPausedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *GoerliSpaceFactoryPausedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// GoerliSpaceFactoryPaused represents a Paused event raised by the GoerliSpaceFactory contract.
+type GoerliSpaceFactoryPaused struct {
+	Account common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterPaused is a free log retrieval operation binding the contract event 0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258.
+//
+// Solidity: event Paused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) FilterPaused(opts *bind.FilterOpts) (*GoerliSpaceFactoryPausedIterator, error) {
+
+	logs, sub, err := _GoerliSpaceFactory.contract.FilterLogs(opts, "Paused")
+	if err != nil {
+		return nil, err
+	}
+	return &GoerliSpaceFactoryPausedIterator{contract: _GoerliSpaceFactory.contract, event: "Paused", logs: logs, sub: sub}, nil
+}
+
+// WatchPaused is a free log subscription operation binding the contract event 0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258.
+//
+// Solidity: event Paused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) WatchPaused(opts *bind.WatchOpts, sink chan<- *GoerliSpaceFactoryPaused) (event.Subscription, error) {
+
+	logs, sub, err := _GoerliSpaceFactory.contract.WatchLogs(opts, "Paused")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(GoerliSpaceFactoryPaused)
+				if err := _GoerliSpaceFactory.contract.UnpackLog(event, "Paused", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParsePaused is a log parse operation binding the contract event 0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258.
+//
+// Solidity: event Paused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) ParsePaused(log types.Log) (*GoerliSpaceFactoryPaused, error) {
+	event := new(GoerliSpaceFactoryPaused)
+	if err := _GoerliSpaceFactory.contract.UnpackLog(event, "Paused", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// GoerliSpaceFactoryUnpausedIterator is returned from FilterUnpaused and is used to iterate over the raw logs and unpacked data for Unpaused events raised by the GoerliSpaceFactory contract.
+type GoerliSpaceFactoryUnpausedIterator struct {
+	Event *GoerliSpaceFactoryUnpaused // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *GoerliSpaceFactoryUnpausedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(GoerliSpaceFactoryUnpaused)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(GoerliSpaceFactoryUnpaused)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *GoerliSpaceFactoryUnpausedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *GoerliSpaceFactoryUnpausedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// GoerliSpaceFactoryUnpaused represents a Unpaused event raised by the GoerliSpaceFactory contract.
+type GoerliSpaceFactoryUnpaused struct {
+	Account common.Address
+	Raw     types.Log // Blockchain specific contextual infos
+}
+
+// FilterUnpaused is a free log retrieval operation binding the contract event 0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa.
+//
+// Solidity: event Unpaused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) FilterUnpaused(opts *bind.FilterOpts) (*GoerliSpaceFactoryUnpausedIterator, error) {
+
+	logs, sub, err := _GoerliSpaceFactory.contract.FilterLogs(opts, "Unpaused")
+	if err != nil {
+		return nil, err
+	}
+	return &GoerliSpaceFactoryUnpausedIterator{contract: _GoerliSpaceFactory.contract, event: "Unpaused", logs: logs, sub: sub}, nil
+}
+
+// WatchUnpaused is a free log subscription operation binding the contract event 0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa.
+//
+// Solidity: event Unpaused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) WatchUnpaused(opts *bind.WatchOpts, sink chan<- *GoerliSpaceFactoryUnpaused) (event.Subscription, error) {
+
+	logs, sub, err := _GoerliSpaceFactory.contract.WatchLogs(opts, "Unpaused")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(GoerliSpaceFactoryUnpaused)
+				if err := _GoerliSpaceFactory.contract.UnpackLog(event, "Unpaused", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseUnpaused is a log parse operation binding the contract event 0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa.
+//
+// Solidity: event Unpaused(address account)
+func (_GoerliSpaceFactory *GoerliSpaceFactoryFilterer) ParseUnpaused(log types.Log) (*GoerliSpaceFactoryUnpaused, error) {
+	event := new(GoerliSpaceFactoryUnpaused)
+	if err := _GoerliSpaceFactory.contract.UnpackLog(event, "Unpaused", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

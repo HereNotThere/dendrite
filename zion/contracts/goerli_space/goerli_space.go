@@ -30,16 +30,25 @@ var (
 
 // DataTypesChannel is an auto generated low-level Go binding around an user-defined struct.
 type DataTypesChannel struct {
-	Name      string
-	ChannelId [32]byte
-	CreatedAt *big.Int
-	Disabled  bool
+	Name             string
+	ChannelNetworkId string
+	ChannelHash      [32]byte
+	CreatedAt        *big.Int
+	Disabled         bool
 }
 
 // DataTypesEntitlement is an auto generated low-level Go binding around an user-defined struct.
 type DataTypesEntitlement struct {
 	Module common.Address
 	Data   []byte
+}
+
+// DataTypesEntitlementModule is an auto generated low-level Go binding around an user-defined struct.
+type DataTypesEntitlementModule struct {
+	Name          string
+	ModuleAddress common.Address
+	ModuleType    string
+	Enabled       bool
 }
 
 // DataTypesRole is an auto generated low-level Go binding around an user-defined struct.
@@ -50,7 +59,7 @@ type DataTypesRole struct {
 
 // GoerliSpaceMetaData contains all meta data concerning the GoerliSpace contract.
 var GoerliSpaceMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"AddRoleFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ChannelAlreadyRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ChannelDoesNotExist\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementAlreadyWhitelisted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementModuleNotSupported\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementNotWhitelisted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidParameters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MissingOwnerPermission\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotAllowed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OwnerPermissionNotAllowed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PermissionAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RoleDoesNotExist\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RoleIsAssignedToEntitlement\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"addPermissionToRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"addRoleToChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement\",\"name\":\"_entitlement\",\"type\":\"tuple\"}],\"name\":\"addRoleToEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"channels\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"channelsByHash\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"disabled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"channelName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"uint256[]\",\"name\":\"roleIds\",\"type\":\"uint256[]\"}],\"name\":\"createChannel\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_roleName\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement[]\",\"name\":\"_entitlements\",\"type\":\"tuple[]\"}],\"name\":\"createRole\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"defaultEntitlements\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"disabled\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"entitlements\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelHash\",\"type\":\"bytes32\"}],\"name\":\"getChannelByHash\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"channelId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"disabled\",\"type\":\"bool\"}],\"internalType\":\"structDataTypes.Channel\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getEntitlementIdsByRoleId\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEntitlements\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getPermissionsByRoleId\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getRoleById\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"internalType\":\"structDataTypes.Role\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRoles\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"internalType\":\"structDataTypes.Role[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasEntitlement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_networkId\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"_entitlements\",\"type\":\"address[]\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"isEntitledToChannel\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_entitled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"isEntitledToSpace\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_entitled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"results\",\"type\":\"bytes[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"networkId\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ownerRoleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"removePermissionFromRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"removeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"removeRoleFromChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement\",\"name\":\"_entitlement\",\"type\":\"tuple\"}],\"name\":\"removeRoleFromEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"roleCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"rolesById\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelId\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"_disabled\",\"type\":\"bool\"}],\"name\":\"setChannelAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_whitelist\",\"type\":\"bool\"}],\"name\":\"setEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"setOwnerRoleId\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_disabled\",\"type\":\"bool\"}],\"name\":\"setSpaceAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelId\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_channelName\",\"type\":\"string\"}],\"name\":\"updateChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_roleName\",\"type\":\"string\"}],\"name\":\"updateRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AddRoleFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ChannelAlreadyRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ChannelDoesNotExist\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementAlreadyWhitelisted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementModuleNotSupported\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"EntitlementNotWhitelisted\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidParameters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"MissingOwnerPermission\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameContainsInvalidCharacters\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NameLengthInvalid\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotAllowed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PermissionAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RoleDoesNotExist\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RoleIsAssignedToEntitlement\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"previousAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"AdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"beacon\",\"type\":\"address\"}],\"name\":\"BeaconUpgraded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"version\",\"type\":\"uint8\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"implementation\",\"type\":\"address\"}],\"name\":\"Upgraded\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"addPermissionsToRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"addRoleToChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement\",\"name\":\"_entitlement\",\"type\":\"tuple\"}],\"name\":\"addRoleToEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"channels\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"channelsByHash\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"channelHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"disabled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"channelName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"uint256[]\",\"name\":\"roleIds\",\"type\":\"uint256[]\"}],\"name\":\"createChannel\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_roleName\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement[]\",\"name\":\"_entitlements\",\"type\":\"tuple[]\"}],\"name\":\"createRole\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"defaultEntitlements\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"disabled\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"entitlements\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_channelHash\",\"type\":\"bytes32\"}],\"name\":\"getChannelByHash\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"channelHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"disabled\",\"type\":\"bool\"}],\"internalType\":\"structDataTypes.Channel\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getChannels\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_moduleType\",\"type\":\"string\"}],\"name\":\"getEntitlementByModuleType\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getEntitlementIdsByRoleId\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEntitlementModules\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"moduleAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"moduleType\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"enabled\",\"type\":\"bool\"}],\"internalType\":\"structDataTypes.EntitlementModule[]\",\"name\":\"_entitlementModules\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getPermissionsByRoleId\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"getRoleById\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"internalType\":\"structDataTypes.Role\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getRoles\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"internalType\":\"structDataTypes.Role[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"hasEntitlement\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_networkId\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"_entitlements\",\"type\":\"address[]\"},{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"isEntitledToChannel\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_entitled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_permission\",\"type\":\"string\"}],\"name\":\"isEntitledToSpace\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_entitled\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes[]\",\"name\":\"data\",\"type\":\"bytes[]\"}],\"name\":\"multicall\",\"outputs\":[{\"internalType\":\"bytes[]\",\"name\":\"results\",\"type\":\"bytes[]\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"networkId\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ownerRoleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proxiableUUID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string[]\",\"name\":\"_permissions\",\"type\":\"string[]\"}],\"name\":\"removePermissionsFromRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"removeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"removeRoleFromChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"module\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"internalType\":\"structDataTypes.Entitlement\",\"name\":\"_entitlement\",\"type\":\"tuple\"}],\"name\":\"removeRoleFromEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"roleCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"rolesById\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"disableChannel\",\"type\":\"bool\"}],\"name\":\"setChannelAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_entitlementModule\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_whitelist\",\"type\":\"bool\"}],\"name\":\"setEntitlementModule\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"}],\"name\":\"setOwnerRoleId\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bool\",\"name\":\"_disabled\",\"type\":\"bool\"}],\"name\":\"setSpaceAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tokenId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"channelNetworkId\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"channelName\",\"type\":\"string\"}],\"name\":\"updateChannel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_roleId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_roleName\",\"type\":\"string\"}],\"name\":\"updateRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_entitlement\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_newEntitlement\",\"type\":\"address\"}],\"name\":\"upgradeEntitlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"}],\"name\":\"upgradeTo\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newImplementation\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"upgradeToAndCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
 }
 
 // GoerliSpaceABI is the input ABI used to generate the binding from.
@@ -232,30 +241,33 @@ func (_GoerliSpace *GoerliSpaceCallerSession) Channels(arg0 *big.Int) ([32]byte,
 
 // ChannelsByHash is a free data retrieval call binding the contract method 0x129ab3c8.
 //
-// Solidity: function channelsByHash(bytes32 ) view returns(string name, bytes32 channelId, uint256 createdAt, bool disabled)
+// Solidity: function channelsByHash(bytes32 ) view returns(string name, string channelNetworkId, bytes32 channelHash, uint256 createdAt, bool disabled)
 func (_GoerliSpace *GoerliSpaceCaller) ChannelsByHash(opts *bind.CallOpts, arg0 [32]byte) (struct {
-	Name      string
-	ChannelId [32]byte
-	CreatedAt *big.Int
-	Disabled  bool
+	Name             string
+	ChannelNetworkId string
+	ChannelHash      [32]byte
+	CreatedAt        *big.Int
+	Disabled         bool
 }, error) {
 	var out []interface{}
 	err := _GoerliSpace.contract.Call(opts, &out, "channelsByHash", arg0)
 
 	outstruct := new(struct {
-		Name      string
-		ChannelId [32]byte
-		CreatedAt *big.Int
-		Disabled  bool
+		Name             string
+		ChannelNetworkId string
+		ChannelHash      [32]byte
+		CreatedAt        *big.Int
+		Disabled         bool
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
 	outstruct.Name = *abi.ConvertType(out[0], new(string)).(*string)
-	outstruct.ChannelId = *abi.ConvertType(out[1], new([32]byte)).(*[32]byte)
-	outstruct.CreatedAt = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
-	outstruct.Disabled = *abi.ConvertType(out[3], new(bool)).(*bool)
+	outstruct.ChannelNetworkId = *abi.ConvertType(out[1], new(string)).(*string)
+	outstruct.ChannelHash = *abi.ConvertType(out[2], new([32]byte)).(*[32]byte)
+	outstruct.CreatedAt = *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+	outstruct.Disabled = *abi.ConvertType(out[4], new(bool)).(*bool)
 
 	return *outstruct, err
 
@@ -263,24 +275,26 @@ func (_GoerliSpace *GoerliSpaceCaller) ChannelsByHash(opts *bind.CallOpts, arg0 
 
 // ChannelsByHash is a free data retrieval call binding the contract method 0x129ab3c8.
 //
-// Solidity: function channelsByHash(bytes32 ) view returns(string name, bytes32 channelId, uint256 createdAt, bool disabled)
+// Solidity: function channelsByHash(bytes32 ) view returns(string name, string channelNetworkId, bytes32 channelHash, uint256 createdAt, bool disabled)
 func (_GoerliSpace *GoerliSpaceSession) ChannelsByHash(arg0 [32]byte) (struct {
-	Name      string
-	ChannelId [32]byte
-	CreatedAt *big.Int
-	Disabled  bool
+	Name             string
+	ChannelNetworkId string
+	ChannelHash      [32]byte
+	CreatedAt        *big.Int
+	Disabled         bool
 }, error) {
 	return _GoerliSpace.Contract.ChannelsByHash(&_GoerliSpace.CallOpts, arg0)
 }
 
 // ChannelsByHash is a free data retrieval call binding the contract method 0x129ab3c8.
 //
-// Solidity: function channelsByHash(bytes32 ) view returns(string name, bytes32 channelId, uint256 createdAt, bool disabled)
+// Solidity: function channelsByHash(bytes32 ) view returns(string name, string channelNetworkId, bytes32 channelHash, uint256 createdAt, bool disabled)
 func (_GoerliSpace *GoerliSpaceCallerSession) ChannelsByHash(arg0 [32]byte) (struct {
-	Name      string
-	ChannelId [32]byte
-	CreatedAt *big.Int
-	Disabled  bool
+	Name             string
+	ChannelNetworkId string
+	ChannelHash      [32]byte
+	CreatedAt        *big.Int
+	Disabled         bool
 }, error) {
 	return _GoerliSpace.Contract.ChannelsByHash(&_GoerliSpace.CallOpts, arg0)
 }
@@ -380,7 +394,7 @@ func (_GoerliSpace *GoerliSpaceCallerSession) Entitlements(arg0 *big.Int) (commo
 
 // GetChannelByHash is a free data retrieval call binding the contract method 0x703511f8.
 //
-// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,bytes32,uint256,bool))
+// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,string,bytes32,uint256,bool))
 func (_GoerliSpace *GoerliSpaceCaller) GetChannelByHash(opts *bind.CallOpts, _channelHash [32]byte) (DataTypesChannel, error) {
 	var out []interface{}
 	err := _GoerliSpace.contract.Call(opts, &out, "getChannelByHash", _channelHash)
@@ -397,16 +411,78 @@ func (_GoerliSpace *GoerliSpaceCaller) GetChannelByHash(opts *bind.CallOpts, _ch
 
 // GetChannelByHash is a free data retrieval call binding the contract method 0x703511f8.
 //
-// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,bytes32,uint256,bool))
+// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,string,bytes32,uint256,bool))
 func (_GoerliSpace *GoerliSpaceSession) GetChannelByHash(_channelHash [32]byte) (DataTypesChannel, error) {
 	return _GoerliSpace.Contract.GetChannelByHash(&_GoerliSpace.CallOpts, _channelHash)
 }
 
 // GetChannelByHash is a free data retrieval call binding the contract method 0x703511f8.
 //
-// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,bytes32,uint256,bool))
+// Solidity: function getChannelByHash(bytes32 _channelHash) view returns((string,string,bytes32,uint256,bool))
 func (_GoerliSpace *GoerliSpaceCallerSession) GetChannelByHash(_channelHash [32]byte) (DataTypesChannel, error) {
 	return _GoerliSpace.Contract.GetChannelByHash(&_GoerliSpace.CallOpts, _channelHash)
+}
+
+// GetChannels is a free data retrieval call binding the contract method 0x9575f6ac.
+//
+// Solidity: function getChannels() view returns(bytes32[])
+func (_GoerliSpace *GoerliSpaceCaller) GetChannels(opts *bind.CallOpts) ([][32]byte, error) {
+	var out []interface{}
+	err := _GoerliSpace.contract.Call(opts, &out, "getChannels")
+
+	if err != nil {
+		return *new([][32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([][32]byte)).(*[][32]byte)
+
+	return out0, err
+
+}
+
+// GetChannels is a free data retrieval call binding the contract method 0x9575f6ac.
+//
+// Solidity: function getChannels() view returns(bytes32[])
+func (_GoerliSpace *GoerliSpaceSession) GetChannels() ([][32]byte, error) {
+	return _GoerliSpace.Contract.GetChannels(&_GoerliSpace.CallOpts)
+}
+
+// GetChannels is a free data retrieval call binding the contract method 0x9575f6ac.
+//
+// Solidity: function getChannels() view returns(bytes32[])
+func (_GoerliSpace *GoerliSpaceCallerSession) GetChannels() ([][32]byte, error) {
+	return _GoerliSpace.Contract.GetChannels(&_GoerliSpace.CallOpts)
+}
+
+// GetEntitlementByModuleType is a free data retrieval call binding the contract method 0x870b9464.
+//
+// Solidity: function getEntitlementByModuleType(string _moduleType) view returns(address)
+func (_GoerliSpace *GoerliSpaceCaller) GetEntitlementByModuleType(opts *bind.CallOpts, _moduleType string) (common.Address, error) {
+	var out []interface{}
+	err := _GoerliSpace.contract.Call(opts, &out, "getEntitlementByModuleType", _moduleType)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// GetEntitlementByModuleType is a free data retrieval call binding the contract method 0x870b9464.
+//
+// Solidity: function getEntitlementByModuleType(string _moduleType) view returns(address)
+func (_GoerliSpace *GoerliSpaceSession) GetEntitlementByModuleType(_moduleType string) (common.Address, error) {
+	return _GoerliSpace.Contract.GetEntitlementByModuleType(&_GoerliSpace.CallOpts, _moduleType)
+}
+
+// GetEntitlementByModuleType is a free data retrieval call binding the contract method 0x870b9464.
+//
+// Solidity: function getEntitlementByModuleType(string _moduleType) view returns(address)
+func (_GoerliSpace *GoerliSpaceCallerSession) GetEntitlementByModuleType(_moduleType string) (common.Address, error) {
+	return _GoerliSpace.Contract.GetEntitlementByModuleType(&_GoerliSpace.CallOpts, _moduleType)
 }
 
 // GetEntitlementIdsByRoleId is a free data retrieval call binding the contract method 0x42486e49.
@@ -440,49 +516,49 @@ func (_GoerliSpace *GoerliSpaceCallerSession) GetEntitlementIdsByRoleId(_roleId 
 	return _GoerliSpace.Contract.GetEntitlementIdsByRoleId(&_GoerliSpace.CallOpts, _roleId)
 }
 
-// GetEntitlements is a free data retrieval call binding the contract method 0x487dc38c.
+// GetEntitlementModules is a free data retrieval call binding the contract method 0x0d029f75.
 //
-// Solidity: function getEntitlements() view returns(address[])
-func (_GoerliSpace *GoerliSpaceCaller) GetEntitlements(opts *bind.CallOpts) ([]common.Address, error) {
+// Solidity: function getEntitlementModules() view returns((string,address,string,bool)[] _entitlementModules)
+func (_GoerliSpace *GoerliSpaceCaller) GetEntitlementModules(opts *bind.CallOpts) ([]DataTypesEntitlementModule, error) {
 	var out []interface{}
-	err := _GoerliSpace.contract.Call(opts, &out, "getEntitlements")
+	err := _GoerliSpace.contract.Call(opts, &out, "getEntitlementModules")
 
 	if err != nil {
-		return *new([]common.Address), err
+		return *new([]DataTypesEntitlementModule), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+	out0 := *abi.ConvertType(out[0], new([]DataTypesEntitlementModule)).(*[]DataTypesEntitlementModule)
 
 	return out0, err
 
 }
 
-// GetEntitlements is a free data retrieval call binding the contract method 0x487dc38c.
+// GetEntitlementModules is a free data retrieval call binding the contract method 0x0d029f75.
 //
-// Solidity: function getEntitlements() view returns(address[])
-func (_GoerliSpace *GoerliSpaceSession) GetEntitlements() ([]common.Address, error) {
-	return _GoerliSpace.Contract.GetEntitlements(&_GoerliSpace.CallOpts)
+// Solidity: function getEntitlementModules() view returns((string,address,string,bool)[] _entitlementModules)
+func (_GoerliSpace *GoerliSpaceSession) GetEntitlementModules() ([]DataTypesEntitlementModule, error) {
+	return _GoerliSpace.Contract.GetEntitlementModules(&_GoerliSpace.CallOpts)
 }
 
-// GetEntitlements is a free data retrieval call binding the contract method 0x487dc38c.
+// GetEntitlementModules is a free data retrieval call binding the contract method 0x0d029f75.
 //
-// Solidity: function getEntitlements() view returns(address[])
-func (_GoerliSpace *GoerliSpaceCallerSession) GetEntitlements() ([]common.Address, error) {
-	return _GoerliSpace.Contract.GetEntitlements(&_GoerliSpace.CallOpts)
+// Solidity: function getEntitlementModules() view returns((string,address,string,bool)[] _entitlementModules)
+func (_GoerliSpace *GoerliSpaceCallerSession) GetEntitlementModules() ([]DataTypesEntitlementModule, error) {
+	return _GoerliSpace.Contract.GetEntitlementModules(&_GoerliSpace.CallOpts)
 }
 
 // GetPermissionsByRoleId is a free data retrieval call binding the contract method 0xb4264233.
 //
-// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(bytes32[])
-func (_GoerliSpace *GoerliSpaceCaller) GetPermissionsByRoleId(opts *bind.CallOpts, _roleId *big.Int) ([][32]byte, error) {
+// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(string[])
+func (_GoerliSpace *GoerliSpaceCaller) GetPermissionsByRoleId(opts *bind.CallOpts, _roleId *big.Int) ([]string, error) {
 	var out []interface{}
 	err := _GoerliSpace.contract.Call(opts, &out, "getPermissionsByRoleId", _roleId)
 
 	if err != nil {
-		return *new([][32]byte), err
+		return *new([]string), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([][32]byte)).(*[][32]byte)
+	out0 := *abi.ConvertType(out[0], new([]string)).(*[]string)
 
 	return out0, err
 
@@ -490,15 +566,15 @@ func (_GoerliSpace *GoerliSpaceCaller) GetPermissionsByRoleId(opts *bind.CallOpt
 
 // GetPermissionsByRoleId is a free data retrieval call binding the contract method 0xb4264233.
 //
-// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(bytes32[])
-func (_GoerliSpace *GoerliSpaceSession) GetPermissionsByRoleId(_roleId *big.Int) ([][32]byte, error) {
+// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(string[])
+func (_GoerliSpace *GoerliSpaceSession) GetPermissionsByRoleId(_roleId *big.Int) ([]string, error) {
 	return _GoerliSpace.Contract.GetPermissionsByRoleId(&_GoerliSpace.CallOpts, _roleId)
 }
 
 // GetPermissionsByRoleId is a free data retrieval call binding the contract method 0xb4264233.
 //
-// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(bytes32[])
-func (_GoerliSpace *GoerliSpaceCallerSession) GetPermissionsByRoleId(_roleId *big.Int) ([][32]byte, error) {
+// Solidity: function getPermissionsByRoleId(uint256 _roleId) view returns(string[])
+func (_GoerliSpace *GoerliSpaceCallerSession) GetPermissionsByRoleId(_roleId *big.Int) ([]string, error) {
 	return _GoerliSpace.Contract.GetPermissionsByRoleId(&_GoerliSpace.CallOpts, _roleId)
 }
 
@@ -597,10 +673,10 @@ func (_GoerliSpace *GoerliSpaceCallerSession) HasEntitlement(arg0 common.Address
 
 // IsEntitledToChannel is a free data retrieval call binding the contract method 0xcea632bc.
 //
-// Solidity: function isEntitledToChannel(string _channelId, address _user, string _permission) view returns(bool _entitled)
-func (_GoerliSpace *GoerliSpaceCaller) IsEntitledToChannel(opts *bind.CallOpts, _channelId string, _user common.Address, _permission string) (bool, error) {
+// Solidity: function isEntitledToChannel(string _channelNetworkId, address _user, string _permission) view returns(bool _entitled)
+func (_GoerliSpace *GoerliSpaceCaller) IsEntitledToChannel(opts *bind.CallOpts, _channelNetworkId string, _user common.Address, _permission string) (bool, error) {
 	var out []interface{}
-	err := _GoerliSpace.contract.Call(opts, &out, "isEntitledToChannel", _channelId, _user, _permission)
+	err := _GoerliSpace.contract.Call(opts, &out, "isEntitledToChannel", _channelNetworkId, _user, _permission)
 
 	if err != nil {
 		return *new(bool), err
@@ -614,16 +690,16 @@ func (_GoerliSpace *GoerliSpaceCaller) IsEntitledToChannel(opts *bind.CallOpts, 
 
 // IsEntitledToChannel is a free data retrieval call binding the contract method 0xcea632bc.
 //
-// Solidity: function isEntitledToChannel(string _channelId, address _user, string _permission) view returns(bool _entitled)
-func (_GoerliSpace *GoerliSpaceSession) IsEntitledToChannel(_channelId string, _user common.Address, _permission string) (bool, error) {
-	return _GoerliSpace.Contract.IsEntitledToChannel(&_GoerliSpace.CallOpts, _channelId, _user, _permission)
+// Solidity: function isEntitledToChannel(string _channelNetworkId, address _user, string _permission) view returns(bool _entitled)
+func (_GoerliSpace *GoerliSpaceSession) IsEntitledToChannel(_channelNetworkId string, _user common.Address, _permission string) (bool, error) {
+	return _GoerliSpace.Contract.IsEntitledToChannel(&_GoerliSpace.CallOpts, _channelNetworkId, _user, _permission)
 }
 
 // IsEntitledToChannel is a free data retrieval call binding the contract method 0xcea632bc.
 //
-// Solidity: function isEntitledToChannel(string _channelId, address _user, string _permission) view returns(bool _entitled)
-func (_GoerliSpace *GoerliSpaceCallerSession) IsEntitledToChannel(_channelId string, _user common.Address, _permission string) (bool, error) {
-	return _GoerliSpace.Contract.IsEntitledToChannel(&_GoerliSpace.CallOpts, _channelId, _user, _permission)
+// Solidity: function isEntitledToChannel(string _channelNetworkId, address _user, string _permission) view returns(bool _entitled)
+func (_GoerliSpace *GoerliSpaceCallerSession) IsEntitledToChannel(_channelNetworkId string, _user common.Address, _permission string) (bool, error) {
+	return _GoerliSpace.Contract.IsEntitledToChannel(&_GoerliSpace.CallOpts, _channelNetworkId, _user, _permission)
 }
 
 // IsEntitledToSpace is a free data retrieval call binding the contract method 0x20759f9e.
@@ -888,46 +964,108 @@ func (_GoerliSpace *GoerliSpaceCallerSession) RolesById(arg0 *big.Int) (struct {
 	return _GoerliSpace.Contract.RolesById(&_GoerliSpace.CallOpts, arg0)
 }
 
-// AddPermissionToRole is a paid mutator transaction binding the contract method 0x66fb345c.
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function addPermissionToRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) AddPermissionToRole(opts *bind.TransactOpts, _roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "addPermissionToRole", _roleId, _permission)
+// Solidity: function token() view returns(address)
+func (_GoerliSpace *GoerliSpaceCaller) Token(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _GoerliSpace.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
-// AddPermissionToRole is a paid mutator transaction binding the contract method 0x66fb345c.
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function addPermissionToRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceSession) AddPermissionToRole(_roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.AddPermissionToRole(&_GoerliSpace.TransactOpts, _roleId, _permission)
+// Solidity: function token() view returns(address)
+func (_GoerliSpace *GoerliSpaceSession) Token() (common.Address, error) {
+	return _GoerliSpace.Contract.Token(&_GoerliSpace.CallOpts)
 }
 
-// AddPermissionToRole is a paid mutator transaction binding the contract method 0x66fb345c.
+// Token is a free data retrieval call binding the contract method 0xfc0c546a.
 //
-// Solidity: function addPermissionToRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) AddPermissionToRole(_roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.AddPermissionToRole(&_GoerliSpace.TransactOpts, _roleId, _permission)
+// Solidity: function token() view returns(address)
+func (_GoerliSpace *GoerliSpaceCallerSession) Token() (common.Address, error) {
+	return _GoerliSpace.Contract.Token(&_GoerliSpace.CallOpts)
+}
+
+// TokenId is a free data retrieval call binding the contract method 0x17d70f7c.
+//
+// Solidity: function tokenId() view returns(uint256)
+func (_GoerliSpace *GoerliSpaceCaller) TokenId(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _GoerliSpace.contract.Call(opts, &out, "tokenId")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// TokenId is a free data retrieval call binding the contract method 0x17d70f7c.
+//
+// Solidity: function tokenId() view returns(uint256)
+func (_GoerliSpace *GoerliSpaceSession) TokenId() (*big.Int, error) {
+	return _GoerliSpace.Contract.TokenId(&_GoerliSpace.CallOpts)
+}
+
+// TokenId is a free data retrieval call binding the contract method 0x17d70f7c.
+//
+// Solidity: function tokenId() view returns(uint256)
+func (_GoerliSpace *GoerliSpaceCallerSession) TokenId() (*big.Int, error) {
+	return _GoerliSpace.Contract.TokenId(&_GoerliSpace.CallOpts)
+}
+
+// AddPermissionsToRole is a paid mutator transaction binding the contract method 0xb7515761.
+//
+// Solidity: function addPermissionsToRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) AddPermissionsToRole(opts *bind.TransactOpts, _roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "addPermissionsToRole", _roleId, _permissions)
+}
+
+// AddPermissionsToRole is a paid mutator transaction binding the contract method 0xb7515761.
+//
+// Solidity: function addPermissionsToRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceSession) AddPermissionsToRole(_roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.AddPermissionsToRole(&_GoerliSpace.TransactOpts, _roleId, _permissions)
+}
+
+// AddPermissionsToRole is a paid mutator transaction binding the contract method 0xb7515761.
+//
+// Solidity: function addPermissionsToRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) AddPermissionsToRole(_roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.AddPermissionsToRole(&_GoerliSpace.TransactOpts, _roleId, _permissions)
 }
 
 // AddRoleToChannel is a paid mutator transaction binding the contract method 0x1dea616a.
 //
-// Solidity: function addRoleToChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) AddRoleToChannel(opts *bind.TransactOpts, _channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "addRoleToChannel", _channelId, _entitlement, _roleId)
+// Solidity: function addRoleToChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) AddRoleToChannel(opts *bind.TransactOpts, _channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "addRoleToChannel", _channelNetworkId, _entitlement, _roleId)
 }
 
 // AddRoleToChannel is a paid mutator transaction binding the contract method 0x1dea616a.
 //
-// Solidity: function addRoleToChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceSession) AddRoleToChannel(_channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.AddRoleToChannel(&_GoerliSpace.TransactOpts, _channelId, _entitlement, _roleId)
+// Solidity: function addRoleToChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceSession) AddRoleToChannel(_channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.AddRoleToChannel(&_GoerliSpace.TransactOpts, _channelNetworkId, _entitlement, _roleId)
 }
 
 // AddRoleToChannel is a paid mutator transaction binding the contract method 0x1dea616a.
 //
-// Solidity: function addRoleToChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) AddRoleToChannel(_channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.AddRoleToChannel(&_GoerliSpace.TransactOpts, _channelId, _entitlement, _roleId)
+// Solidity: function addRoleToChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) AddRoleToChannel(_channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.AddRoleToChannel(&_GoerliSpace.TransactOpts, _channelNetworkId, _entitlement, _roleId)
 }
 
 // AddRoleToEntitlement is a paid mutator transaction binding the contract method 0xba201ba8.
@@ -993,25 +1131,25 @@ func (_GoerliSpace *GoerliSpaceTransactorSession) CreateRole(_roleName string, _
 	return _GoerliSpace.Contract.CreateRole(&_GoerliSpace.TransactOpts, _roleName, _permissions, _entitlements)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xca275931.
+// Initialize is a paid mutator transaction binding the contract method 0xf3ce6a5b.
 //
-// Solidity: function initialize(string _name, string _networkId, address[] _entitlements) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) Initialize(opts *bind.TransactOpts, _name string, _networkId string, _entitlements []common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "initialize", _name, _networkId, _entitlements)
+// Solidity: function initialize(string _name, string _networkId, address[] _entitlements, address _token, uint256 _tokenId) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) Initialize(opts *bind.TransactOpts, _name string, _networkId string, _entitlements []common.Address, _token common.Address, _tokenId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "initialize", _name, _networkId, _entitlements, _token, _tokenId)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xca275931.
+// Initialize is a paid mutator transaction binding the contract method 0xf3ce6a5b.
 //
-// Solidity: function initialize(string _name, string _networkId, address[] _entitlements) returns()
-func (_GoerliSpace *GoerliSpaceSession) Initialize(_name string, _networkId string, _entitlements []common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.Initialize(&_GoerliSpace.TransactOpts, _name, _networkId, _entitlements)
+// Solidity: function initialize(string _name, string _networkId, address[] _entitlements, address _token, uint256 _tokenId) returns()
+func (_GoerliSpace *GoerliSpaceSession) Initialize(_name string, _networkId string, _entitlements []common.Address, _token common.Address, _tokenId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.Initialize(&_GoerliSpace.TransactOpts, _name, _networkId, _entitlements, _token, _tokenId)
 }
 
-// Initialize is a paid mutator transaction binding the contract method 0xca275931.
+// Initialize is a paid mutator transaction binding the contract method 0xf3ce6a5b.
 //
-// Solidity: function initialize(string _name, string _networkId, address[] _entitlements) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) Initialize(_name string, _networkId string, _entitlements []common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.Initialize(&_GoerliSpace.TransactOpts, _name, _networkId, _entitlements)
+// Solidity: function initialize(string _name, string _networkId, address[] _entitlements, address _token, uint256 _tokenId) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) Initialize(_name string, _networkId string, _entitlements []common.Address, _token common.Address, _tokenId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.Initialize(&_GoerliSpace.TransactOpts, _name, _networkId, _entitlements, _token, _tokenId)
 }
 
 // Multicall is a paid mutator transaction binding the contract method 0xac9650d8.
@@ -1035,25 +1173,25 @@ func (_GoerliSpace *GoerliSpaceTransactorSession) Multicall(data [][]byte) (*typ
 	return _GoerliSpace.Contract.Multicall(&_GoerliSpace.TransactOpts, data)
 }
 
-// RemovePermissionFromRole is a paid mutator transaction binding the contract method 0xf740bb6b.
+// RemovePermissionsFromRole is a paid mutator transaction binding the contract method 0x9a8e4c3e.
 //
-// Solidity: function removePermissionFromRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) RemovePermissionFromRole(opts *bind.TransactOpts, _roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "removePermissionFromRole", _roleId, _permission)
+// Solidity: function removePermissionsFromRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) RemovePermissionsFromRole(opts *bind.TransactOpts, _roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "removePermissionsFromRole", _roleId, _permissions)
 }
 
-// RemovePermissionFromRole is a paid mutator transaction binding the contract method 0xf740bb6b.
+// RemovePermissionsFromRole is a paid mutator transaction binding the contract method 0x9a8e4c3e.
 //
-// Solidity: function removePermissionFromRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceSession) RemovePermissionFromRole(_roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RemovePermissionFromRole(&_GoerliSpace.TransactOpts, _roleId, _permission)
+// Solidity: function removePermissionsFromRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceSession) RemovePermissionsFromRole(_roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.RemovePermissionsFromRole(&_GoerliSpace.TransactOpts, _roleId, _permissions)
 }
 
-// RemovePermissionFromRole is a paid mutator transaction binding the contract method 0xf740bb6b.
+// RemovePermissionsFromRole is a paid mutator transaction binding the contract method 0x9a8e4c3e.
 //
-// Solidity: function removePermissionFromRole(uint256 _roleId, string _permission) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) RemovePermissionFromRole(_roleId *big.Int, _permission string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RemovePermissionFromRole(&_GoerliSpace.TransactOpts, _roleId, _permission)
+// Solidity: function removePermissionsFromRole(uint256 _roleId, string[] _permissions) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) RemovePermissionsFromRole(_roleId *big.Int, _permissions []string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.RemovePermissionsFromRole(&_GoerliSpace.TransactOpts, _roleId, _permissions)
 }
 
 // RemoveRole is a paid mutator transaction binding the contract method 0x92691821.
@@ -1079,23 +1217,23 @@ func (_GoerliSpace *GoerliSpaceTransactorSession) RemoveRole(_roleId *big.Int) (
 
 // RemoveRoleFromChannel is a paid mutator transaction binding the contract method 0xbaaf3d57.
 //
-// Solidity: function removeRoleFromChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) RemoveRoleFromChannel(opts *bind.TransactOpts, _channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "removeRoleFromChannel", _channelId, _entitlement, _roleId)
+// Solidity: function removeRoleFromChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) RemoveRoleFromChannel(opts *bind.TransactOpts, _channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "removeRoleFromChannel", _channelNetworkId, _entitlement, _roleId)
 }
 
 // RemoveRoleFromChannel is a paid mutator transaction binding the contract method 0xbaaf3d57.
 //
-// Solidity: function removeRoleFromChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceSession) RemoveRoleFromChannel(_channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RemoveRoleFromChannel(&_GoerliSpace.TransactOpts, _channelId, _entitlement, _roleId)
+// Solidity: function removeRoleFromChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceSession) RemoveRoleFromChannel(_channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.RemoveRoleFromChannel(&_GoerliSpace.TransactOpts, _channelNetworkId, _entitlement, _roleId)
 }
 
 // RemoveRoleFromChannel is a paid mutator transaction binding the contract method 0xbaaf3d57.
 //
-// Solidity: function removeRoleFromChannel(string _channelId, address _entitlement, uint256 _roleId) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) RemoveRoleFromChannel(_channelId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RemoveRoleFromChannel(&_GoerliSpace.TransactOpts, _channelId, _entitlement, _roleId)
+// Solidity: function removeRoleFromChannel(string _channelNetworkId, address _entitlement, uint256 _roleId) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) RemoveRoleFromChannel(_channelNetworkId string, _entitlement common.Address, _roleId *big.Int) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.RemoveRoleFromChannel(&_GoerliSpace.TransactOpts, _channelNetworkId, _entitlement, _roleId)
 }
 
 // RemoveRoleFromEntitlement is a paid mutator transaction binding the contract method 0xdba81864.
@@ -1119,67 +1257,46 @@ func (_GoerliSpace *GoerliSpaceTransactorSession) RemoveRoleFromEntitlement(_rol
 	return _GoerliSpace.Contract.RemoveRoleFromEntitlement(&_GoerliSpace.TransactOpts, _roleId, _entitlement)
 }
 
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+// SetChannelAccess is a paid mutator transaction binding the contract method 0x5de151b8.
 //
-// Solidity: function renounceOwnership() returns()
-func (_GoerliSpace *GoerliSpaceTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "renounceOwnership")
-}
-
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
-//
-// Solidity: function renounceOwnership() returns()
-func (_GoerliSpace *GoerliSpaceSession) RenounceOwnership() (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RenounceOwnership(&_GoerliSpace.TransactOpts)
-}
-
-// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
-//
-// Solidity: function renounceOwnership() returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) RenounceOwnership() (*types.Transaction, error) {
-	return _GoerliSpace.Contract.RenounceOwnership(&_GoerliSpace.TransactOpts)
+// Solidity: function setChannelAccess(string channelNetworkId, bool disableChannel) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) SetChannelAccess(opts *bind.TransactOpts, channelNetworkId string, disableChannel bool) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "setChannelAccess", channelNetworkId, disableChannel)
 }
 
 // SetChannelAccess is a paid mutator transaction binding the contract method 0x5de151b8.
 //
-// Solidity: function setChannelAccess(string _channelId, bool _disabled) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) SetChannelAccess(opts *bind.TransactOpts, _channelId string, _disabled bool) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "setChannelAccess", _channelId, _disabled)
+// Solidity: function setChannelAccess(string channelNetworkId, bool disableChannel) returns()
+func (_GoerliSpace *GoerliSpaceSession) SetChannelAccess(channelNetworkId string, disableChannel bool) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.SetChannelAccess(&_GoerliSpace.TransactOpts, channelNetworkId, disableChannel)
 }
 
 // SetChannelAccess is a paid mutator transaction binding the contract method 0x5de151b8.
 //
-// Solidity: function setChannelAccess(string _channelId, bool _disabled) returns()
-func (_GoerliSpace *GoerliSpaceSession) SetChannelAccess(_channelId string, _disabled bool) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.SetChannelAccess(&_GoerliSpace.TransactOpts, _channelId, _disabled)
+// Solidity: function setChannelAccess(string channelNetworkId, bool disableChannel) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) SetChannelAccess(channelNetworkId string, disableChannel bool) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.SetChannelAccess(&_GoerliSpace.TransactOpts, channelNetworkId, disableChannel)
 }
 
-// SetChannelAccess is a paid mutator transaction binding the contract method 0x5de151b8.
+// SetEntitlementModule is a paid mutator transaction binding the contract method 0x441555e5.
 //
-// Solidity: function setChannelAccess(string _channelId, bool _disabled) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) SetChannelAccess(_channelId string, _disabled bool) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.SetChannelAccess(&_GoerliSpace.TransactOpts, _channelId, _disabled)
+// Solidity: function setEntitlementModule(address _entitlementModule, bool _whitelist) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) SetEntitlementModule(opts *bind.TransactOpts, _entitlementModule common.Address, _whitelist bool) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "setEntitlementModule", _entitlementModule, _whitelist)
 }
 
-// SetEntitlement is a paid mutator transaction binding the contract method 0xf3b96ab4.
+// SetEntitlementModule is a paid mutator transaction binding the contract method 0x441555e5.
 //
-// Solidity: function setEntitlement(address _entitlement, bool _whitelist) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) SetEntitlement(opts *bind.TransactOpts, _entitlement common.Address, _whitelist bool) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "setEntitlement", _entitlement, _whitelist)
+// Solidity: function setEntitlementModule(address _entitlementModule, bool _whitelist) returns()
+func (_GoerliSpace *GoerliSpaceSession) SetEntitlementModule(_entitlementModule common.Address, _whitelist bool) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.SetEntitlementModule(&_GoerliSpace.TransactOpts, _entitlementModule, _whitelist)
 }
 
-// SetEntitlement is a paid mutator transaction binding the contract method 0xf3b96ab4.
+// SetEntitlementModule is a paid mutator transaction binding the contract method 0x441555e5.
 //
-// Solidity: function setEntitlement(address _entitlement, bool _whitelist) returns()
-func (_GoerliSpace *GoerliSpaceSession) SetEntitlement(_entitlement common.Address, _whitelist bool) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.SetEntitlement(&_GoerliSpace.TransactOpts, _entitlement, _whitelist)
-}
-
-// SetEntitlement is a paid mutator transaction binding the contract method 0xf3b96ab4.
-//
-// Solidity: function setEntitlement(address _entitlement, bool _whitelist) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) SetEntitlement(_entitlement common.Address, _whitelist bool) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.SetEntitlement(&_GoerliSpace.TransactOpts, _entitlement, _whitelist)
+// Solidity: function setEntitlementModule(address _entitlementModule, bool _whitelist) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) SetEntitlementModule(_entitlementModule common.Address, _whitelist bool) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.SetEntitlementModule(&_GoerliSpace.TransactOpts, _entitlementModule, _whitelist)
 }
 
 // SetOwnerRoleId is a paid mutator transaction binding the contract method 0x4999ab16.
@@ -1224,46 +1341,25 @@ func (_GoerliSpace *GoerliSpaceTransactorSession) SetSpaceAccess(_disabled bool)
 	return _GoerliSpace.Contract.SetSpaceAccess(&_GoerliSpace.TransactOpts, _disabled)
 }
 
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
+// UpdateChannel is a paid mutator transaction binding the contract method 0x34a1dd26.
 //
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "transferOwnership", newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_GoerliSpace *GoerliSpaceSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.TransferOwnership(&_GoerliSpace.TransactOpts, newOwner)
-}
-
-// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
-//
-// Solidity: function transferOwnership(address newOwner) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.TransferOwnership(&_GoerliSpace.TransactOpts, newOwner)
+// Solidity: function updateChannel(string channelNetworkId, string channelName) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) UpdateChannel(opts *bind.TransactOpts, channelNetworkId string, channelName string) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "updateChannel", channelNetworkId, channelName)
 }
 
 // UpdateChannel is a paid mutator transaction binding the contract method 0x34a1dd26.
 //
-// Solidity: function updateChannel(string _channelId, string _channelName) returns()
-func (_GoerliSpace *GoerliSpaceTransactor) UpdateChannel(opts *bind.TransactOpts, _channelId string, _channelName string) (*types.Transaction, error) {
-	return _GoerliSpace.contract.Transact(opts, "updateChannel", _channelId, _channelName)
+// Solidity: function updateChannel(string channelNetworkId, string channelName) returns()
+func (_GoerliSpace *GoerliSpaceSession) UpdateChannel(channelNetworkId string, channelName string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.UpdateChannel(&_GoerliSpace.TransactOpts, channelNetworkId, channelName)
 }
 
 // UpdateChannel is a paid mutator transaction binding the contract method 0x34a1dd26.
 //
-// Solidity: function updateChannel(string _channelId, string _channelName) returns()
-func (_GoerliSpace *GoerliSpaceSession) UpdateChannel(_channelId string, _channelName string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.UpdateChannel(&_GoerliSpace.TransactOpts, _channelId, _channelName)
-}
-
-// UpdateChannel is a paid mutator transaction binding the contract method 0x34a1dd26.
-//
-// Solidity: function updateChannel(string _channelId, string _channelName) returns()
-func (_GoerliSpace *GoerliSpaceTransactorSession) UpdateChannel(_channelId string, _channelName string) (*types.Transaction, error) {
-	return _GoerliSpace.Contract.UpdateChannel(&_GoerliSpace.TransactOpts, _channelId, _channelName)
+// Solidity: function updateChannel(string channelNetworkId, string channelName) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) UpdateChannel(channelNetworkId string, channelName string) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.UpdateChannel(&_GoerliSpace.TransactOpts, channelNetworkId, channelName)
 }
 
 // UpdateRole is a paid mutator transaction binding the contract method 0x32e704cc.
@@ -1285,6 +1381,27 @@ func (_GoerliSpace *GoerliSpaceSession) UpdateRole(_roleId *big.Int, _roleName s
 // Solidity: function updateRole(uint256 _roleId, string _roleName) returns()
 func (_GoerliSpace *GoerliSpaceTransactorSession) UpdateRole(_roleId *big.Int, _roleName string) (*types.Transaction, error) {
 	return _GoerliSpace.Contract.UpdateRole(&_GoerliSpace.TransactOpts, _roleId, _roleName)
+}
+
+// UpgradeEntitlement is a paid mutator transaction binding the contract method 0x519607f2.
+//
+// Solidity: function upgradeEntitlement(address _entitlement, address _newEntitlement) returns()
+func (_GoerliSpace *GoerliSpaceTransactor) UpgradeEntitlement(opts *bind.TransactOpts, _entitlement common.Address, _newEntitlement common.Address) (*types.Transaction, error) {
+	return _GoerliSpace.contract.Transact(opts, "upgradeEntitlement", _entitlement, _newEntitlement)
+}
+
+// UpgradeEntitlement is a paid mutator transaction binding the contract method 0x519607f2.
+//
+// Solidity: function upgradeEntitlement(address _entitlement, address _newEntitlement) returns()
+func (_GoerliSpace *GoerliSpaceSession) UpgradeEntitlement(_entitlement common.Address, _newEntitlement common.Address) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.UpgradeEntitlement(&_GoerliSpace.TransactOpts, _entitlement, _newEntitlement)
+}
+
+// UpgradeEntitlement is a paid mutator transaction binding the contract method 0x519607f2.
+//
+// Solidity: function upgradeEntitlement(address _entitlement, address _newEntitlement) returns()
+func (_GoerliSpace *GoerliSpaceTransactorSession) UpgradeEntitlement(_entitlement common.Address, _newEntitlement common.Address) (*types.Transaction, error) {
+	return _GoerliSpace.Contract.UpgradeEntitlement(&_GoerliSpace.TransactOpts, _entitlement, _newEntitlement)
 }
 
 // UpgradeTo is a paid mutator transaction binding the contract method 0x3659cfe6.
@@ -1736,159 +1853,6 @@ func (_GoerliSpace *GoerliSpaceFilterer) WatchInitialized(opts *bind.WatchOpts, 
 func (_GoerliSpace *GoerliSpaceFilterer) ParseInitialized(log types.Log) (*GoerliSpaceInitialized, error) {
 	event := new(GoerliSpaceInitialized)
 	if err := _GoerliSpace.contract.UnpackLog(event, "Initialized", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// GoerliSpaceOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the GoerliSpace contract.
-type GoerliSpaceOwnershipTransferredIterator struct {
-	Event *GoerliSpaceOwnershipTransferred // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *GoerliSpaceOwnershipTransferredIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(GoerliSpaceOwnershipTransferred)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(GoerliSpaceOwnershipTransferred)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *GoerliSpaceOwnershipTransferredIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *GoerliSpaceOwnershipTransferredIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// GoerliSpaceOwnershipTransferred represents a OwnershipTransferred event raised by the GoerliSpace contract.
-type GoerliSpaceOwnershipTransferred struct {
-	PreviousOwner common.Address
-	NewOwner      common.Address
-	Raw           types.Log // Blockchain specific contextual infos
-}
-
-// FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_GoerliSpace *GoerliSpaceFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*GoerliSpaceOwnershipTransferredIterator, error) {
-
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
-	}
-	var newOwnerRule []interface{}
-	for _, newOwnerItem := range newOwner {
-		newOwnerRule = append(newOwnerRule, newOwnerItem)
-	}
-
-	logs, sub, err := _GoerliSpace.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
-	if err != nil {
-		return nil, err
-	}
-	return &GoerliSpaceOwnershipTransferredIterator{contract: _GoerliSpace.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
-}
-
-// WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_GoerliSpace *GoerliSpaceFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *GoerliSpaceOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
-
-	var previousOwnerRule []interface{}
-	for _, previousOwnerItem := range previousOwner {
-		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
-	}
-	var newOwnerRule []interface{}
-	for _, newOwnerItem := range newOwner {
-		newOwnerRule = append(newOwnerRule, newOwnerItem)
-	}
-
-	logs, sub, err := _GoerliSpace.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(GoerliSpaceOwnershipTransferred)
-				if err := _GoerliSpace.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseOwnershipTransferred is a log parse operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
-//
-// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_GoerliSpace *GoerliSpaceFilterer) ParseOwnershipTransferred(log types.Log) (*GoerliSpaceOwnershipTransferred, error) {
-	event := new(GoerliSpaceOwnershipTransferred)
-	if err := _GoerliSpace.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
