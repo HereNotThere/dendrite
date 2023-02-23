@@ -394,3 +394,7 @@ logging:
 allowed_origins:
   # app
   - https://app.towns.com
+  # app
+  - http://localhost:3000
+  # sample-app
+  - http://localhost:3001
