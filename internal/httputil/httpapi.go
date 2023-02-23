@@ -294,24 +294,3 @@ func WrapHandlerInBasicAuth(h http.Handler, b BasicAuth) http.HandlerFunc {
 		h.ServeHTTP(w, r)
 	}
 }
-
-// WrapHandlerInCORS adds CORS headers to all responses, including all error
-// responses.
-// Handles OPTIONS requests directly.
-func WrapHandlerInCORS(h http.Handler) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "https://app.towns.com, http://localhost:3001, http://localhost:3000")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
-
-		if r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != "" {
-			// Its easiest just to always return a 200 OK for everything. Whether
-			// this is technically correct or not is a question, but in the end this
-			// is what a lot of other people do (including synapse) and the clients
-			// are perfectly happy with it.
-			w.WriteHeader(http.StatusOK)
-		} else {
-			h.ServeHTTP(w, r)
-		}
-	})
-}

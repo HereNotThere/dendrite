@@ -36,6 +36,7 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/cors"
 	"go.uber.org/atomic"
 
 	"github.com/matrix-org/dendrite/internal"
@@ -298,7 +299,7 @@ func (b *BaseDendrite) CreateFederationClient() *gomatrixserverlib.FederationCli
 	return client
 }
 
-func (b *BaseDendrite) configureHTTPErrors() {
+func (b *BaseDendrite) configureHTTPErrors(c *cors.Cors) {
 	notAllowedHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		_, _ = w.Write([]byte(fmt.Sprintf("405 %s not allowed on this endpoint", r.Method)))
@@ -310,8 +311,8 @@ func (b *BaseDendrite) configureHTTPErrors() {
 		_, _ = w.Write([]byte(`{"errcode":"M_UNRECOGNIZED","error":"Unrecognized request"}`)) // nolint:misspell
 	}
 
-	notFoundCORSHandler := httputil.WrapHandlerInCORS(http.NotFoundHandler())
-	notAllowedCORSHandler := httputil.WrapHandlerInCORS(http.HandlerFunc(notAllowedHandler))
+	notFoundCORSHandler := c.Handler(http.NotFoundHandler())
+	notAllowedCORSHandler := c.Handler(http.HandlerFunc(notAllowedHandler))
 
 	for _, router := range []*mux.Router{
 		b.PublicMediaAPIMux, b.DendriteAdminMux,
@@ -358,16 +359,27 @@ func (b *BaseDendrite) SetupAndServeHTTP(
 
 	externalRouter := mux.NewRouter().SkipClean(true).UseEncodedPath()
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   b.Cfg.AllowedOrigins,
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
+
+	handler := c.Handler(externalRouter)
+
 	externalServ := &http.Server{
 		Addr:         string(externalAddr),
 		WriteTimeout: HTTPServerTimeout,
-		Handler:      externalRouter,
+		Handler:      handler,
 		BaseContext: func(_ net.Listener) context.Context {
 			return b.ProcessContext.Context()
 		},
 	}
 
-	b.configureHTTPErrors()
+	b.configureHTTPErrors(c)
 
 	//Redirect for Landing Page
 	externalRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

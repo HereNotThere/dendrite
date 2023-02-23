@@ -390,3 +390,7 @@ logging:
     level: info
     params:
       path: ./logs
+
+allowed_origins:
+  # app
+  - https://app.towns.com
