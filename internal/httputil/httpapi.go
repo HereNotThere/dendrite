@@ -300,7 +300,7 @@ func WrapHandlerInBasicAuth(h http.Handler, b BasicAuth) http.HandlerFunc {
 // Handles OPTIONS requests directly.
 func WrapHandlerInCORS(h http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "https://app.towns.com, http://localhost:3001, http://localhost:3000")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 
