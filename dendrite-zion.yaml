@@ -398,4 +398,4 @@ allowed_origins:
   - http://localhost:3000
   # sample-app
   - http://localhost:3001
-  - https://sample-app-b0wc.onrender.com/
+  - https://sample-app-b0wc.onrender.com
