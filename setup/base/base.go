@@ -365,7 +365,7 @@ func (b *BaseDendrite) SetupAndServeHTTP(
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"},
 		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		// Debug: true,
 	})
 
 	handler := c.Handler(externalRouter)
