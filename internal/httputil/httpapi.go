@@ -64,25 +64,19 @@ func MakeAuthAPI(
 	f func(*http.Request, *userapi.Device) util.JSONResponse,
 	checks ...AuthAPIOption,
 ) http.Handler {
-	logrus.Warnf("MakeAuthAPI making handler %v", checks)
 	h := func(req *http.Request) util.JSONResponse {
 		logger := util.GetLogger(req.Context())
-		logger.Warnf("MakeAuthAPI with URL: %v", req.URL)
-
-		logger.Warnf("MakeAuthAPI with headers: %v", req.Header)
 		device, err := auth.VerifyUserFromRequest(req, userAPI)
 		if err != nil {
 			logger.Warnf("MakeAuthAPI VerifyUserFromRequest err %s -> HTTP %v", req.RemoteAddr, err)
 			return *err
 		}
-		logger.Warnf("MakeAuthAPI found device %s -> device %v", req.RemoteAddr, device)
 		// add the user ID to the logger
 		logger = logger.WithField("user_id", device.UserID)
 		req = req.WithContext(util.ContextWithLogger(req.Context(), logger))
 		// add the user to Sentry, if enabled
 		hub := sentry.GetHubFromContext(req.Context())
 		if hub != nil {
-			logger.Warnf("MakeAuthAPI add the user to Sentry Username %v", device.UserID)
 			hub.Scope().SetUser(sentry.User{
 				Username: device.UserID,
 			})
@@ -104,28 +98,25 @@ func MakeAuthAPI(
 
 		// apply additional checks, if any
 		opts := AuthAPIOpts{}
-		logger.Warnf("MakeAuthAPI apply additional checks, %v", checks)
 		for _, opt := range checks {
-
 			opt(&opts)
 		}
 
 		if !opts.GuestAccessAllowed && device.AccountType == userapi.AccountTypeGuest {
-			logger.Warnf("MakeAuthAPI Guest access not allowed")
+			logger.Warnf("MakeAuthAPI Guest access not allowed %v", device.UserID)
 			return util.JSONResponse{
 				Code: http.StatusForbidden,
 				JSON: jsonerror.GuestAccessForbidden("Guest access not allowed"),
 			}
 		}
 
-		logger.Warnf("MakeAuthAPI Making request %v", req)
 		jsonRes := f(req, device)
 		// do not log 4xx as errors as they are client fails, not server fails
 		if hub != nil && jsonRes.Code >= 500 {
 			hub.Scope().SetExtra("response", jsonRes)
+			logger.Errorf("MakeAuthAPI jsonRes failed response %v", jsonRes)
 			hub.CaptureException(fmt.Errorf("%s returned HTTP %d", req.URL.Path, jsonRes.Code))
 		}
-		logger.Warnf("MakeAuthAPI Returning response %v", jsonRes)
 		return jsonRes
 	}
 	return MakeExternalAPI(metricsName, h)
