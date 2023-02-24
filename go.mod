@@ -13,7 +13,7 @@ require (
 	github.com/docker/docker v20.10.19+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/ethereum/go-ethereum v1.10.25
-	github.com/getsentry/sentry-go v0.14.0
+	github.com/getsentry/sentry-go v0.18.0
 	github.com/gologme/log v1.3.0
 	github.com/google/go-cmp v0.5.9
 	github.com/google/uuid v1.3.0
