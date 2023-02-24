@@ -127,7 +127,7 @@ func DeviceListCatchup(
 		"from":            offset,
 		"to":              toOffset,
 		"response_offset": queryRes.Offset,
-	}).Tracef("QueryKeyChanges request result: %+v", res.DeviceLists)
+	}).Infof("QueryKeyChanges request result: %+v", res.DeviceLists)
 
 	return types.StreamPosition(queryRes.Offset), hasNew, nil
 }

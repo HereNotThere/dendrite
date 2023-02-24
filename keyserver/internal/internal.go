@@ -60,6 +60,8 @@ func (a *KeyInternalAPI) QueryKeyChanges(ctx context.Context, req *api.QueryKeyC
 	}
 	res.Offset = latest
 	res.UserIDs = userIDs
+	util.GetLogger(ctx).WithField("offset", req.Offset).WithField("to_offset", req.ToOffset).WithField("latest", latest).Info("QueryKeyChanges")
+
 	return nil
 }
 
