@@ -46,7 +46,7 @@ global:
   # you must configure the "database" block for each component instead.
   database:
     connection_string: ${DATABASE_CONNECTION_STRING}
-    max_open_conns: 10
+    max_open_conns: 800
     max_idle_conns: 5
     conn_max_lifetime: -1
 
