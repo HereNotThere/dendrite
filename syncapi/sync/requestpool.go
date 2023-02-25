@@ -310,7 +310,11 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 			var succeeded bool
 			snapshot, err := rp.db.NewDatabaseSnapshot(req.Context())
 			if err != nil {
-				logrus.WithError(err).Error("Failed to acquire database snapshot for sync request")
+				if err == context.Canceled {
+					logrus.Info("Context canceled while acquiring database snapshot for sync request")
+				} else {
+					logrus.WithError(err).Error("Failed to acquire database snapshot for sync request")
+				}
 				return from
 			}
 			defer func() {
