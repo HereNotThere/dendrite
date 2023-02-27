@@ -4,6 +4,12 @@ RUN apk --update --no-cache add bash build-base
 
 ARG RELEASE_VERSION="Unreleased"
 
+
+#### DO NOT UNCOMMENT, THESE ENV VARS ARE FOR DOCUMENTATION PURPOSES ONLY ####
+
+## Run the profiler on port 65432
+# ENV PPROFLISTEN 0.0.0.0:65432
+
 WORKDIR /build
 
 COPY . /build
