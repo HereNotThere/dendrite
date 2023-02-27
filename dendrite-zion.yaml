@@ -32,6 +32,9 @@ version: 2
 
 # Global Matrix configuration. This configuration applies to all components.
 global:
+  # logical environment
+  environment: ${ENVIRONMENT}
+
   # The domain name of this homeserver.
   server_name: ${SERVER_NAME}
 
@@ -53,7 +56,8 @@ global:
   sentry:
     enabled: true
     dsn: https://21c6aa87be2d4b6f8e691982392fb4d9@o327188.ingest.sentry.io/4504720094986240
-    environment: ${SERVER_NAME}-chainId:${CHAIN_ID}
+    enable_tracing: true
+    traces_sample_rate: 0.1
 
   # The paths and expiry timestamps (as a UNIX timestamp in millisecond precision)
   # to old signing private keys that were formerly in use on this domain. These
@@ -390,6 +394,8 @@ logging:
     level: info
     params:
       path: ./logs
+  - type: sentry
+    level: error
 
 allowed_origins:
   # app

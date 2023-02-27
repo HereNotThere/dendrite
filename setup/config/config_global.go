@@ -12,6 +12,9 @@ import (
 )
 
 type Global struct {
+	// logical environment
+	Environment string `yaml:"environment"`
+
 	// Signing identity contains the server name, private key and key ID of
 	// the deployment.
 	gomatrixserverlib.SigningIdentity `yaml:",inline"`
@@ -83,6 +86,7 @@ type Global struct {
 func (c *Global) Defaults(opts DefaultOpts) {
 	if opts.Generate {
 		c.ServerName = "localhost"
+		c.Environment = "development"
 		c.PrivateKeyPath = "matrix_key.pem"
 		_, c.PrivateKey, _ = ed25519.GenerateKey(rand.New(rand.NewSource(0)))
 		c.KeyID = "ed25519:auto"
@@ -333,10 +337,9 @@ type Sentry struct {
 	Enabled bool `yaml:"enabled"`
 	// The DSN to connect to e.g "https://examplePublicKey@o0.ingest.sentry.io/0"
 	// See https://docs.sentry.io/platforms/go/configuration/options/
-	DSN string `yaml:"dsn"`
-	// The environment e.g "production"
-	// See https://docs.sentry.io/platforms/go/configuration/environments/
-	Environment string `yaml:"environment"`
+	DSN              string  `yaml:"dsn"`
+	EnableTracing    bool    `yaml:"enable_tracing"`
+	TracesSampleRate float64 `yaml:"traces_sample_rate"`
 }
 
 func (c *Sentry) Defaults() {

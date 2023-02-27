@@ -46,8 +46,6 @@ import (
 	userapi "github.com/matrix-org/dendrite/userapi/api"
 )
 
-var ReleaseVersion string
-
 // Setup registers HTTP handlers with the given ServeMux. It also supplies the given http.Client
 // to clients which need to make outbound HTTP requests.
 //
@@ -71,7 +69,7 @@ func Setup(
 ) {
 
 	logrus.WithFields(logrus.Fields{
-		"ReleaseVersion": ReleaseVersion,
+		"ReleaseVersion": cfg.ReleaseVersion,
 	}).Info("Started clientAPI router with ReleaseVersion")
 
 	publicAPIMux := base.PublicClientAPIMux
@@ -134,7 +132,7 @@ func Setup(
 					"v1.0",
 					"v1.1",
 					"v1.2",
-				}, UnstableFeatures: unstableFeatures, ReleaseVersion: ReleaseVersion},
+				}, UnstableFeatures: unstableFeatures, ReleaseVersion: cfg.ReleaseVersion},
 			}
 		}),
 	).Methods(http.MethodGet, http.MethodOptions)

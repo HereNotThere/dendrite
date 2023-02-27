@@ -117,11 +117,31 @@ func NewBaseDendrite(cfg *config.Dendrite, options ...BaseDendriteOptions) *Base
 	}
 
 	internal.SetupStdLogging()
-	internal.SetupHookLogging(cfg.Logging)
+
+	if cfg.Global.Sentry.Enabled {
+		logrus.Info("Setting up Sentry for debugging...")
+		err := sentry.Init(sentry.ClientOptions{
+			Dsn:              cfg.Global.Sentry.DSN,
+			Environment:      cfg.Global.Environment,
+			Debug:            true,
+			ServerName:       string(cfg.Global.ServerName),
+			Release:          "dendrite@" + cfg.ClientAPI.ReleaseVersion,
+			AttachStacktrace: true,
+			EnableTracing:    cfg.Global.Sentry.EnableTracing,
+			TracesSampleRate: cfg.Global.Sentry.TracesSampleRate,
+		})
+		if err != nil {
+			logrus.WithError(err).Panic("failed to start Sentry")
+		}
+		defer sentry.Flush(2 * time.Second)
+		sentry.CaptureMessage("Server started")
+
+	}
+
+	internal.SetupHookLogging(cfg.Global.Sentry.DSN, cfg.Logging)
 	internal.SetupPprof()
 
-	logrus.Infof("Dendrite version %s", internal.VersionString())
-
+	logrus.Infof("Dendrite version %s, environment %s", cfg.ClientAPI.ReleaseVersion, cfg.Global.Environment)
 	if !cfg.ClientAPI.RegistrationDisabled && cfg.ClientAPI.OpenRegistrationWithoutVerificationEnabled {
 		logrus.Warn("Open registration is enabled")
 	}
@@ -137,24 +157,6 @@ func NewBaseDendrite(cfg *config.Dendrite, options ...BaseDendriteOptions) *Base
 		if err != nil {
 			logrus.WithError(err).Panicf("failed to create full text")
 		}
-	}
-
-	if cfg.Global.Sentry.Enabled {
-		logrus.Info("Setting up Sentry for debugging...")
-		err = sentry.Init(sentry.ClientOptions{
-			Dsn:              cfg.Global.Sentry.DSN,
-			Environment:      cfg.Global.Sentry.Environment,
-			Debug:            true,
-			ServerName:       string(cfg.Global.ServerName),
-			Release:          "dendrite@" + internal.VersionString(),
-			AttachStacktrace: true,
-		})
-		if err != nil {
-			logrus.WithError(err).Panic("failed to start Sentry")
-		}
-		defer sentry.Flush(2 * time.Second)
-		sentry.CaptureMessage("Server started")
-
 	}
 
 	var dnsCache *gomatrixserverlib.DNSCache

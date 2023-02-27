@@ -22,6 +22,7 @@ import (
 	"log/syslog"
 
 	"github.com/MFAshby/stdemuxerhook"
+	"github.com/evalphobia/logrus_sentry"
 	"github.com/sirupsen/logrus"
 	lSyslog "github.com/sirupsen/logrus/hooks/syslog"
 
@@ -31,7 +32,7 @@ import (
 // SetupHookLogging configures the logging hooks defined in the configuration.
 // If something fails here it means that the logging was improperly configured,
 // so we just exit with the error
-func SetupHookLogging(hooks []config.LogrusHook) {
+func SetupHookLogging(sentryDSN string, hooks []config.LogrusHook) {
 	levelLogAddedMu.Lock()
 	defer levelLogAddedMu.Unlock()
 	for _, hook := range hooks {
@@ -56,8 +57,21 @@ func SetupHookLogging(hooks []config.LogrusHook) {
 			setupSyslogHook(hook, level)
 		case "std":
 			setupStdLogHook(level)
+		case "sentry":
+			hook, err := logrus_sentry.NewSentryHook(sentryDSN, []logrus.Level{
+				logrus.PanicLevel,
+				logrus.FatalLevel,
+				logrus.ErrorLevel,
+			})
+			if err == nil {
+				hook.StacktraceConfiguration.Enable = true
+				hook.StacktraceConfiguration.Context = 5 // lines around context to include
+				hook.StacktraceConfiguration.IncludeErrorBreadcrumb = true
+				hook.Timeout = 2000 // in ms
+				logrus.AddHook(hook)
+			}
 		default:
-			logrus.Fatalf("Unrecognised logging hook type: %s", hook.Type)
+			logrus.Fatalf("Unrecognised logging hook type! %s", hook.Type)
 		}
 	}
 	setupStdLogHook(logrus.InfoLevel)

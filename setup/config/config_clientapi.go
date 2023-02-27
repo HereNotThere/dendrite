@@ -9,6 +9,7 @@ type ClientAPI struct {
 	Matrix  *Global  `yaml:"-"`
 	Derived *Derived `yaml:"-"` // TODO: Nuke Derived from orbit
 
+	ReleaseVersion string `yaml:"release_version"`
 	// If set disables new users from registering (except via shared
 	// secrets)
 	RegistrationDisabled bool `yaml:"registration_disabled"`
