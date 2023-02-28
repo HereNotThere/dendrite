@@ -82,8 +82,6 @@ func MakeAuthAPI(
 			})
 			hub.Scope().SetTag("user_id", device.UserID)
 			hub.Scope().SetTag("device_id", device.ID)
-		} else {
-			logger.Warnf("MakeAuthAPI failed to add the user to Sentry Username %v", device.UserID)
 		}
 		defer func() {
 			if r := recover(); r != nil {
