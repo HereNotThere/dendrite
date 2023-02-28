@@ -13,12 +13,9 @@ const (
 	PermissionRedact
 	PermissionBan
 	PermissionModifyChannelProfile
-	PermissionModifyChannelPermissions
 	PermissionPinMessages
 	PermissionAddRemoveChannels
-	PermissionModifySpacePermissions
-	PermissionModifyChannelDefaults
-	PermissionModifySpaceProfile
+	PermissionModifySpaceSettings
 	PermissionOwner
 )
 
@@ -40,18 +37,12 @@ func (p Permission) String() string {
 		return "Ban"
 	case PermissionModifyChannelProfile:
 		return "ModifyChannelProfile"
-	case PermissionModifyChannelPermissions:
-		return "ModifyChannelPermissions"
 	case PermissionPinMessages:
 		return "PinMessages"
 	case PermissionAddRemoveChannels:
 		return "AddRemoveChannels"
-	case PermissionModifySpacePermissions:
-		return "ModifySpacePermissions"
-	case PermissionModifyChannelDefaults:
-		return "ModifyChannelDefaults"
-	case PermissionModifySpaceProfile:
-		return "ModifySpaceProfile"
+	case PermissionModifySpaceSettings:
+		return "ModifySpaceSettings"
 	case PermissionOwner:
 		return "Owner"
 	}

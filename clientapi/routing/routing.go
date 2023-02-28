@@ -511,6 +511,22 @@ func Setup(
 			}
 			emptyString := ""
 			eventType := strings.TrimSuffix(vars["eventType"], "/")
+
+			// Check if the user is allowed to modify the room topic
+			if eventType == "m.room.topic" {
+				isAllowed, _ := authorization.IsAllowed(authz.AuthorizationArgs{
+					RoomId:     vars["roomID"],
+					UserId:     device.UserID,
+					Permission: authz.PermissionModifySpaceSettings,
+				})
+
+				if !isAllowed {
+					return util.JSONResponse{
+						Code: http.StatusUnauthorized,
+						JSON: jsonerror.Forbidden("Unauthorised"),
+					}
+				}
+			}
 			return SendEvent(req, device, vars["roomID"], eventType, nil, &emptyString, cfg, rsAPI, nil)
 		}, httputil.WithAllowGuests()),
 	).Methods(http.MethodPut, http.MethodOptions)
