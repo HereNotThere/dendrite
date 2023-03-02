@@ -229,15 +229,29 @@ var waitingSyncRequests = prometheus.NewGauge(
 // called in a dedicated goroutine for this request. This function will block the goroutine
 // until a response is ready, or it times out.
 func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.Device) util.JSONResponse {
+
+	requestInitTime := time.Now()
+	var returnReason = "unknown"
+
+	defer func() {
+		requestDuration := time.Since(requestInitTime)
+		logrus.Info("Request completed", logrus.Fields{
+			"duration": requestDuration,
+			"reason":   returnReason,
+		})
+	}()
+
 	// Extract values from request
 	syncReq, err := newSyncRequest(req, *device, rp.db)
 	if err != nil {
 		if err == types.ErrMalformedSyncToken {
+			returnReason = "malformed_sync_token" + err.Error()
 			return util.JSONResponse{
 				Code: http.StatusBadRequest,
 				JSON: jsonerror.InvalidArgumentValue(err.Error()),
 			}
 		}
+		returnReason = "new_sync_request_failed" + err.Error()
 		return util.JSONResponse{
 			Code: http.StatusBadRequest,
 			JSON: jsonerror.Unknown(err.Error()),
@@ -293,9 +307,11 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 
 			select {
 			case <-syncReq.Context.Done(): // Caller gave up
+				returnReason = "client_gave_up"
 				return giveup()
 
 			case <-timer.C: // Timeout reached
+				returnReason = "timeout_reached"
 				return giveup()
 
 			case <-userStreamListener.GetNotifyChannel(syncReq.Since):
@@ -509,6 +525,12 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 					continue
 				}
 			}
+		}
+
+		if syncReq.Response.HasUpdates() {
+			returnReason = "completed_with_updates"
+		} else {
+			returnReason = "completed_no_updates"
 		}
 
 		return util.JSONResponse{
