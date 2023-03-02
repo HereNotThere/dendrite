@@ -12,6 +12,11 @@ ARG RELEASE_VERSION="Unreleased"
 
 WORKDIR /build
 
+# Download necessary Go modules
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
 COPY . /build
 
 RUN mkdir -p bin
