@@ -314,10 +314,17 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 				// https://github.com/matrix-org/synapse/blob/29f06704b8871a44926f7c99e73cf4a978fb8e81/synapse/rest/client/sync.py#L276-L281
 				// Only try to get OTKs if the context isn't already done.
 				if synReqError == nil {
-					err = internal.DeviceOTKCounts(syncReq.Context, rp.keyAPI, syncReq.Device.UserID, syncReq.Device.ID, syncReq.Response)
-					if err != nil && err != context.Canceled {
-						syncReq.Log.WithError(err).Warn("failed to get OTK counts")
+					if len(syncReq.Response.DeviceListsOTKCount) == 0 {
+						syncReq.Log.Info("DeviceListsOTKCount is 0. Query DeviceOTKCounts")
+						err = internal.DeviceOTKCounts(syncReq.Context, rp.keyAPI, syncReq.Device.UserID, syncReq.Device.ID, syncReq.Response)
+						if err != nil && err != context.Canceled {
+							syncReq.Log.WithError(err).Warn("DeviceListsOTKCount - failed to get OTK counts")
+						}
+					} else {
+						syncReq.Log.Info("DeviceListsOTKCount counts already set. Skipping query")
 					}
+				} else {
+					syncReq.Log.WithError(syncReq.Context.Err()).Warn("DeviceListsOTKCount syncReq.Context.Err() != nil, and still attempting to query OTKs")
 				}
 				afterKeyCount = syncReq.Response.DeviceListsOTKCount
 				return util.JSONResponse{
