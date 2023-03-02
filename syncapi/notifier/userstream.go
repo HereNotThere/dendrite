@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/matrix-org/dendrite/syncapi/types"
+	"github.com/sirupsen/logrus"
 )
 
 // UserDeviceStream represents a communication mechanism between the /sync request goroutine
@@ -159,6 +160,7 @@ func (s *UserDeviceStreamListener) Close() {
 	s.userStream.lock.Lock()
 	defer s.userStream.lock.Unlock()
 
+	logrus.Info("Cleaning up UserDeviceStreamListener")
 	if !s.hasClosed {
 		s.userStream.numWaiting--
 		s.userStream.timeOfLastChannel = time.Now()
