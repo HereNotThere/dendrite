@@ -236,8 +236,10 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 	defer func() {
 		requestDuration := time.Since(requestInitTime)
 		logrus.Info("Request completed", logrus.Fields{
-			"duration": requestDuration,
-			"reason":   returnReason,
+			"duration":    requestDuration,
+			"reason":      returnReason,
+			"requestPath": req.URL.Path,
+			"bearerToken": req.Header.Get("Authorization"),
 		})
 	}()
 
