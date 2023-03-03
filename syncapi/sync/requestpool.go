@@ -315,16 +315,16 @@ func (rp *RequestPool) OnIncomingSyncRequest(req *http.Request, device *userapi.
 				// Only try to get OTKs if the context isn't already done.
 				if synReqError == nil {
 					if len(syncReq.Response.DeviceListsOTKCount) == 0 {
-						syncReq.Log.Info("DeviceListsOTKCount is 0. Query DeviceOTKCounts")
+						syncReq.Log.Info("giveup() - DeviceListsOTKCount is 0. Query DeviceOTKCounts")
 						err = internal.DeviceOTKCounts(syncReq.Context, rp.keyAPI, syncReq.Device.UserID, syncReq.Device.ID, syncReq.Response)
 						if err != nil && err != context.Canceled {
-							syncReq.Log.WithError(err).Warn("DeviceListsOTKCount - failed to get OTK counts")
+							syncReq.Log.WithError(err).Warn("giveup() - DeviceListsOTKCount - failed to get OTK counts")
 						}
 					} else {
-						syncReq.Log.Info("DeviceListsOTKCount counts already set. Skipping query")
+						syncReq.Log.Info("giveup() - DeviceListsOTKCount counts already set. Skipping query. Previously, it was attempting to query device OTKs")
 					}
 				} else {
-					syncReq.Log.WithError(syncReq.Context.Err()).Warn("DeviceListsOTKCount syncReq.Context.Err() != nil, and still attempting to query OTKs")
+					syncReq.Log.WithError(syncReq.Context.Err()).Warn("giveup() - DeviceListsOTKCount syncReq.Context.Err() != nil. Skipping device OTKs query")
 				}
 				afterKeyCount = syncReq.Response.DeviceListsOTKCount
 				return util.JSONResponse{
