@@ -127,6 +127,7 @@ func NewBaseDendrite(cfg *config.Dendrite, options ...BaseDendriteOptions) *Base
 			ServerName:       string(cfg.Global.ServerName),
 			Release:          "dendrite@" + cfg.ClientAPI.ReleaseVersion,
 			AttachStacktrace: true,
+			SampleRate:       cfg.Global.Sentry.SampleRate,
 			EnableTracing:    cfg.Global.Sentry.EnableTracing,
 			TracesSampleRate: cfg.Global.Sentry.TracesSampleRate,
 		})

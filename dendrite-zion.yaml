@@ -57,6 +57,7 @@ global:
     enabled: true
     dsn: https://21c6aa87be2d4b6f8e691982392fb4d9@o327188.ingest.sentry.io/4504720094986240
     enable_tracing: true
+    sample_rate: 0.1
     traces_sample_rate: 0.1
 
   # The paths and expiry timestamps (as a UNIX timestamp in millisecond precision)

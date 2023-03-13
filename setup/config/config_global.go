@@ -339,6 +339,7 @@ type Sentry struct {
 	// See https://docs.sentry.io/platforms/go/configuration/options/
 	DSN              string  `yaml:"dsn"`
 	EnableTracing    bool    `yaml:"enable_tracing"`
+	SampleRate       float64 `yaml:"sample_rate"`
 	TracesSampleRate float64 `yaml:"traces_sample_rate"`
 }
 
