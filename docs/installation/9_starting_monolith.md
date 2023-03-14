@@ -9,7 +9,7 @@ permalink: /installation/start/monolith
 # Starting the monolith
 
 Once you have completed all of the preparation and installation steps,
-you can start your Dendrite monolith deployment by starting the `dendrite`:
+you can start your Dendrite monolith deployment by starting `dendrite`:
 
 ```bash
 ./dendrite -config /path/to/dendrite.yaml

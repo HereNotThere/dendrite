@@ -323,10 +323,15 @@ type ReportStats struct {
 
 func (c *ReportStats) Defaults() {
 	c.Enabled = false
-	c.Endpoint = "https://matrix.org/report-usage-stats/push"
+	c.Endpoint = "https://panopticon.matrix.org/push"
 }
 
 func (c *ReportStats) Verify(configErrs *ConfigErrors) {
+	// We prefer to hit panopticon (https://github.com/matrix-org/panopticon) directly over
+	// the "old" matrix.org endpoint.
+	if c.Endpoint == "https://matrix.org/report-usage-stats/push" {
+		c.Endpoint = "https://panopticon.matrix.org/push"
+	}
 	if c.Enabled {
 		checkNotEmpty(configErrs, "global.report_stats.endpoint", c.Endpoint)
 	}
@@ -338,6 +343,7 @@ type Sentry struct {
 	// The DSN to connect to e.g "https://examplePublicKey@o0.ingest.sentry.io/0"
 	// See https://docs.sentry.io/platforms/go/configuration/options/
 	DSN              string  `yaml:"dsn"`
+	Environment      string  `yaml:"environment"`
 	EnableTracing    bool    `yaml:"enable_tracing"`
 	SampleRate       float64 `yaml:"sample_rate"`
 	TracesSampleRate float64 `yaml:"traces_sample_rate"`

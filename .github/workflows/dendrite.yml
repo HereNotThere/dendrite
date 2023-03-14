@@ -4,7 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.go'                 # only execute on changes to go files
+      - 'go.sum'                # or dependency updates
+      - '.github/workflows/**'  # or workflow changes
   pull_request:
+    paths:
+      - '**.go'
+      - 'go.sum'                # or dependency updates
+      - '.github/workflows/**'
   release:
     types: [published]
   workflow_dispatch:
@@ -306,10 +314,6 @@ jobs:
           - label: SQLite native
 
           - label: SQLite Cgo
-            cgo: 1
-
-          - label: SQLite Cgo, full HTTP APIs
-            api: full-http
             cgo: 1
 
           - label: PostgreSQL

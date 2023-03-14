@@ -59,6 +59,7 @@ global:
     enable_tracing: true
     sample_rate: 0.1
     traces_sample_rate: 0.1
+    environment: ${SERVER_NAME}-chainId:${CHAIN_ID}
 
   # The paths and expiry timestamps (as a UNIX timestamp in millisecond precision)
   # to old signing private keys that were formerly in use on this domain. These
