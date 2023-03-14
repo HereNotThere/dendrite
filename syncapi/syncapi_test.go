@@ -10,13 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matrix-org/dendrite/syncapi/routing"
 	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/nats-io/nats.go"
 	"github.com/tidwall/gjson"
 
+	"github.com/matrix-org/dendrite/syncapi/routing"
+	"github.com/matrix-org/dendrite/syncapi/storage"
+
 	"github.com/matrix-org/dendrite/clientapi/producers"
-	keyapi "github.com/matrix-org/dendrite/keyserver/api"
 	"github.com/matrix-org/dendrite/roomserver"
 	"github.com/matrix-org/dendrite/roomserver/api"
 	rsapi "github.com/matrix-org/dendrite/roomserver/api"
@@ -32,7 +33,6 @@ type syncRoomserverAPI struct {
 	rsapi.SyncRoomserverAPI
 	rooms []*test.Room
 }
-
 type clientRoomserverAPI struct {
 	rsapi.ClientRoomserverAPI
 }
@@ -87,18 +87,15 @@ func (s *syncUserAPI) QueryAccessToken(ctx context.Context, req *userapi.QueryAc
 	return nil
 }
 
+func (s *syncUserAPI) QueryKeyChanges(ctx context.Context, req *userapi.QueryKeyChangesRequest, res *userapi.QueryKeyChangesResponse) error {
+	return nil
+}
+
+func (s *syncUserAPI) QueryOneTimeKeys(ctx context.Context, req *userapi.QueryOneTimeKeysRequest, res *userapi.QueryOneTimeKeysResponse) error {
+	return nil
+}
+
 func (s *syncUserAPI) PerformLastSeenUpdate(ctx context.Context, req *userapi.PerformLastSeenUpdateRequest, res *userapi.PerformLastSeenUpdateResponse) error {
-	return nil
-}
-
-type syncKeyAPI struct {
-	keyapi.SyncKeyAPI
-}
-
-func (s *syncKeyAPI) QueryKeyChanges(ctx context.Context, req *keyapi.QueryKeyChangesRequest, res *keyapi.QueryKeyChangesResponse) error {
-	return nil
-}
-func (s *syncKeyAPI) QueryOneTimeKeys(ctx context.Context, req *keyapi.QueryOneTimeKeysRequest, res *keyapi.QueryOneTimeKeysResponse) error {
 	return nil
 }
 
@@ -125,7 +122,7 @@ func testSyncAccessTokens(t *testing.T, dbType test.DBType) {
 	jsctx, _ := base.NATS.Prepare(base.ProcessContext, &base.Cfg.Global.JetStream)
 	defer jetstream.DeleteAllStreams(jsctx, &base.Cfg.Global.JetStream)
 	msgs := toNATSMsgs(t, base, room.Events()...)
-	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{rooms: []*test.Room{room}}, &clientRoomserverAPI{}, &syncKeyAPI{})
+	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{rooms: []*test.Room{room}}, &clientRoomserverAPI{})
 	testrig.MustPublishMsgs(t, jsctx, msgs...)
 
 	testCases := []struct {
@@ -224,7 +221,7 @@ func testSyncAPICreateRoomSyncEarly(t *testing.T, dbType test.DBType) {
 	// m.room.history_visibility
 	msgs := toNATSMsgs(t, base, room.Events()...)
 	sinceTokens := make([]string, len(msgs))
-	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{rooms: []*test.Room{room}}, &clientRoomserverAPI{}, &syncKeyAPI{})
+	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{rooms: []*test.Room{room}}, &clientRoomserverAPI{})
 	for i, msg := range msgs {
 		testrig.MustPublishMsgs(t, jsctx, msg)
 		time.Sleep(100 * time.Millisecond)
@@ -308,7 +305,7 @@ func testSyncAPIUpdatePresenceImmediately(t *testing.T, dbType test.DBType) {
 
 	jsctx, _ := base.NATS.Prepare(base.ProcessContext, &base.Cfg.Global.JetStream)
 	defer jetstream.DeleteAllStreams(jsctx, &base.Cfg.Global.JetStream)
-	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{}, &clientRoomserverAPI{}, &syncKeyAPI{})
+	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{}, &clientRoomserverAPI{})
 	w := httptest.NewRecorder()
 	base.PublicClientAPIMux.ServeHTTP(w, test.NewRequest(t, "GET", "/_matrix/client/v3/sync", test.WithQueryParams(map[string]string{
 		"access_token": alice.AccessToken,
@@ -426,7 +423,7 @@ func testHistoryVisibility(t *testing.T, dbType test.DBType) {
 		rsAPI := roomserver.NewInternalAPI(base)
 		rsAPI.SetFederationAPI(nil, nil)
 
-		AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{aliceDev, bobDev}}, rsAPI, rsAPI, &syncKeyAPI{})
+		AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{aliceDev, bobDev}}, rsAPI, &clientRoomserverAPI{})
 
 		for _, tc := range testCases {
 			testname := fmt.Sprintf("%s - %s", tc.historyVisibility, userType)
@@ -726,7 +723,7 @@ func TestGetMembership(t *testing.T) {
 		rsAPI := roomserver.NewInternalAPI(base)
 		rsAPI.SetFederationAPI(nil, nil)
 
-		AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{aliceDev, bobDev}}, rsAPI, &clientRoomserverAPI{}, &syncKeyAPI{})
+		AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{aliceDev, bobDev}}, rsAPI, &clientRoomserverAPI{})
 
 		for _, tc := range testCases {
 			t.Run(tc.name, func(t *testing.T) {
@@ -793,7 +790,7 @@ func testSendToDevice(t *testing.T, dbType test.DBType) {
 	jsctx, _ := base.NATS.Prepare(base.ProcessContext, &base.Cfg.Global.JetStream)
 	defer jetstream.DeleteAllStreams(jsctx, &base.Cfg.Global.JetStream)
 
-	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{}, &clientRoomserverAPI{}, &syncKeyAPI{})
+	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, &syncRoomserverAPI{}, &clientRoomserverAPI{})
 
 	producer := producers.SyncAPIProducer{
 		TopicSendToDeviceEvent: base.Cfg.Global.JetStream.Prefixed(jetstream.OutputSendToDeviceEvent),
@@ -1012,7 +1009,7 @@ func testContext(t *testing.T, dbType test.DBType) {
 	rsAPI := roomserver.NewInternalAPI(base)
 	rsAPI.SetFederationAPI(nil, nil)
 
-	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, rsAPI, &clientRoomserverAPI{}, &syncKeyAPI{})
+	AddPublicRoutes(base, &syncUserAPI{accounts: []userapi.Device{alice}}, rsAPI, &clientRoomserverAPI{})
 
 	room := test.NewRoom(t, user)
 
@@ -1080,6 +1077,90 @@ func testContext(t *testing.T, dbType test.DBType) {
 			}
 		})
 	}
+}
+
+func TestUpdateRelations(t *testing.T) {
+	testCases := []struct {
+		name         string
+		eventContent map[string]interface{}
+		eventType    string
+	}{
+		{
+			name: "empty event content should not error",
+		},
+		{
+			name: "unable to unmarshal event should not error",
+			eventContent: map[string]interface{}{
+				"m.relates_to": map[string]interface{}{
+					"event_id": map[string]interface{}{}, // this should be a string and not struct
+				},
+			},
+		},
+		{
+			name: "empty event ID is ignored",
+			eventContent: map[string]interface{}{
+				"m.relates_to": map[string]interface{}{
+					"event_id": "",
+				},
+			},
+		},
+		{
+			name: "empty rel_type is ignored",
+			eventContent: map[string]interface{}{
+				"m.relates_to": map[string]interface{}{
+					"event_id": "$randomEventID",
+					"rel_type": "",
+				},
+			},
+		},
+		{
+			name:      "redactions are ignored",
+			eventType: gomatrixserverlib.MRoomRedaction,
+			eventContent: map[string]interface{}{
+				"m.relates_to": map[string]interface{}{
+					"event_id": "$randomEventID",
+					"rel_type": "m.replace",
+				},
+			},
+		},
+		{
+			name: "valid event is correctly written",
+			eventContent: map[string]interface{}{
+				"m.relates_to": map[string]interface{}{
+					"event_id": "$randomEventID",
+					"rel_type": "m.replace",
+				},
+			},
+		},
+	}
+
+	ctx := context.Background()
+
+	alice := test.NewUser(t)
+	room := test.NewRoom(t, alice)
+
+	test.WithAllDatabases(t, func(t *testing.T, dbType test.DBType) {
+		base, shutdownBase := testrig.CreateBaseDendrite(t, dbType)
+		t.Cleanup(shutdownBase)
+		db, err := storage.NewSyncServerDatasource(base, &base.Cfg.SyncAPI.Database)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for _, tc := range testCases {
+			t.Run(tc.name, func(t *testing.T) {
+				evType := "m.room.message"
+				if tc.eventType != "" {
+					evType = tc.eventType
+				}
+				ev := room.CreateEvent(t, alice, evType, tc.eventContent)
+				err = db.UpdateRelations(ctx, ev)
+				if err != nil {
+					t.Fatal(err)
+				}
+			})
+		}
+	})
 }
 
 func syncUntil(t *testing.T,
