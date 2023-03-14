@@ -50,6 +50,11 @@ global:
     max_idle_conns: 5
     conn_max_lifetime: -1
 
+  sentry:
+    enabled: true
+    dsn: https://21c6aa87be2d4b6f8e691982392fb4d9@o327188.ingest.sentry.io/4504720094986240
+    environment: ${SERVER_NAME}-chainId:${CHAIN_ID}
+
   # The paths and expiry timestamps (as a UNIX timestamp in millisecond precision)
   # to old signing private keys that were formerly in use on this domain. These
   # keys will not be used for federation request or event signing, but will be
@@ -81,9 +86,9 @@ global:
   # Configures the handling of presence events.
   presence:
     # Whether inbound presence events are allowed, e.g. receiving presence events from other servers
-    enable_inbound: false
+    enable_inbound: true
     # Whether outbound presence events are allowed, e.g. sending presence events to other servers
-    enable_outbound: false
+    enable_outbound: true
 
   # Server notices allows server admins to send messages to all users.
   server_notices:

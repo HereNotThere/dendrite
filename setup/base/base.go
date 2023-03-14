@@ -151,6 +151,9 @@ func NewBaseDendrite(cfg *config.Dendrite, options ...BaseDendriteOptions) *Base
 		if err != nil {
 			logrus.WithError(err).Panic("failed to start Sentry")
 		}
+		defer sentry.Flush(2 * time.Second)
+		sentry.CaptureMessage("Server started")
+
 	}
 
 	var dnsCache *gomatrixserverlib.DNSCache
