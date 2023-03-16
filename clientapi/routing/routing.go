@@ -22,6 +22,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/matrix-org/dendrite/setup/base"
+	userapi "github.com/matrix-org/dendrite/userapi/api"
 	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/matrix-org/util"
 	"github.com/nats-io/nats.go"
@@ -39,11 +40,9 @@ import (
 	federationAPI "github.com/matrix-org/dendrite/federationapi/api"
 	"github.com/matrix-org/dendrite/internal/httputil"
 	"github.com/matrix-org/dendrite/internal/transactions"
-	keyserverAPI "github.com/matrix-org/dendrite/keyserver/api"
 	roomserverAPI "github.com/matrix-org/dendrite/roomserver/api"
 	"github.com/matrix-org/dendrite/setup/config"
 	"github.com/matrix-org/dendrite/setup/jetstream"
-	userapi "github.com/matrix-org/dendrite/userapi/api"
 )
 
 // Setup registers HTTP handlers with the given ServeMux. It also supplies the given http.Client
@@ -63,7 +62,6 @@ func Setup(
 	syncProducer *producers.SyncAPIProducer,
 	transactionsCache *transactions.Cache,
 	federationSender federationAPI.ClientFederationAPI,
-	keyAPI keyserverAPI.ClientKeyAPI,
 	extRoomsProvider api.ExtraPublicRoomsProvider,
 	mscCfg *config.MSCs, natsClient *nats.Conn,
 ) {
@@ -201,7 +199,7 @@ func Setup(
 
 	dendriteAdminRouter.Handle("/admin/refreshDevices/{userID}",
 		httputil.MakeAdminAPI("admin_refresh_devices", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			return AdminMarkAsStale(req, cfg, keyAPI)
+			return AdminMarkAsStale(req, cfg, userAPI)
 		}),
 	).Methods(http.MethodPost, http.MethodOptions)
 
@@ -660,7 +658,7 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
-			ev := roomserverAPI.GetEvent(req.Context(), rsAPI, vars["eventID"])
+			ev := roomserverAPI.GetEvent(req.Context(), rsAPI, vars["roomID"], vars["eventID"])
 			// user is always allowed to redact their own events.
 			isAllowed := ev.Sender() == device.UserID
 			if !isAllowed {
@@ -686,7 +684,7 @@ func Setup(
 			if err != nil {
 				return util.ErrorResponse(err)
 			}
-			ev := roomserverAPI.GetEvent(req.Context(), rsAPI, vars["eventID"])
+			ev := roomserverAPI.GetEvent(req.Context(), rsAPI, vars["roomID"], vars["eventID"])
 			// user is always allowed to redact their own events.
 			isAllowed := ev.Sender() == device.UserID
 			if !isAllowed {
@@ -1486,11 +1484,11 @@ func Setup(
 	// Cross-signing device keys
 
 	postDeviceSigningKeys := httputil.MakeAuthAPI("post_device_signing_keys", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-		return UploadCrossSigningDeviceKeys(req, userInteractiveAuth, keyAPI, device, userAPI, cfg)
+		return UploadCrossSigningDeviceKeys(req, userInteractiveAuth, userAPI, device, userAPI, cfg)
 	})
 
 	postDeviceSigningSignatures := httputil.MakeAuthAPI("post_device_signing_signatures", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-		return UploadCrossSigningDeviceSignatures(req, keyAPI, device)
+		return UploadCrossSigningDeviceSignatures(req, userAPI, device)
 	}, httputil.WithAllowGuests())
 
 	v3mux.Handle("/keys/device_signing/upload", postDeviceSigningKeys).Methods(http.MethodPost, http.MethodOptions)
@@ -1502,22 +1500,22 @@ func Setup(
 	// Supplying a device ID is deprecated.
 	v3mux.Handle("/keys/upload/{deviceID}",
 		httputil.MakeAuthAPI("keys_upload", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			return UploadKeys(req, keyAPI, device)
+			return UploadKeys(req, userAPI, device)
 		}, httputil.WithAllowGuests()),
 	).Methods(http.MethodPost, http.MethodOptions)
 	v3mux.Handle("/keys/upload",
 		httputil.MakeAuthAPI("keys_upload", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			return UploadKeys(req, keyAPI, device)
+			return UploadKeys(req, userAPI, device)
 		}, httputil.WithAllowGuests()),
 	).Methods(http.MethodPost, http.MethodOptions)
 	v3mux.Handle("/keys/query",
 		httputil.MakeAuthAPI("keys_query", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			return QueryKeys(req, keyAPI, device)
+			return QueryKeys(req, userAPI, device)
 		}, httputil.WithAllowGuests()),
 	).Methods(http.MethodPost, http.MethodOptions)
 	v3mux.Handle("/keys/claim",
 		httputil.MakeAuthAPI("keys_claim", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
-			return ClaimKeys(req, keyAPI)
+			return ClaimKeys(req, userAPI)
 		}, httputil.WithAllowGuests()),
 	).Methods(http.MethodPost, http.MethodOptions)
 	v3mux.Handle("/rooms/{roomId}/receipt/{receiptType}/{eventId}",
