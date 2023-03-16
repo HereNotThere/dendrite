@@ -36,8 +36,6 @@ import (
 	jaegermetrics "github.com/uber/jaeger-lib/metrics"
 )
 
-var ReleaseVersion string
-
 // keyIDRegexp defines allowable characters in Key IDs.
 var keyIDRegexp = regexp.MustCompile("^ed25519:[a-zA-Z0-9_]+$")
 
@@ -331,7 +329,6 @@ func (c *Dendrite) Defaults(opts DefaultOpts) {
 	c.Version = Version
 	c.Global.Defaults(opts)
 	c.ClientAPI.Defaults(opts)
-	c.ClientAPI.ReleaseVersion = ReleaseVersion
 	c.FederationAPI.Defaults(opts)
 	c.KeyServer.Defaults(opts)
 	c.MediaAPI.Defaults(opts)
@@ -512,13 +509,15 @@ func (config *Dendrite) replaceWithEnvVariables() {
 
 	err := godotenv.Load(".env")
 	if err != nil {
-		logrus.Errorln("error loading .env file", err)
+		logrus.Infoln(".env file not loaded", err)
 	}
 
 	config.Global.ServerName = gomatrixserverlib.ServerName(
 		replaceWithEnvVariables(string(config.Global.ServerName)),
 	)
 	logrus.Infof("Matrix ServerName=%s", config.Global.ServerName)
+
+	config.ClientAPI.ReleaseVersion = os.Getenv("RELEASE_VERSION")
 
 	config.Global.DatabaseOptions.ConnectionString = DataSource(
 		replaceWithEnvVariables(

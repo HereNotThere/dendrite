@@ -2,7 +2,6 @@ FROM docker.io/golang:1.19-alpine AS base
 
 RUN apk --update --no-cache add bash build-base
 
-ARG RELEASE_VERSION="Unreleased"
 
 
 #### DO NOT UNCOMMENT, THESE ENV VARS ARE FOR DOCUMENTATION PURPOSES ONLY ####
@@ -20,7 +19,7 @@ RUN go mod download
 COPY . /build
 
 RUN mkdir -p bin
-RUN go build -trimpath -o bin/ -ldflags="-X 'github.com/matrix-org/dendrite/setup/config.ReleaseVersion=$RELEASE_VERSION'" ./cmd/dendrite
+RUN go build -trimpath -o bin/ ./cmd/dendrite
 RUN go build -trimpath -o bin/ ./cmd/create-account
 RUN go build -trimpath -o bin/ ./cmd/generate-keys
 
@@ -36,5 +35,8 @@ COPY --from=base /build/dendrite-zion.yaml /usr/config/dendrite-zion.yaml
 
 VOLUME /etc/dendrite
 WORKDIR /etc/dendrite
+
+ARG RELEASE_VERSION="Unreleased"
+ENV RELEASE_VERSION=${RELEASE_VERSION}
 
 ENTRYPOINT ["/usr/bin/dendrite"]

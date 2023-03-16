@@ -70,6 +70,7 @@ func (c *ClientAPI) Defaults(opts DefaultOpts) {
 	c.RecaptchaSiteVerifyAPI = ""
 	c.RegistrationDisabled = true
 	c.OpenRegistrationWithoutVerificationEnabled = false
+	c.ReleaseVersion = "Unreleased"
 	c.RateLimiting.Defaults()
 }
 
