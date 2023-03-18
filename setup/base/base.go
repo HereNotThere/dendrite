@@ -123,7 +123,7 @@ func NewBaseDendrite(cfg *config.Dendrite, options ...BaseDendriteOptions) *Base
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:              cfg.Global.Sentry.DSN,
 			Environment:      cfg.Global.Environment,
-			Debug:            true,
+			Debug:            false,
 			ServerName:       string(cfg.Global.ServerName),
 			Release:          "dendrite@" + cfg.ClientAPI.ReleaseVersion,
 			AttachStacktrace: true,
@@ -378,6 +378,8 @@ func (b *BaseDendrite) SetupAndServeHTTP(
 	b.startupLock.Lock()
 
 	externalRouter := mux.NewRouter().SkipClean(true).UseEncodedPath()
+
+	logrus.Warn("SetupAndServeHTTP with AllowedOrigins", b.Cfg.AllowedOrigins)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   b.Cfg.AllowedOrigins,
