@@ -17,8 +17,10 @@ package routing
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/matrix-org/dendrite/setup/base"
@@ -131,6 +133,50 @@ func Setup(
 					"v1.1",
 					"v1.2",
 				}, UnstableFeatures: unstableFeatures, ReleaseVersion: cfg.ReleaseVersion},
+			}
+		}),
+	).Methods(http.MethodGet, http.MethodOptions)
+
+	publicAPIMux.Handle("/longpolltest",
+		httputil.MakeExternalAPI("longpolltest", func(req *http.Request) util.JSONResponse {
+			ctx := req.Context()
+			timeout, err := strconv.Atoi(req.URL.Query().Get("timeout"))
+
+			if err != nil || timeout > 300 || timeout < 0 {
+				return util.JSONResponse{
+					Code: http.StatusBadRequest,
+					JSON: struct{ Error string }{Error: "invalid timeout"},
+				}
+
+			} else {
+
+				select {
+				case <-ctx.Done():
+					return util.JSONResponse{
+						Code: http.StatusRequestTimeout,
+						JSON: struct{ Error string }{Error: "timed out"},
+					}
+				case <-time.After(time.Duration(timeout) * time.Second):
+					return util.JSONResponse{
+						Code: http.StatusOK,
+						JSON: struct {
+							Versions         []string        `json:"versions"`
+							UnstableFeatures map[string]bool `json:"unstable_features"`
+							ReleaseVersion   string          `json:"release_version"`
+						}{Versions: []string{
+							"r0.0.1",
+							"r0.1.0",
+							"r0.2.0",
+							"r0.3.0",
+							"r0.4.0",
+							"r0.5.0",
+							"r0.6.1",
+							"v1.0",
+							"v1.1",
+							"v1.2",
+						}, UnstableFeatures: unstableFeatures, ReleaseVersion: cfg.ReleaseVersion},
+					}
+				}
 			}
 		}),
 	).Methods(http.MethodGet, http.MethodOptions)
