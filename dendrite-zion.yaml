@@ -397,6 +397,8 @@ logging:
 allowed_origins:
     # app
     - https://app.towns.com
+    - https://app-test.towns.com
+    - https://app-staging.towns.com
     - https://harmony-web.onrender.com
     - http://localhost:3000
     # sample-app
