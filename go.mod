@@ -14,7 +14,7 @@ require (
 	github.com/docker/go-connections v0.4.0
 	github.com/ethereum/go-ethereum v1.10.25
 	github.com/evalphobia/logrus_sentry v0.8.2
-	github.com/getsentry/sentry-go v0.18.0
+	github.com/getsentry/sentry-go v0.19.0
 	github.com/gologme/log v1.3.0
 	github.com/google/go-cmp v0.5.9
 	github.com/google/uuid v1.3.0
