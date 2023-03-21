@@ -11,9 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:embed contracts/localhost_space_factory/space-factory.json
-var localhostSpaceFactoryJson []byte
-
 type SpaceContractLocalhost struct {
 	ethClient    *ethclient.Client
 	spaceFactory *localhost_space_factory.LocalhostSpaceFactory
@@ -21,7 +18,7 @@ type SpaceContractLocalhost struct {
 }
 
 func NewSpaceContractLocalhost(ethClient *ethclient.Client) (*SpaceContractLocalhost, error) {
-	jsonAddress, err := loadSpaceFactoryAddress(localhostSpaceFactoryJson)
+	jsonAddress, err := loadSpaceFactoryAddress(31337)
 	if err != nil {
 		log.Errorf("error parsing localhost space factory contract address %v. Error: %v", jsonAddress, err)
 		return nil, err

@@ -11,9 +11,6 @@ import (
 	"github.com/matrix-org/dendrite/zion/contracts/goerli_space_factory"
 )
 
-//go:embed contracts/goerli_space_factory/space-factory.json
-var goerliSpaceFactoryJson []byte
-
 type SpaceContractGoerli struct {
 	ethClient    *ethclient.Client
 	spaceFactory *goerli_space_factory.GoerliSpaceFactory
@@ -21,7 +18,7 @@ type SpaceContractGoerli struct {
 }
 
 func NewSpaceContractGoerli(ethClient *ethclient.Client) (*SpaceContractGoerli, error) {
-	jsonAddress, err := loadSpaceFactoryAddress(goerliSpaceFactoryJson)
+	jsonAddress, err := loadSpaceFactoryAddress(5)
 	if err != nil {
 		log.Errorf("error parsing goerli space factory contract address %v. Error: %v", jsonAddress, err)
 		return nil, err
