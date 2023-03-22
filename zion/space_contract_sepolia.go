@@ -5,38 +5,38 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gologme/log"
 	"github.com/matrix-org/dendrite/authorization"
-	"github.com/matrix-org/dendrite/zion/contracts/goerli_space"
-	"github.com/matrix-org/dendrite/zion/contracts/goerli_space_factory"
+	"github.com/matrix-org/dendrite/zion/contracts/sepolia_space"
+	"github.com/matrix-org/dendrite/zion/contracts/sepolia_space_factory"
 )
 
-type SpaceContractGoerli struct {
+type SpaceContractSepolia struct {
 	ethClient    *ethclient.Client
-	spaceFactory *goerli_space_factory.GoerliSpaceFactory
-	spaces       map[string]*goerli_space.GoerliSpace
+	spaceFactory *sepolia_space_factory.SepoliaSpaceFactory
+	spaces       map[string]*sepolia_space.SepoliaSpace
 }
 
-func NewSpaceContractGoerli(ethClient *ethclient.Client) (*SpaceContractGoerli, error) {
-	jsonAddress, err := loadSpaceFactoryAddress(5)
+func NewSpaceContractSepolia(ethClient *ethclient.Client) (*SpaceContractSepolia, error) {
+	jsonAddress, err := loadSpaceFactoryAddress(11155111)
 	if err != nil {
-		log.Errorf("error parsing goerli space factory contract address %v. Error: %v", jsonAddress, err)
+		log.Errorf("error parsing sepolia space factory contract address %v. Error: %v", jsonAddress, err)
 		return nil, err
 	}
 	address := common.HexToAddress(jsonAddress.SpaceFactory)
-	spaceFactory, err := goerli_space_factory.NewGoerliSpaceFactory(address, ethClient)
+	spaceFactory, err := sepolia_space_factory.NewSepoliaSpaceFactory(address, ethClient)
 	if err != nil {
-		log.Errorf("error fetching goerli space factory contract with address %v. Error: %v", jsonAddress, err)
+		log.Errorf("error fetching sepolia space factory contract with address %v. Error: %v", jsonAddress, err)
 		return nil, err
 	}
 	// no errors.
-	var spaceContract = &SpaceContractGoerli{
+	var spaceContract = &SpaceContractSepolia{
 		ethClient:    ethClient,
 		spaceFactory: spaceFactory,
-		spaces:       make(map[string]*goerli_space.GoerliSpace),
+		spaces:       make(map[string]*sepolia_space.SepoliaSpace),
 	}
 	return spaceContract, nil
 }
 
-func (za *SpaceContractGoerli) IsEntitledToSpace(
+func (za *SpaceContractSepolia) IsEntitledToSpace(
 	spaceNetworkId string,
 	user common.Address,
 	permission authorization.Permission,
@@ -57,7 +57,7 @@ func (za *SpaceContractGoerli) IsEntitledToSpace(
 	return isEntitled, nil
 }
 
-func (za *SpaceContractGoerli) IsEntitledToChannel(
+func (za *SpaceContractSepolia) IsEntitledToChannel(
 	spaceNetworkId string,
 	channelNetworkId string,
 	user common.Address,
@@ -78,7 +78,7 @@ func (za *SpaceContractGoerli) IsEntitledToChannel(
 	return isEntitled, err
 }
 
-func (za *SpaceContractGoerli) IsSpaceDisabled(spaceNetworkId string) (bool, error) {
+func (za *SpaceContractSepolia) IsSpaceDisabled(spaceNetworkId string) (bool, error) {
 	space, err := za.getSpace(spaceNetworkId)
 	if err != nil {
 		return false, err
@@ -87,7 +87,7 @@ func (za *SpaceContractGoerli) IsSpaceDisabled(spaceNetworkId string) (bool, err
 	return isDisabled, err
 }
 
-func (za *SpaceContractGoerli) IsChannelDisabled(spaceNetworkId string, channelNetworkId string) (bool, error) {
+func (za *SpaceContractSepolia) IsChannelDisabled(spaceNetworkId string, channelNetworkId string) (bool, error) {
 	space, err := za.getSpace(spaceNetworkId)
 	if err != nil {
 		return false, err
@@ -100,7 +100,7 @@ func (za *SpaceContractGoerli) IsChannelDisabled(spaceNetworkId string, channelN
 	return channel.Disabled, err
 }
 
-func (za *SpaceContractGoerli) getSpace(networkId string) (*goerli_space.GoerliSpace, error) {
+func (za *SpaceContractSepolia) getSpace(networkId string) (*sepolia_space.SepoliaSpace, error) {
 	if za.spaces[networkId] == nil {
 		// convert the networkId to keccak256 spaceIdHash
 		spaceIdHash := NetworkIdToHash(networkId)
@@ -110,7 +110,7 @@ func (za *SpaceContractGoerli) getSpace(networkId string) (*goerli_space.GoerliS
 			return nil, err
 		}
 		// cache the space for future use
-		space, err := goerli_space.NewGoerliSpace(spaceAddress, za.ethClient)
+		space, err := sepolia_space.NewSepoliaSpace(spaceAddress, za.ethClient)
 		if err != nil {
 			return nil, err
 		}

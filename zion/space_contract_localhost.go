@@ -1,8 +1,6 @@
 package zion
 
 import (
-	_ "embed"
-
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/matrix-org/dendrite/authorization"

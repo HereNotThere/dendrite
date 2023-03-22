@@ -60,6 +60,13 @@ func NewZionAuthorization(cfg *config.ClientAPI, roomQueryAPI roomserver.QueryEv
 			return nil, err
 		}
 		za.spaceContract = goerli
+	case 11155111:
+		sepolia, err := NewSpaceContractSepolia(za.ethClient)
+		if err != nil {
+			log.Errorf("error instantiating SpaceContractSepolia. Error: %v", err)
+			return nil, err
+		}
+		za.spaceContract = sepolia
 	default:
 		errMsg := fmt.Sprintf("unsupported chain id: %d", za.chainId)
 		log.Error(errMsg)
