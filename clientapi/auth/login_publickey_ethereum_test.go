@@ -57,6 +57,7 @@ func createLoginContext(_ *testing.T) *loginContext {
 	cfg.Derived.Registration.Flows = append(cfg.Derived.Registration.Flows, pkFlows...)
 	pkParams := cfg.PublicKeyAuthentication.GetPublicKeyRegistrationParams()
 	cfg.Derived.Registration.Params = mapsutil.MapsUnion(cfg.Derived.Registration.Params, pkParams)
+	cfg.SetAllowedOrigins([]string{"https://localhost"})
 
 	var userAPI fakePublicKeyUserApi
 	var loginApi uapi.UserLoginAPI
