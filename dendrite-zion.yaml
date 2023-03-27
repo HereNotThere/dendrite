@@ -404,6 +404,8 @@ allowed_origins:
     # sample-app
     - http://localhost:3001
     - https://sample-app-b0wc.onrender.com
+    # test
+    - http://localhost
     # preview links to harmony app
     - https://harmony-web-pr-*.onrender.com
     - https://test-harmony-web-pr-*.onrender.com
