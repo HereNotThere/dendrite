@@ -133,7 +133,7 @@ global:
     # Configuration for Prometheus metric collection.
     metrics:
         # Whether or not Prometheus metrics are enabled.
-        enabled: false
+        enabled: true
 
         # HTTP basic authentication to protect access to monitoring.
         basic_auth:
