@@ -1,4 +1,3 @@
-// Copyright 2022 The Matrix.org Foundation C.I.C.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +17,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"regexp"
 	"strings"
 
@@ -131,12 +129,6 @@ func (pk LoginPublicKeyEthereum) ValidateLoginResponse() (bool, *jsonerror.Matri
 		return false, jsonerror.InvalidSignature(fmt.Sprintf("%s signature:%+v server_name:%+v messsage_domain:%+v", err.Error(), pk.Signature, serverName, message.GetDomain()))
 	}
 
-	// Check that the origin is allowed
-	messageOrigin := message.GetURI()
-	if !pk.isAllowedOrigin(messageOrigin) {
-		return false, jsonerror.Forbidden(fmt.Sprintf("origin disallowed %s://%s", messageOrigin.Scheme, messageOrigin.Host))
-	}
-
 	// Error if the user ID does not match the signed message.
 	isVerifiedUserId := pk.verifyMessageUserId(message)
 	if !isVerifiedUserId {
@@ -170,13 +162,4 @@ func (pk LoginPublicKeyEthereum) verifyMessageUserId(message *siwe.Message) bool
 	// Case-insensitive comparison to make sure the user ID matches the expected
 	// one derived from the signed message.
 	return pk.UserId == strings.ToLower(expectedUserId)
-}
-
-func (pk LoginPublicKeyEthereum) isAllowedOrigin(uri url.URL) bool {
-	for _, v := range pk.config.GetAllowedOrigins() {
-		if v.Scheme == uri.Scheme && v.Host == uri.Host {
-			return true
-		}
-	}
-	return false
 }

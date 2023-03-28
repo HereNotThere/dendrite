@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 )
 
@@ -60,9 +59,6 @@ type ClientAPI struct {
 
 	// Public key authentication
 	PublicKeyAuthentication PublicKeyAuthentication `yaml:"public_key_authentication"`
-
-	// Forbid login from origins other than those listed.
-	allowedOrigins []*url.URL
 }
 
 func (c *ClientAPI) Defaults(opts DefaultOpts) {
@@ -76,20 +72,6 @@ func (c *ClientAPI) Defaults(opts DefaultOpts) {
 	c.OpenRegistrationWithoutVerificationEnabled = false
 	c.ReleaseVersion = "Unreleased"
 	c.RateLimiting.Defaults()
-}
-
-func (c *ClientAPI) GetAllowedOrigins() []*url.URL {
-	return c.allowedOrigins
-}
-
-func (c *ClientAPI) SetAllowedOrigins(origins []string) {
-	for _, v := range origins {
-		u, err := url.Parse(v)
-		if err != nil {
-			panic(fmt.Errorf("invalid origin: %s", v))
-		}
-		c.allowedOrigins = append(c.allowedOrigins, u)
-	}
 }
 
 func (c *ClientAPI) Verify(configErrs *ConfigErrors) {

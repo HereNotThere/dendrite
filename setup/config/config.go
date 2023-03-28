@@ -311,9 +311,6 @@ func (config *Dendrite) Derive() error {
 		}
 	}
 
-	// Make sure client API has the CORS config
-	config.ClientAPI.SetAllowedOrigins(config.AllowedOrigins)
-
 	// Load application service configuration files
 	if err := loadAppServices(&config.AppServiceAPI, &config.Derived); err != nil {
 		return err
