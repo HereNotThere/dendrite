@@ -84,7 +84,7 @@ jobs:
             # Label used to access the service container
             postgres:
                 # Docker Hub image
-                image: postgres:13-alpine
+                image: postgres:latest
                 # Provide the password for postgres
                 env:
                     POSTGRES_USER: postgres
@@ -215,7 +215,7 @@ jobs:
             # Label used to access the service container
             postgres:
                 # Docker Hub image
-                image: postgres:13-alpine
+                image: postgres:latest
                 # Provide the password for postgres
                 env:
                     POSTGRES_USER: postgres
